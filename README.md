@@ -2,7 +2,8 @@
 Semi Homepage Project
 
 # 環境構築
- * プロジェクトを`git pull`で持ってくる
+ * `git remote add origin [リポジトリURL]`で、リモートにこのリポジトリを登録
+ * プロジェクトのコードをを`git pull origin develop`で持ってくる
  * 'bundle install --without production --path vendor/bundle'
  * `rails s` + `localhost:3000` でページが表示できていれば成功
 
