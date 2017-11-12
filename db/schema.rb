@@ -20,6 +20,16 @@ ActiveRecord::Schema.define(version: 20171112053846) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "introductions", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "department"
+    t.integer "grade"
+    t.string "comments"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_introductions_on_user_id"
+  end
+
   create_table "pages", force: :cascade do |t|
     t.string "title"
     t.string "contents"
