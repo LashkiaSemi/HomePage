@@ -22,13 +22,19 @@ gem 'device'
 gem 'pry-rails'
 gem 'pry-doc'
 
+# bootstrap
+gem 'bootstrap'
+
+# jQuery
+gem 'jquery-rails'
+
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  
+
   # Debug
   gem 'pry-byebug'
   # Database
