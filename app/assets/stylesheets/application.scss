@@ -1,0 +1,18 @@
+@import "bootstrap";
+
+$gray-medium-light: #eaeaea;
+
+/* footer */
+footer {
+  border-top: 1px solid $gray-medium-light;
+}
+
+/* debug box */
+.debug_dump {
+  float: left;
+  width: 100%;
+  margin-top: 45px;
+  background: $gray-medium-light;
+  padding: 10px;
+  border: 1px solid #777;
+}
