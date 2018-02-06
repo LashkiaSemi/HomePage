@@ -1,2 +1,46 @@
-<h1>Users#new</h1>
-<p>Find me in app/views/users/new.html.erb</p>
+<div class="container">
+  <h1 class="text-center my-5">ユーザー登録</h1>
+
+  <div class="col-md-6 offset-md-3">
+    <%= form_for @user do |f| %>
+    <div class="form-group">
+      <%= f.label "名前" %>
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label "学籍番号" %>
+      <%= f.text_field :student_id, class: 'form-control', placeholder: 't314000' %>
+    </div>
+
+      <%= f.fields_for :introduction do |b| %>
+        <%= b.hidden_field :department, value: "" %>
+        <%= b.hidden_field :comments, value: "" %>
+
+      <div class="form-group">
+        <%= b.label "学年" %>
+        <%= b.select :grade, [['2年生', 2], ['3年生', 3], ['4年生', 4], ['卒業生', 0]], {}, class: 'custom-select form-control' %>
+      </div>
+      <% end %>
+
+    <div class="form-group">
+      <%= f.label "権限" %>
+      <%= f.select :role, [%w(Member member), %w(Admin admin), %w(Owner owner)], {}, class: 'custom-select form-control' %>
+    </div>
+
+    <% pass = secure_password %>
+
+    <fieldset disabled>
+      <div class="form-group">
+        <%= f.label 'パスワード' %>
+        <%= f.text_field :password, value: pass, class: 'form-control' %>
+      </div>
+    </fieldset>
+
+      <%= f.hidden_field :password, value: pass %>
+      <%= f.hidden_field :password_confirmation, value: pass %>
+
+    <div class="text-center"><%= f.submit "登録", class: 'btn btn-primary w-25' %></div>
+    <% end %>
+  </div>
+</div>
