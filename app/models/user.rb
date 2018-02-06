@@ -5,6 +5,9 @@ class User < ApplicationRecord
 
     before_save :downcase_student_id
 
+    validates :name, presence: true
+    validates :student_id, presence: true, length: {is: 7}
+
     private
       def downcase_student_id
         self.student_id.downcase!
