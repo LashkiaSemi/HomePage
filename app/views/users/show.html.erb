@@ -1,2 +1,31 @@
-<h1>Users#show</h1>
-<p>Find me in app/views/users/show.html.erb</p>
+<div class="container">
+  <div class="card mt-5">
+    <div class="card-body">
+      <h5 class="card-title my-2"><%= @user.name %></h5>
+      <h6 class="card-subtitle text-muted my-2"><%= @user.student_id %></h6>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">学年 : <%= output_grade(@user.introduction.grade) %></li>
+        <li class="list-group-item">学部 : <%= @user.introduction.department %></li>
+        <li class="list-group-item">1言コメント <br> <%= @user.introduction.comments %></li>
+        <% if authority_admin? %> <li class="list-group-item">権限 : <%= @user.role %></li> <% end %>
+      </ul>
+
+      <div class="my-3">
+        <% if logged_in? %>
+
+          <% if match_login_user?(@user) || authority_admin? %>
+            <%= link_to '編集する', edit_user_path(@user), class: 'btn btn-success mr-2' %>
+          <% end %>
+
+          <% if match_login_user?(@user) %>
+            <%= link_to 'パスワードを変更する', edit_pass_user_path(@user), class: 'btn btn-info mr-2' %>
+          <% end %>
+
+          <% if authority_admin? %>
+            <%= link_to 'このユーザーを削除する。', user_path(@user.id), method: :delete, class: 'btn btn-danger' %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
