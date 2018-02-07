@@ -5,7 +5,7 @@
     <%= form_for(:session, url: login_path) do |f| %>
 
       <%= f.label '学籍番号', class: "mt-2" %>
-      <%= f.email_field :student_id, class: "form-control" %>
+      <%= f.text_field :student_id, class: "form-control" %>
 
       <%= f.label 'パスワード', class: "mt-2" %>
       <%= f.password_field :password, class: "form-control" %>
