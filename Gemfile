@@ -28,6 +28,9 @@ gem 'bootstrap'
 # jQuery
 gem 'jquery-rails'
 
+# Uploader
+gem 'carrierwave'
+
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 
