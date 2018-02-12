@@ -12,7 +12,11 @@ Rails.application.routes.draw do
       get :download
     end
   end
-  resources :researchs, only: [:index, :new, :create, :destroy]
+  resources :researches, only: [:index, :new, :create, :destroy] do
+    member do
+      get :download
+    end
+  end
 
   get '/login', to: 'sessions#login_form'
   post '/login', to: 'sessions#login'
