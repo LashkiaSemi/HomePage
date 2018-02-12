@@ -1,6 +1,7 @@
 class User < ApplicationRecord
     has_one :introduction
     accepts_nested_attributes_for :introduction
+    has_many :lectures
     has_secure_password
 
     before_save :downcase_student_id

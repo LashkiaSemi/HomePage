@@ -7,7 +7,11 @@ Rails.application.routes.draw do
       post :update_pass
     end
   end
-  resources :lectures, only: [:index, :new, :create, :destroy]
+  resources :lectures, only: [:index, :new, :create, :destroy] do
+    member do
+      get :download
+    end
+  end
   resources :researchs, only: [:index, :new, :create, :destroy]
 
   get '/login', to: 'sessions#login_form'
