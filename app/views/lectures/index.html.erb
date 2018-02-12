@@ -1,2 +1,29 @@
-<h1>Lectures#index</h1>
-<p>Find me in app/views/lectures/index.html.erb</p>
+<div class="container">
+  <%= link_to '資料をアップロード', new_lecture_path, class: 'btn btn-success float-right my-auto' %>
+  <h1 class="text-left my-5">レクチャー資料一覧</h1>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>名前</th>
+        <th scope="col">投稿者</th>
+        <th scope="col">コメント</th>
+        <th scope="col">投稿日</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @lectures.each do |lecture| %>
+      <% if lecture.activation %>
+      <tr>
+        <th class="align-middle" scope="row"><%= lecture.title %></th>
+        <td class="align-middle"><%= lecture.user.name %></td>
+        <td class="align-middle"><%= lecture.comments %></td>
+        <td class="align-middle"><%= lecture.created_at.strftime('%Y年%m月%d日') %></td>
+        <td class="align-middle"><button class="btn"><%= link_to "download", download_lecture_path(lecture) %></button></td>
+      </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

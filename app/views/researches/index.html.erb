@@ -1,0 +1,29 @@
+<div class="container">
+  <%= link_to 'アップロード', new_research_path, class: 'btn btn-success float-right my-auto' %>
+  <h1 class="text-left my-5">卒業研究一覧</h1>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>名前</th>
+        <th scope="col">著者</th>
+        <th scope="col">コメント</th>
+        <th scope="col">投稿日</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @researches.each do |research| %>
+      <% if research.activation %>
+      <tr>
+        <th class="align-middle" scope="row"><%= research.title %></th>
+        <td class="align-middle"><%= research.author %></td>
+        <td class="align-middle"><%= research.comments %></td>
+        <td class="align-middle"><%= research.created_at.strftime('%Y年%m月%d日') %></td>
+        <td class="align-middle"><%= link_to "download", download_research_path(research),  class: "btn btn-primary" %></td>
+      </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>
