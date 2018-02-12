@@ -30,4 +30,12 @@ module UsersHelper
   def secure_password
     SecureRandom.urlsafe_base64.slice(0..7)
   end
+
+  ## admin以上の権限でなければroot_urlへリダイレクト
+  def is_user_admin
+    unless authority_admin?
+      flash[:notice] = "権限がありません。"
+      redirect_to root_url
+    end
+  end
 end
