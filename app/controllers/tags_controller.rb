@@ -2,7 +2,7 @@ class TagsController < ApplicationController
   before_action :is_user_admin
 
   def index
-    @tag = Tag.all
+    @tags = Tag.all
   end
   
   def new

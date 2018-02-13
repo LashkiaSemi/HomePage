@@ -2,7 +2,7 @@ class EquipmentsController < ApplicationController
   before_action :is_user_admin, except: [:index]
 
   def index
-    @equipment = Equipment.all.order(:tag) 
+    @equipments = Equipment.all.order(:tag) 
   end
 
   def new

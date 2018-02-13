@@ -1,0 +1,31 @@
+<div class="container">
+<%= link_to '新規登録', new_equipment_path, class: 'btn btn-success float-right my_auto' %>
+  <h1 class="text-left my-5">備品一覧</h1>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>備品名</th>
+        <th scope="col">数量</th>
+        <th scope="col">備考</th>
+        <th scope="col">タグ</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @equipments.each do |equipment| %>
+      <% if equipment.activation %>
+      <tr>
+        <th class="align-middle" scope="row"><%= equipment.name %></th>
+        <td class="align-middle"><%= equipment.num %></td>
+        <td class="align-middle"><%= equipment.note %></td>
+        <td class="align-middle"><%= equipment.tag %></td>
+        <td class="align-middle"><%= equipment.created_at.strftime('%Y年%m月%d日') %></td>
+        <td class="align-middle"><%= link_to "編集", edit_equipment_path(equipment), class: "btn btn-success" %></td>
+        <td class="align-middle"><%= link_to "削除", destroy_equipment_path(equipment), class: "btn btn-danger" %></td>
+      </tr>
+      <% end %>
+    <% end %>  
+    </tbody>
+  </table>
+</div>
