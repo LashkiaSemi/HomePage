@@ -10,20 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20180211081828) do
-
-  create_table "documents", force: :cascade do |t|
-    t.string "name"
-    t.string "path"
-    t.boolean "activation"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "comments"
-  end
-=======
 ActiveRecord::Schema.define(version: 20180212082511) do
->>>>>>> 8366404a2dcaf167d4cdbf2ca331e3ff1766ad27
 
   create_table "equipment", force: :cascade do |t|
     t.string "name"
@@ -61,14 +48,6 @@ ActiveRecord::Schema.define(version: 20180212082511) do
     t.datetime "updated_at", null: false
   end
 
-<<<<<<< HEAD
-  create_table "tags", force: :cascade do |t|
-    t.integer "equipment_id"
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["equipment_id"], name: "index_tags_on_equipment_id"
-=======
   create_table "researches", force: :cascade do |t|
     t.string "title"
     t.string "author"
@@ -77,7 +56,14 @@ ActiveRecord::Schema.define(version: 20180212082511) do
     t.boolean "activation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
->>>>>>> 8366404a2dcaf167d4cdbf2ca331e3ff1766ad27
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.integer "equipment_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["equipment_id"], name: "index_tags_on_equipment_id"
   end
 
   create_table "users", force: :cascade do |t|
