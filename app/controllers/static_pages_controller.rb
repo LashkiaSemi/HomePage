@@ -5,9 +5,6 @@ class StaticPagesController < ApplicationController
   def activitiy
   end
 
-  def equipment
-  end
-
   def publication
   end
 

@@ -23,7 +23,6 @@ Rails.application.routes.draw do
   post '/logout', to: 'sessions#logout'
 
   get '/activitiy', to: 'static_pages#activitiy'
-  get '/equipment', to: 'static_pages#equipment'
   get '/publication', to: 'static_pages#publication'
   get '/job', to: 'static_pages#job'
   get '/link', to: 'static_pages#link'
