@@ -27,7 +27,7 @@ production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: lashkia_semi_homepage
+  database: homepage
   pool: 5
-  username: lashkia
+  username: homepage
   password: sorejavadedekinaino
