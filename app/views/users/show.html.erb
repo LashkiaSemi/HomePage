@@ -7,7 +7,7 @@
         <li class="list-group-item">学年 : <%= output_grade(@user.introduction.grade) %></li>
         <li class="list-group-item">学部 : <%= @user.introduction.department %></li>
         <li class="list-group-item">1言コメント <br> <%= @user.introduction.comments %></li>
-        <% if authority_admin? %> <li class="list-group-item">権限 : <%= @user.role %></li> <% end %>
+        <% if logged_in? && authority_admin? %> <li class="list-group-item">権限 : <%= @user.role %></li> <% end %>
       </ul>
 
       <div class="my-3">

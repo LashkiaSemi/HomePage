@@ -1,5 +1,5 @@
 <div class="container">
-  <% if authority_admin? %>
+  <% if logged_in? && authority_admin? %>
     <%= link_to '新規登録', new_user_path, class: 'btn btn-success float-right my-auto' %>
   <% end %>
   <h1 class="text-center my-5">ゼミメンバー</h1>
