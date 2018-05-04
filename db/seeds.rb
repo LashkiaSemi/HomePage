@@ -19,3 +19,6 @@ Introduction.create(user_id: 3, department: '工学部', grade: 4, comments: 'te
 User.create(name: 'test4', role: 'member', student_id: 'T314004', password: 'pass4', password_confirmation: 'pass4')
 Introduction.create(user_id: 4, department: '工学部', grade: 0, comments: 'test user')
 =end
+
+#User.create(name: 'kichinaga', role: 'owner', student_id: 'T314093', password: 'Gv5sLB91Y', password_confirmation: 'Gv5sLB91Y')
+#Introduction.create(user_id: 1, department: '工学部', grade: 0, comments: '管理者')
