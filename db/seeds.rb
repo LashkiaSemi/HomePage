@@ -20,5 +20,12 @@ User.create(name: 'test4', role: 'member', student_id: 'T314004', password: 'pas
 Introduction.create(user_id: 4, department: '工学部', grade: 0, comments: 'test user')
 =end
 
-#User.create(name: 'kichinaga', role: 'owner', student_id: 'T314093', password: 'Gv5sLB91Y', password_confirmation: 'Gv5sLB91Y')
-#Introduction.create(user_id: 1, department: '工学部', grade: 0, comments: '管理者')
+### Equipment Tags
+### タグはシードで挿入する（後々管理者がタグを追加できる画面とか作ってくれるとありがたい）
+### Tag.create(name: '')
+Tag.create(name: 'パソコン')
+Tag.create(name: 'タブレット')
+Tag.create(name: 'ディスプレイ')
+Tag.create(name: '本')
+Tag.create(name: 'コード類')
+Tag.create(name: 'その他')

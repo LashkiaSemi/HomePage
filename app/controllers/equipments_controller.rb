@@ -2,12 +2,16 @@ class EquipmentsController < ApplicationController
   before_action :is_user_admin, except: [:index]
 
   def index
-    @equipments = Equipment.all.order(:tag) 
+    @equipments = Equipment.all
   end
 
   def new
-    @eqipment = Equipment.new
-    @equipment.build_tag
+    if authority_admin?
+      @equipment = Equipment.new
+    else
+      flash[:warning] = "権限がありません。"
+      redirect_to equipments_url
+    end
   end
   
   def create
@@ -22,14 +26,20 @@ class EquipmentsController < ApplicationController
   end
   
   def edit
-    @equipment = Equipment.find(params[:id])
+    if authority_admin?
+      @equipment = Equipment.find(params[:id])
+      @tags = Tag.all
+    else
+      flash[:warning] = "権限がありません。"
+      redirect_to equipments_url
+    end
   end
 
   def update
     @equipment = Equipment.find(params[:id])
     if @equipment.update(equipment_params)
       flash[:success] = "備品を編集しました。"
-      redirect_to equipment_url(@equipment)
+      redirect_to equipments_url(@equipment)
     else
       flash[:danger] = "備品の編集に失敗しました。"
       render action: :edit
@@ -38,5 +48,11 @@ class EquipmentsController < ApplicationController
   
   def destroy
     Equipment.find(params[:id]).destroy
-  end  
+    redirect_to equipments_url
+  end
+
+  private
+    def equipment_params
+      params.require(:equipment).permit(:name, :num, :note, :tag_id)
+    end
 end

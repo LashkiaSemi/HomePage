@@ -1,3 +1,3 @@
 class Equipment < ApplicationRecord
-  has_one :tag
+    belongs_to :tag
 end

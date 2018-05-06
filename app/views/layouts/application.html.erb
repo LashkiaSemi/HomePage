@@ -11,6 +11,11 @@
     <%= render 'layouts/header' %>
 
     <div class="container">
+
+      <% flash.each do |type, msg| %>
+        <div class="alert alert-<%= type %> mt-3" ><%= msg %></div>
+      <% end %>
+
       <%= yield %>
 
       <%= render 'layouts/footer' %>
