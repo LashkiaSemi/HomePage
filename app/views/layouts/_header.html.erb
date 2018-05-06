@@ -17,6 +17,7 @@
           <li class="nav-item"><%= link_to 'メンバー', users_path , class: 'nav-link'%></li>
           <li class="nav-item"><%= link_to '外部リンク', link_path , class: 'nav-link'%></li>
           <% if logged_in? %>
+          <li class="nav-item"><%= link_to '研究室備品', equipments_path , class: 'nav-link'%></li>
           <li class="nav-item"><%= link_to 'ログアウト', logout_path, method: "delete", class: 'nav-link' %></li>
           <% else %>
           <li class="nav-item"><%= link_to 'ログイン', login_path , class: 'nav-link' %></li>
