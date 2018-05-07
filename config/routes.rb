@@ -7,7 +7,7 @@ Rails.application.routes.draw do
       post :update_pass
     end
   end
-  resources :lectures, only: [:index, :new, :create, :destroy] do
+  resources :lectures do
     member do
       get :download
     end
