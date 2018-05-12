@@ -6,8 +6,8 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get activitiy" do
-    get static_pages_activitiy_url
+  test "should get activity" do
+    get static_pages_activity_url
     assert_response :success
   end
 
