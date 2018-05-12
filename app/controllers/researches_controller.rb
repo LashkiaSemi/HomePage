@@ -1,5 +1,5 @@
 class ResearchesController < ApplicationController
-  before_action :is_user_logged
+  before_action :is_user_logged, except: :index
 
   def index
     @researches = Research.all

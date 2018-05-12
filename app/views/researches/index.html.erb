@@ -1,5 +1,7 @@
 <div class="container">
-  <%= link_to 'アップロード', new_research_path, class: 'btn btn-success float-right my-auto' %>
+  <% if logged_in? && authority_admin? %>
+    <%= link_to 'アップロード', new_research_path, class: 'btn btn-success float-right my-auto' %>
+  <% end %>
   <h1 class="text-left my-5">卒業研究一覧</h1>
 
   <table class="table table-striped">
