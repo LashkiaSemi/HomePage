@@ -2,7 +2,7 @@ class StaticPagesController < ApplicationController
   def index
   end
 
-  def activitiy
+  def activity
   end
 
   def publication
