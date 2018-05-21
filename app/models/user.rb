@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-    has_one :introduction
+    has_one :introduction, :dependent => :destroy
     accepts_nested_attributes_for :introduction
     has_many :lectures
     has_secure_password
