@@ -20,12 +20,4 @@ User.create(name: 'test4', role: 'member', student_id: 'T314004', password: 'pas
 Introduction.create(user_id: 4, department: '工学部', grade: 0, comments: 'test user')
 =end
 
-### Equipment Tags
-### タグはシードで挿入する（後々管理者がタグを追加できる画面とか作ってくれるとありがたい）
-### Tag.create(name: '')
-Tag.create(name: 'パソコン')
-Tag.create(name: 'タブレット')
-Tag.create(name: 'ディスプレイ')
-Tag.create(name: '本')
-Tag.create(name: 'コード類')
-Tag.create(name: 'その他')
+load(Rails.root.join('db', 'seeds', "#{Rails.env.downcase}.rb"))
