@@ -6,30 +6,22 @@ git_source(:github) do |repo_name|
 end
 
 # Default
-gem 'rails', '~> 5.1.3'
-gem 'puma', '~> 3.7'
-gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.2'
-gem 'turbolinks', '~> 5'
-gem 'jbuilder', '~> 2.5'
+gem "administrate"
+gem 'administrate-field-enum'
+gem 'administrate-field-carrierwave'
 gem 'bcrypt', '~> 3.1.7'
-
-# Auth
-gem 'device'
-
-# Debug
-gem 'pry-rails'
-gem 'pry-doc'
-
-# bootstrap
 gem 'bootstrap'
-
-# jQuery
-gem 'jquery-rails'
-
-# Uploader
 gem 'carrierwave'
+gem 'coffee-rails', '~> 4.2'
+gem 'device'
+gem 'jbuilder', '~> 2.5'
+gem 'jquery-rails'
+gem 'kaminari'
+gem 'puma', '~> 3.7'
+gem 'rails', '~> 5.1.3'
+gem 'sass-rails', '~> 5.0'
+gem 'turbolinks', '~> 5'
+gem 'uglifier', '>= 1.3.0'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
@@ -40,6 +32,9 @@ group :development, :test do
 
   # Debug
   gem 'pry-byebug'
+  gem 'pry-rails'
+  gem 'pry-doc'
+
   # Database
   gem 'sqlite3'
 end
