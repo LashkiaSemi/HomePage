@@ -1,0 +1,12 @@
+ja:
+  activerecord:
+    models:
+      tag: タグ
+  attributes: &attributes
+    name: タグ名
+    updated_at: 最終更新日時
+    created_at: 登録日時
+  helpers:
+    label:
+      tag:
+        <<: *attributes

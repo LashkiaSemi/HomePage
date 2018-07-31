@@ -1,0 +1,17 @@
+ja:
+  activerecord:
+    models:
+      user: ユーザー
+  attributes: &attributes
+    name: 名前
+    role: 権限
+    student_id: 学籍番号
+    password_digest: パスワードダイジェスト
+    password: パスワード
+    password_confirmation: 確認パスワード
+    updated_at: 最終更新日時
+    created_at: 登録日時
+  helpers:
+    label:
+      user:
+        <<: *attributes

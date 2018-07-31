@@ -1,0 +1,15 @@
+ja:
+  activerecord:
+    models:
+      research: 卒業研究
+  attributes: &attributes
+    title: タイトル
+    author: 著者
+    file: ファイル
+    comments: コメント
+    updated_at: 最終更新日時
+    created_at: 登録日時
+  helpers:
+    label:
+      research:
+        <<: *attributes

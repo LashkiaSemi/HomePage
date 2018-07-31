@@ -1,0 +1,14 @@
+ja:
+  activerecord:
+    models:
+      news: お知らせ
+  attributes: &attributes
+    title: タイトル
+    state: 公開状態
+    time: 開催日時
+    updated_at: 最終更新日時
+    created_at: 登録日時
+  helpers:
+    label:
+      news:
+        <<: *attributes
