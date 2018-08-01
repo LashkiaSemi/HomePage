@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       flash[:notice] = "ログインしました。"
       log_in user
-      redirect_to root_url
+      redirect_to session[:previous_url] || root_url
     else
       flash.now[:danger] = "学籍番号かパスワードが間違っています"
       render action: :login_form

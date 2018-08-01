@@ -5,6 +5,7 @@ module SessionsHelper
 
   def log_out
     session.delete(:user_id)
+    restore_location
     @current_user = nil
   end
 
@@ -21,7 +22,16 @@ module SessionsHelper
   def is_user_logged
     unless logged_in?
       flash[:notice] = "ログインしてください。"
+      store_location
       redirect_to login_url
     end
+  end
+
+  def store_location
+    session[:previous_url] = request.url
+  end
+
+  def restore_location
+    session[:previous_url] = nil
   end
 end
