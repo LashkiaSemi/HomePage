@@ -22,10 +22,12 @@ By default, it renders:
     <%= content_for(:title) %> - <%= Rails.application.class.parent_name.titlecase %>
   </title>
   <%= render "stylesheet" %>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
   <%= csrf_meta_tags %>
 </head>
 <body>
   <%= render "icons" %>
+  <%= render 'admin/application/header' %>
 
   <div class="app-container">
     <%= render "navigation" -%>
