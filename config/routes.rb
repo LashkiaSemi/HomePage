@@ -1,6 +1,18 @@
 Rails.application.routes.draw do
   root 'static_pages#index'
 
+  namespace :admin do
+    root to: "users#index" # <--- Root route
+    # Add dashboard for your models here
+    resources :equipments
+    resources :introductions, except: [:new, :edit]
+    resources :lectures, except: [:edit]
+    resources :news
+    resources :pages
+    resources :researches, except: [:edit]
+    resources :tags
+    resources :users
+  end
   resources :users do
     member do
       get :edit_pass

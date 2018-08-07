@@ -1,0 +1,16 @@
+ja:
+  activerecord:
+    models:
+      lecture: レクチャー資料
+  attributes: &attributes
+    user_id: 投稿者
+    title: タイトル
+    file: ファイル名
+    comments: コメント
+    activated: 公開フラグ
+    updated_at: 最終更新日時
+    created_at: 登録日時
+  helpers:
+    label:
+      lecture:
+        <<: *attributes

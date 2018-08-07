@@ -17,5 +17,15 @@ module LSemiHomepage
 
     config.autoload_paths << Rails.root.join('lib').to_s
 
+    # I18n 関連
+    config.i18n.default_locale = :ja
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
+
+    # rails g で生成するもの
+    config.generators do |g|
+      g.stylesheets false
+      g.javascripts false
+      g.helper false
+    end
   end
 end
