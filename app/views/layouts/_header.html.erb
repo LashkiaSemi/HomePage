@@ -19,6 +19,9 @@
           <% if logged_in? %>
           <li class="nav-item"><%= link_to '研究室備品', equipments_path , class: 'nav-link'%></li>
           <li class="nav-item"><%= link_to 'レクチャー', lectures_path , class: 'nav-link'%></li>
+            <% if authority_admin? %>
+          <li class="nav-item"><%= link_to '管理画面', admin_root_path, class: 'nav-link' %></li>
+            <% end %>
           <li class="nav-item"><%= link_to 'ログアウト', logout_path, method: "delete", class: 'nav-link' %></li>
           <% else %>
           <li class="nav-item"><%= link_to 'ログイン', login_path , class: 'nav-link' %></li>
