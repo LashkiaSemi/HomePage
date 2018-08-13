@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
   def login
     user = User.find_by(student_id: params[:session][:student_id])
     if user && user.authenticate(params[:session][:password])
-      flash[:notice] = "ログインしました。"
+      flash[:info] = "ログインしました。"
       log_in user
       redirect_to session[:previous_url] || root_url
     else
@@ -16,6 +16,7 @@ class SessionsController < ApplicationController
 
   def logout
     log_out
+    flash[:info] = "ログアウトしました。"
     redirect_to root_url
   end
 end
