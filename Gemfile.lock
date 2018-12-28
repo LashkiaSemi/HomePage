@@ -65,6 +65,8 @@ GEM
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
     builder (3.2.3)
+    by_star (3.0.0)
+      activesupport (> 3)
     byebug (9.1.0)
     carrierwave (1.2.2)
       activemodel (>= 4.0.0)
@@ -229,6 +231,7 @@ DEPENDENCIES
   administrate-field-enum
   bcrypt (~> 3.1.7)
   bootstrap
+  by_star
   byebug
   carrierwave
   coffee-rails (~> 4.2)

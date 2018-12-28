@@ -10,7 +10,7 @@ class NewsDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
     title: Field::String,
-    state: Field::String.with_options(searchable: false),
+    state: Field::Enum.with_options(searchable: false),
     time: Field::DateTime,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,

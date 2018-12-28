@@ -10,10 +10,15 @@
             <div class="card-body">
             <h4>お知らせ</h4>
             <hr>
-            <ul>
-                <li>2018/06/07 ゼミ見学会</li>
-                <li>2018/05/31 17:00~ 質問対策講座 ~答えられない質問に対応する方法~</li>
-            </ul>
+            <% if @news.present? %>
+              <ul>
+                <% @news.each do |news| %>
+                  <li><%= "< #{l(news.time, format: :news)} > #{news.title}" %></li>
+                <% end %>
+              </ul>
+            <% else %>
+              <p>新しいお知らせは存在しません。</p>
+            <% end %>
             </div>
         </div>
         <br>

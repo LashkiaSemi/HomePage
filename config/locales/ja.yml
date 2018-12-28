@@ -202,4 +202,5 @@ ja:
       default: "%Y/%m/%d %H:%M:%S"
       long: "%Y/%m/%d %H:%M"
       short: "%m/%d %H:%M"
+      news: "%Y/%-m/%-d"
     pm: 午後
