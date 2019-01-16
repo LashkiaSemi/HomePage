@@ -22,7 +22,11 @@
         <td class="align-middle"><%= research.author %></td>
         <td class="align-middle"><%= research.comments %></td>
         <td class="align-middle"><%= research.created_at.strftime('%Y年%m月%d日') %></td>
+        <% unless research.file.blank? %>
         <td class="align-middle"><%= link_to "download", download_research_path(research),  class: "btn btn-primary" %></td>
+        <% else %>
+        <td class="align-middle"><%= link_to "download", "#",  class: "btn btn-primary disabled" %></td>
+        <% end %>
       </tr>
       <% end %>
     <% end %>

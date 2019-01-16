@@ -20,7 +20,11 @@
         <td class="align-middle"><%= lecture.user.name %></td>
         <td class="align-middle"><%= lecture.comments %></td>
         <td class="align-middle"><%= lecture.created_at.strftime('%Y年%m月%d日') %></td>
-        <td class="align-middle"><button class="btn"><%= link_to "download", download_lecture_path(lecture) %></button></td>
+        <% unless lecture.file.blank? %>
+        <td class="align-middle"><%= link_to "download", download_lecture_path(lecture),  class: "btn btn-primary" %></td>
+        <% else %>
+        <td class="align-middle"><%= link_to "download", "#",  class: "btn btn-primary disabled" %></td>
+        <% end %>
         <% if logged_in? && ( match_login_user?(lecture.user) || authority_admin? )  %>
           <td class="align-middle"><%= link_to "編集", edit_lecture_path(lecture), class: "btn btn-success" %></td>
           <td class="align-middle"><%= link_to "削除", lecture_path(lecture), method: :delete, class: "btn btn-danger" %></td>

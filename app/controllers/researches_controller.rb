@@ -15,7 +15,7 @@ class ResearchesController < ApplicationController
       flash[:success] = "登録しました"
       redirect_to researches_url
     else
-      flash[:danger] = "登録できませんでした。<br>対応していない拡張子の場合があります。"
+      flash[:danger] = "登録できませんでした。対応していない拡張子の場合があります。"
       redirect_to root_url
     end
   end
