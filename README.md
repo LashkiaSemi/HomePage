@@ -1,2 +1,0 @@
-# HomePage
-Semi Homepage Project
