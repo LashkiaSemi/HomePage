@@ -1,0 +1,1256 @@
+openapi: 3.0.0
+info:
+  title: 'ゼミのホームページ'
+  description: 'ラシキアゼミのホームページのapi'
+  version: '1.0.0'
+
+tags:
+  - name: 'auth'
+    description: '認証。ログインとログアウト'
+  - name: 'account'
+    description: 'アカウントのcrud。基本的に本人しかアクセスできない機能'
+  - name: 'user'
+    description: 'ユーザの取得'
+  - name: 'activity'
+    description: '活動記録のcrud。owner, adminあたりならできていいかな...'
+  - name: 'society'
+    description: '学会発表のcrud。owner, adminまわりが編集できるやつ'
+  - name: 'research'
+    description: '卒業研究のcrud'
+  - name: 'employment'
+    description: '就職先のcrud'
+  - name: 'equipment'
+    description: '備品のcrud'
+  - name: 'lecture'
+    description: 'レクチャーのcrud'
+  - name: 'tag'
+    description: 'タグのcrud'
+  
+
+paths:
+  /login:
+    post:
+      summary: 'ログイン'
+      tags:
+        - 'auth'
+      requestBody:
+        description: 'ログインに必要な情報'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 'ログインできました'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /logout:
+    delete:
+      summary: 'ログアウト'
+      tags:
+        - 'auth'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  /account:
+    get:
+      summary: 'ログイン中のアカウントの情報を取得'
+      tags:
+        - 'account'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+      responses:
+        '200':
+          description: 'return infomation of member'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: '新規アカウントの作成'
+      tags:
+        - 'account'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUser'
+      responses:
+        '200':
+          description: 'return infomation of member'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: '新規アカウントの更新'
+      tags:
+        - 'account'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUser'
+      responses:
+        '200':
+          description: 'return infomation of member'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: 'アカウントの削除'
+      tags:
+        - 'account'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /users:
+    get:
+      summary: '全ユーザの取得'
+      tags:
+        - 'user'
+      responses:
+        '200':
+          description: 'return infomation of member'
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  users:
+                    type: 'array'
+                    items:
+                      $ref: '#/components/schemas/GetUserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /users/{id}:
+    get:
+      summary: 'idを指定してユーザの取得'
+      tags:
+        - 'user'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '200':
+          description: 'return infomation of member'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /activities:
+    get:
+      summary: '全ての活動記録を取得'
+      tags:
+        - 'activity'
+      responses:
+        '200':
+          description: '活動記録の配列'
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  activities:
+                    type: 'array'
+                    items:
+                      $ref: '#/components/schemas/GetActivityResponse'
+                
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: '活動記録の新規作成'
+      description: 'ユーザがowner/adminである必要がある'
+      tags: 
+        - 'activity'
+      parameters: 
+        - $ref: '#/components/parameters/SessionToken'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateActivity'
+      responses:
+        '200':
+          description: '作成された活動記録'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetActivityResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        
+  /activities/{id}:
+    get:
+      summary: 'idを指定して活動を取得'
+      tags:
+        - 'activity'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '200':
+          description: '活動記録'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetActivityResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: '指定の活動記録を更新'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'activity'
+      parameters: 
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+        - $ref: '#/components/parameters/SessionToken'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateActivity'
+      responses:
+        '200':
+          description: '活動記録'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetActivityResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: '指定した活動記録の削除'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'activity'
+      parameters: 
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+        - $ref: '#/components/parameters/SessionToken'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /societies:
+    get:
+      summary: '学会発表の全データ取得'
+      tags: 
+        - 'society'
+      responses:
+        '200':
+          description: '学会発表'
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  societies:
+                    type: 'array'
+                    items:
+                      $ref: '#/components/schemas/GetSocietyResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: '学会発表のデータを作成。'
+      description: 'ユーザがowner/adminである必要がある'
+      tags: 
+        - 'society'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateSociety'
+      responses:
+        '200':
+          description: '学会発表'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSocietyResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /societies/{id}:
+    get:
+      summary: '学会発表のデータを一件取得'
+      tags: 
+        - 'society'
+      parameters: 
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '200':
+          description: '学会発表'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSocietyResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: '学会発表のデータを更新'
+      description: 'ユーザがowner/adminである必要がある'
+      tags: 
+        - 'society'
+      parameters: 
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateSociety'
+      responses:
+        '200':
+          description: '学会発表'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSocietyResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: '学会発表のデータの削除'
+      description: 'ユーザがowner/adminである必要がある'
+      tags: 
+        - 'society'
+      parameters: 
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /researches:
+    get:
+      summary: '卒業研究を全件取得'
+      tags: 
+        - 'research'
+      responses:
+        '200':
+          description: '卒業研究のデータ'
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  researches:
+                    type: 'array'
+                    items:
+                      $ref: '#/components/schemas/GetResearchResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: '卒業研究のデータを作成'
+      description: 'ユーザがowner/adminである必要がある'
+      tags: 
+        - 'research'
+      parameters: 
+        - $ref: '#/components/parameters/SessionToken'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateResearch'
+      responses:
+        '200':
+          description: '創業研究のデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetResearchResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /researches/{id}:
+    get:
+      summary: '卒業研究のデータ取得'
+      tags:
+        - 'research'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '200':
+          description: '創業研究のデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetResearchResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: '卒業研究のデータの更新'
+      description: 'ユーザがowner/adminである必要がある'
+      tags: 
+        - 'research'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateResearch'
+      responses:
+        '200':
+          description: '創業研究のデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetResearchResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: '卒業研究のデータ削除'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'research'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  /employments:
+    get:
+      summary: '就職先の全件取得'
+      tags:
+        - 'employment'
+      responses:
+        '200':
+          description: '企業の配列'
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  companies:
+                    type: 'array'
+                    items:
+                      $ref: '#/components/schemas/GetEmploymentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          
+    post:
+      summary: '就職先の追加'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'employment'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateEmployment'
+      responses:
+        '200':
+          description: '就職先のデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEmploymentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /employments/{id}:
+    get:
+      summary: '就職先を一件取得'
+      tags:
+        - 'employment'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '200':
+          description: '就職先のデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEmploymentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:  
+      summary: '就職先のデータを更新'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'employment'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateEmployment'
+      responses:
+        '200':
+          description: '就職先のデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEmploymentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: '就職先のデータを削除'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'employment'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      
+  /equipments:
+    get:
+      summary: '備品を全件取得'
+      tags:
+        - 'equipment'
+      responses:
+        '200':
+          description: '備品の全データ'
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  equipments:
+                    type: 'array'
+                    items:
+                      $ref: '#/components/schemas/GetEquipmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: '備品の登録'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'equipment'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateEquipment'
+      responses:
+        '200':
+          description: '備品のデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEquipmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /equipments/{id}:
+    get:
+      summary: '備品のデータを一件取得'
+      tags:
+        - 'equipment'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '200':
+          description: '備品のデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEquipmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: '備品のデータを更新'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'equipment'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateEquipment'
+      responses:
+        '200':
+          description: '備品のデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEquipmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: '備品のデータを削除'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'equipment'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  /lectures:
+    get:
+      summary: 'レクチャーを全件取得'
+      tags:
+        - 'lecture'
+      responses:
+        '200':
+          description: 'レクチャーの配列'
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  lectures:
+                    type: 'array'
+                    items:
+                      $ref: '#/components/schemas/GetLectureResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: 'レクチャーの作成'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'lecture'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateLecture'
+      responses:
+        '200':
+          description: 'レクチャーのデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLectureResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /lectures/{id}:
+    get:
+      summary: 'レクチャーのデータを一件取得'
+      tags:
+        - 'lecture'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '200':
+          description: 'レクチャーのデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLectureResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: 'レクチャーのデータを更新'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'lecture'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateLecture'
+      responses:
+        '200':
+          description: 'レクチャーのデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLectureResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: 'レクチャーのデータを削除'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'lecture'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+  /tags:
+    get:
+      summary: 'タグの全件取得'
+      tags:
+        - 'tag'
+      responses:
+        '200':
+          description: 'タグの配列'
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  tags:
+                    type: 'array'
+                    items:
+                      $ref: '#/components/schemas/GetTagResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: 'タグを新規作成'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'tag'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateTag'
+      responses:
+        '200':
+          description: 'タグのデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTagResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /tags/{id}:
+    get:
+      summary: 'タグを一件取得'
+      tags:
+        - 'tag'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '200':
+          description: 'タグのデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTagResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: 'タグの更新'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'tag'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateTag'
+      responses:
+        '200':
+          description: 'タグのデータ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTagResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: 'タグの削除'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'tag'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      
+components:
+  schemas:
+    AccessToken:
+      type: 'string'
+    LoginRequest:
+      type: 'object'
+      properties:
+        student_id:
+          type: 'string'
+        password:
+          type: 'string'
+    LoginResponse:
+      type: 'object'
+      properties:
+        student_id:
+          type: 'string'
+    GetUserResponse:
+      type: 'object'
+      properties:
+        id:
+          type: 'integer'
+        name:
+          type: 'string'
+        student_id:
+          type: 'string'
+        department:
+          type: 'string'
+        grade:
+          type: 'integer'
+        comments:
+          type: 'string'
+        role:
+          type: 'string'
+    # TODO: 何が必要か...
+    UpdateUserRequest:
+      type: 'object'
+      properties:
+        name:
+          type: 'string'
+          description: '名前'
+        student_id:
+          type: 'string'
+          description: '学籍番号'
+        password:
+          type: 'string'
+          description: 'パスワード'
+        department:
+          type: 'string'
+          description: '学科'
+        grade:
+          type: 'integer'
+          description: '学年'
+    GetActivityResponse:
+      type: 'object'
+      properties:
+        id:
+          type: 'integer'
+        date:
+          type: 'string'
+        activiry:
+          type: 'string'
+    UpdateActivityRequest:
+      type: 'object'
+      properties:
+        data:
+          type: 'string'
+        activiry:
+          type: 'string'
+    # TODO: DBと合わせて設計
+    GetSocietyResponse:
+      type: 'object'
+      properties:
+        id:
+          type: 'integer'
+        date:
+          type: 'string'
+        user:
+          $ref: '#/components/schemas/GetUserResponse'
+    UpdateSocieryRequest:
+      type: 'object'
+      properties:
+        date:
+          type: 'string'
+
+    GetResearchResponse:
+      type: 'object'
+      properties:
+        id:
+          type: 'integer'
+        title:
+          type: 'string'
+        author:
+          $ref: '#/components/schemas/GetUserResponse'
+        file:
+          type: 'string'
+        comments:
+          type: 'string'
+        activation:
+          type: 'integer'
+    UpdateResearchRequest:
+      type: 'object'
+      properties:
+        title:
+          type: 'string'
+        author_id:
+          type: 'integer'
+        file:
+          type: 'string'
+        comments:
+          type: 'string'
+    GetEmploymentResponse:
+      type: 'object'
+      properties:
+        id:
+          type: 'integer'
+        company:
+          type: 'string'
+    UpdateEmploymentRequest:
+      type: 'object'
+      properties:
+        company:
+          type: 'string'
+    GetEquipmentResponse:
+      type: 'object'
+      properties:
+        id:
+          type: 'integer'
+        name:
+          type: 'string'
+        num:
+          type: 'integer'
+        note:
+          type: 'string'
+        tag:
+          $ref: '#/components/schemas/GetTagResponse'
+    UpdateEquipmentRequest:
+      type: 'object'
+      properties:
+        name:
+          type: 'string'
+        num:
+          type: 'integer'
+        note:
+          type: 'string'
+        tag_id:
+          type: 'integer'
+    GetLectureResponse:
+      type: 'object'
+      properties:
+        id:
+          type: 'integer'
+        user:
+          $ref: '#/components/schemas/GetUserResponse'
+        title:
+          type: 'string'
+        file:
+          type: 'string'
+        comment:
+          type: 'string'
+    UpdateLectureRequest:
+      type: 'object'
+      properties:
+        user_id:
+          type: 'integer'
+        title: 
+          type: 'string'
+        file:
+          type: 'string'
+        comment:
+          type: 'string'
+    GetTagResponse:
+      type: 'object'
+      properties:
+        id:
+          type: 'integer'
+        name:
+          type: 'string'
+    UpdateTagRequest:
+      type: 'object'
+      properties:
+        name:
+          type: 'string'
+    ErrorResponse:
+      type: 'object'
+      properties:
+        code:
+          type: 'integer'
+        message:
+          type: 'string'
+  parameters:
+    SessionToken:
+      name: '_l_semi_homepage_session'
+      in: 'cookie'
+      required: true
+      schema:
+        $ref: '#/components/schemas/AccessToken'
+  requestBodies:
+    UpdateUser:
+      description: '新規でユーザを作る場合は全てのパラメータが必須。更新の場合は、どれか一つでもあればおっけー'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateUserRequest'
+    UpdateActivity:
+      description: '活動記録の登録。新規なら全てのパラメータが必須。更新なら一つ以上'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateActivityRequest'
+    UpdateSociety:
+      description: '学会発表の登録。新規なら全てのパラメータが必須。更新なら一つ以上'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateSocieryRequest'
+    UpdateResearch:
+      description: '卒研発表の登録。新規なら全てのパラメータが必須。更新なら一つ以上'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateResearchRequest'
+    UpdateEmployment:
+      description: '就職先の登録。新規なら全パラメータ必須。更新なら一つ以上'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateEmploymentRequest'
+    UpdateEquipment:
+      description: '備品の登録。新規なら全パラメータ必須。更新なら一つ以上'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateEquipmentRequest'
+    UpdateLecture:
+      description: 'レクチャーの登録。新規なら全パラメータ必須。更新なら一つ以上'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateLectureRequest'
+    UpdateTag:
+      description: 'タグの登録。新規なら全パラメータ必須。更新なら一つ以上'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateTagRequest'
+  responses:
+    BadRequest:
+      description: 'bad request. status code: 400'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: 'unauthorized. status code: 401'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: 'internal server error. status code: 500'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NoContent:
+      description: 'no content. status code: 204'
