@@ -91,6 +91,8 @@ paths:
       summary: '新規アカウントの作成'
       tags:
         - 'account'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
       requestBody:
         $ref: '#/components/requestBodies/UpdateUser'
       responses:
@@ -159,6 +161,28 @@ paths:
                     type: 'array'
                     items:
                       $ref: '#/components/schemas/GetUserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: '新規アカウントの作成'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'user'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUser'
+      responses:
+        '200':
+          description: 'return infomation of member'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -1040,6 +1064,9 @@ components:
         grade:
           type: 'integer'
           description: '学年'
+        comment:
+          type: 'string'
+          description: 'コメント'
     GetActivityResponse:
       type: 'object'
       properties:
@@ -1186,7 +1213,7 @@ components:
         $ref: '#/components/schemas/AccessToken'
   requestBodies:
     UpdateUser:
-      description: '新規でユーザを作る場合は全てのパラメータが必須。更新の場合は、どれか一つでもあればおっけー'
+      description: '新規でユーザを作る場合は、 passwordのパラメータが必須。更新の場合は、どれか一つでもあればおっけー'
       content:
         application/json:
           schema:
