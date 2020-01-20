@@ -16,6 +16,7 @@ type AppHandler interface {
 	// account
 	ManageAccount() http.HandlerFunc
 	Login() http.HandlerFunc
+	Logout() http.HandlerFunc
 }
 
 type appHandler struct {
@@ -52,6 +53,18 @@ func (ah *appHandler) Login() http.HandlerFunc {
 		switch r.Method {
 		case http.MethodPost:
 			ah.AccountHandler.Login(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+func (ah *appHandler) Logout() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodDelete:
+			middleware.Authorized(ah.AccountHandler.Logout).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))

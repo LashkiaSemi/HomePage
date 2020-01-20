@@ -8,4 +8,5 @@ import (
 func SettingRouter(s server.Server, h handler.AppHandler) {
 	s.Handle("/account", h.ManageAccount())
 	s.Handle("/login", h.Login())
+	s.Handle("/logout", h.Logout())
 }

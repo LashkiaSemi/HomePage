@@ -27,6 +27,7 @@ type AccountHandler interface {
 	DeleteAccount(w http.ResponseWriter, r *http.Request)
 
 	Login(w http.ResponseWriter, r *http.Request)
+	Logout(w http.ResponseWriter, r *http.Request)
 }
 
 // NewAccountHandler accountHandlerを作成
@@ -56,7 +57,6 @@ func (ah *accountHandler) GetAccount(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ah *accountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) {
-	logger.Debug("create account")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		logger.Warn(err)
@@ -81,9 +81,6 @@ func (ah *accountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) 
 }
 
 func (ah *accountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) {
-	logger.Debug("update account")
-	// TODO: 実装して
-	// studentID := dcontext.GetStudentIDFromContext(r.Context())
 	userID := dcontext.GetUserIDFromContext(r.Context())
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -112,8 +109,6 @@ func (ah *accountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) 
 }
 
 func (ah *accountHandler) DeleteAccount(w http.ResponseWriter, r *http.Request) {
-	logger.Debug("delete account")
-	// TODO: 実装して
 	userID := dcontext.GetUserIDFromContext(r.Context())
 
 	err := ah.AccountController.DeleteAccount(userID)
@@ -163,4 +158,20 @@ func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
 	sessData.SetSessionList()
 
 	response.Success(w, res)
+}
+
+func (ah *accountHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	// session
+	sess, err := session.Store.Get(r, conf.CookieName)
+	if err != nil {
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+	sess.Options.MaxAge = -1
+	err = sess.Save(r, w)
+	if err != nil {
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+	response.NoContent(w)
 }
