@@ -28,9 +28,8 @@ func (ar *accountRepository) FindAccountByUserID(userID int) (user domain.User, 
 		userID)
 	if err = row.Scan(&user.ID, &user.Name, &user.Password, &user.Role, &user.StudentID, &user.CreatedAt, &user.UpdatedAt, &user.Department, &user.Grade, &user.Comment); err != nil {
 		if err != ar.SQLHandler.ErrNoRows() {
-			logger.Error(err)
-			domain.InternalServerError(err)
-			return
+			logger.Warn(err)
+			return user, domain.BadRequest(err)
 		}
 	}
 	return user, nil
@@ -46,8 +45,8 @@ func (ar *accountRepository) FindAccountByStudentID(studentID string) (user doma
 		studentID)
 	if err = row.Scan(&user.ID, &user.Name, &user.Password, &user.Role, &user.StudentID, &user.CreatedAt, &user.UpdatedAt, &user.Department, &user.Grade, &user.Comment); err != nil {
 		if err != ar.SQLHandler.ErrNoRows() {
-			logger.Error(err)
-			domain.InternalServerError(err)
+			logger.Warn(err)
+			domain.BadRequest(err)
 			return
 		}
 	}
@@ -82,13 +81,14 @@ func (ar *accountRepository) StoreAccount(name, password, role, studentID, depar
 func (ar *accountRepository) UpdateAccount(userID int, name, password, role, studentID, department, comment string, grade int, updatedAt time.Time) error {
 	return transact(ar.SQLHandler, func(tx Tx) error {
 		// users table
-		values := map[interface{}]interface{}{
+		values := map[string]interface{}{
 			"name":            name,
 			"password_digest": password,
 			"role":            role,
+			"student_id":      studentID,
 			"updated_at":      updatedAt,
 		}
-		conds := map[interface{}]interface{}{
+		conds := map[string]interface{}{
 			"id": userID,
 		}
 		query, args, _ := makeUpdateQuery("users", values, conds)
@@ -98,13 +98,13 @@ func (ar *accountRepository) UpdateAccount(userID int, name, password, role, stu
 		}
 
 		// introduction
-		values = map[interface{}]interface{}{
+		values = map[string]interface{}{
 			"department": department,
 			"grade":      grade,
 			"comments":   comment,
 			"updated_at": updatedAt,
 		}
-		conds = map[interface{}]interface{}{
+		conds = map[string]interface{}{
 			"user_id": userID,
 		}
 		query, args, _ = makeUpdateQuery("introductions", values, conds)

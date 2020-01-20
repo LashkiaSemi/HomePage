@@ -121,6 +121,7 @@ func (ai *accountInteractor) Login(studentID, password string) (sess domain.Sess
 	sess.StudentID = user.StudentID
 	sess.SessionID = sessionID.String()
 	sess.UserID = user.ID
+	sess.Role = user.Role
 
 	return sess, nil
 }

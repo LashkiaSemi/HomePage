@@ -1,3 +1,6 @@
+# todo?
+- /user/idの更新にて。パスワードの更新ってありなん？
+
 # session管理について
 domainに定義されたsessionにて管理を行います。
 アプリケーションが落ちたらセッションがきえます。つら。
@@ -54,3 +57,8 @@ go
             ├── auth_handler.go
             └── repository.go
 ```
+
+# 機能のこと
+account -> ユーザ本人が自分の情報を書き換えたりする時
+user -> ownerがみんなのデータにアクセスする時
+

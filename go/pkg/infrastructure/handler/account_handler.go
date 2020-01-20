@@ -104,6 +104,16 @@ func (ah *accountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	// session 情報の更新
+	sess, err := domain.GetSessionByUserID(userID)
+	if err != nil {
+		logger.Error(err)
+		response.HTTPError(w, err)
+		return
+	}
+	sess.StudentID = res.StudentID
+	sess.Role = res.Role
+
 	response.Success(w, res)
 
 }
@@ -116,6 +126,8 @@ func (ah *accountHandler) DeleteAccount(w http.ResponseWriter, r *http.Request) 
 		response.HTTPError(w, err)
 		return
 	}
+
+	// TODO: セッションの削除
 
 	response.NoContent(w)
 }
@@ -141,7 +153,7 @@ func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// session
+	// TODO: session.SetSessionDataに移行したい
 	sess, err := session.Store.Get(r, conf.CookieName)
 	if err != nil {
 		response.HTTPError(w, domain.InternalServerError(err))

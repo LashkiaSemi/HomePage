@@ -17,16 +17,22 @@ type AppHandler interface {
 	ManageAccount() http.HandlerFunc
 	Login() http.HandlerFunc
 	Logout() http.HandlerFunc
+
+	// user
+	ManageUser() http.HandlerFunc
+	ManageOneUser() http.HandlerFunc
 }
 
 type appHandler struct {
 	AccountHandler
+	UserHandler
 }
 
 // NewAppHandler アプリケーションハンドラを作成
 func NewAppHandler(sh repository.SQLHandler, ah interactor.AuthHandler) AppHandler {
 	return &appHandler{
 		AccountHandler: NewAccountHandler(sh, ah),
+		UserHandler:    NewUserHandler(sh, ah),
 	}
 }
 
@@ -65,6 +71,36 @@ func (ah *appHandler) Logout() http.HandlerFunc {
 		switch r.Method {
 		case http.MethodDelete:
 			middleware.Authorized(ah.AccountHandler.Logout).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+func (ah *appHandler) ManageUser() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.UserHandler.GetUsers(w, r)
+		case http.MethodPost:
+			middleware.Authorized(middleware.Permission(ah.UserHandler.CreateUser)).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+func (ah *appHandler) ManageOneUser() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.UserHandler.GetUserByUserID(w, r)
+		case http.MethodPut:
+			middleware.Authorized(middleware.Permission(ah.UserHandler.UpdateUser)).ServeHTTP(w, r)
+		case http.MethodDelete:
+			middleware.Authorized(middleware.Permission(ah.UserHandler.DeleteUser)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))

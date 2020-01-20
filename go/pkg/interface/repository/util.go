@@ -28,7 +28,7 @@ func transact(sh SQLHandler, txFunc func(Tx) error) (err error) {
 }
 
 // makeUpdateQuery updateのsqlクエリの作成。tableと、map[field]value
-func makeUpdateQuery(table string, values map[interface{}]interface{}, conds map[interface{}]interface{}) (string, []interface{}, error) {
+func makeUpdateQuery(table string, values map[string]interface{}, conds map[string]interface{}) (string, []interface{}, error) {
 	var query = fmt.Sprintf("UPDATE %s SET", table)
 	var args []interface{}
 	// ここでvalue
@@ -61,29 +61,30 @@ func makeUpdateQuery(table string, values map[interface{}]interface{}, conds map
 	}
 
 	query = strings.TrimSuffix(query, ",")
+	query += " WHERE"
 
 	// ここでwhere
 	for key, value := range conds {
 		switch value.(type) {
 		case int:
 			if value != 0 {
-				query += fmt.Sprintf(" WHERE %v=?", key)
+				query += fmt.Sprintf(" %v=?", key)
 				args = append(args, value)
 			}
 		case int64:
 			if value != 0 {
-				query += fmt.Sprintf(" WHERE %v=?", key)
+				query += fmt.Sprintf(" %v=?", key)
 				args = append(args, value)
 			}
 		case string:
 			if value != "" {
-				query += fmt.Sprintf(" WHERE %v=?", key)
+				query += fmt.Sprintf(" %v=?", key)
 				args = append(args, value)
 			}
 		case time.Time:
 			// TODO: ここnil？
 			if value != nil {
-				query += fmt.Sprintf(" WHERE %v=?", key)
+				query += fmt.Sprintf(" %v=?", key)
 				args = append(args, value)
 			}
 		default:

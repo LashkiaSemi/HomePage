@@ -51,7 +51,7 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// sessionを確認
-		if sessList[userID] != sess.Values["sessionID"].(string) {
+		if sessList[userID].SessionID != sess.Values["sessionID"].(string) {
 			logger.Warn("wrong sessionID")
 			response.HTTPError(w, domain.Unauthorized(errors.New("wrong sessionID")))
 			return
@@ -63,5 +63,29 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 
 		// nextfnc
 		nextFunc(w, r.WithContext(ctx))
+	}
+}
+
+// Permission ownerの確認。Authorizedより後に
+func Permission(nextFunc http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sessList := domain.GetSessionList()
+		// sessionListが空っぽの時。サーバを再起動した時とか
+		// if len(sessList) == 0 {
+		// 	logger.Warn("sessionList is empty.")
+		// 	response.HTTPError(w, domain.InternalServerError(errors.New("sessionList is empty. please re-login")))
+		// 	return
+		// }
+
+		userID := dcontext.GetUserIDFromContext(r.Context())
+
+		// roleの取得
+		if sessList[userID].Role != "owner" {
+			logger.Warn("permission error.")
+			response.HTTPError(w, domain.InternalServerError(errors.New("permission error")))
+			return
+		}
+
+		nextFunc(w, r)
 	}
 }
