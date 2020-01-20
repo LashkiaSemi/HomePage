@@ -1,6 +1,16 @@
 package session
 
-import "github.com/gorilla/sessions"
+import (
+	"github.com/gorilla/sessions"
+	"homepage/conf"
+)
 
-// Store セッションを保存する場所
-var Store = sessions.NewCookieStore([]byte("hoge"))
+// Store sessionの保存先。cookie
+var Store *sessions.CookieStore
+
+func init() {
+	Store = sessions.NewCookieStore([]byte("hoge"))
+	Store.Options.MaxAge = conf.CookieMaxAge
+	// Store.Options.Secure = true
+	Store.Options.HttpOnly = true
+}

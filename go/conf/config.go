@@ -1,7 +1,8 @@
 package conf
 
 const (
-	CookieName = "_l_semi_homepage_session"
+	CookieName   = "_l_semi_homepage_session"
+	CookieMaxAge = 3600 * 1
 )
 
 // LoadServerConfig サーバの設定をmapで返す
