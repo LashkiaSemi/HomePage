@@ -1,7 +1,7 @@
 package domain
 
 // sessionList セッションの情報保持 map[studentID]sessionIDてな感じで
-var sessionList map[string]string = map[string]string{}
+var sessionList map[interface{}]string = map[interface{}]string{}
 
 type Session struct {
 	SessionID string
@@ -10,9 +10,9 @@ type Session struct {
 }
 
 func (s *Session) SetSessionList() {
-	sessionList[s.StudentID] = s.SessionID
+	sessionList[s.UserID] = s.SessionID
 }
 
-func GetSessionList() map[string]string {
+func GetSessionList() map[interface{}]string {
 	return sessionList
 }

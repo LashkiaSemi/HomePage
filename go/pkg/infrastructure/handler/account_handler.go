@@ -43,10 +43,10 @@ func NewAccountHandler(sh repository.SQLHandler, ah interactor.AuthHandler) Acco
 }
 
 func (ah *accountHandler) GetAccount(w http.ResponseWriter, r *http.Request) {
-	// コンテキストからstudentIDの取得
-	studentID := dcontext.GetStudentIDFromContext(r.Context())
+	// コンテキストからuserIDの取得
+	userID := dcontext.GetUserIDFromContext(r.Context())
 
-	res, err := ah.AccountController.ShowAccountByStudentID(studentID)
+	res, err := ah.AccountController.ShowAccountByUserID(userID)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -63,7 +63,7 @@ func (ah *accountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) 
 		response.HTTPError(w, domain.BadRequest(err))
 		return
 	}
-	var req controller.UpdateAccoutRequest
+	var req controller.UpdateAccountRequest
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		logger.Error(err)
@@ -89,7 +89,7 @@ func (ah *accountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) 
 		response.HTTPError(w, domain.BadRequest(err))
 		return
 	}
-	var req controller.UpdateAccoutRequest
+	var req controller.UpdateAccountRequest
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		logger.Error(err)
@@ -148,7 +148,7 @@ func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	sess.Values["sessionID"] = sessData.SessionID
-	sess.Values["studentID"] = sessData.StudentID
+	// sess.Values["studentID"] = sessData.StudentID
 	sess.Values["userID"] = sessData.UserID
 	err = sess.Save(r, w)
 	if err != nil {

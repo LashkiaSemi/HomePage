@@ -7,12 +7,12 @@ import (
 	"homepage/pkg/usecase/interactor"
 )
 
-// AccountController
+// AccountController リクエストを受け取ってレスポンスを返却
 type AccountController interface {
 	ShowAccountByUserID(userID int) (GetAccountResponse, error)
 	ShowAccountByStudentID(studentID string) (GetAccountResponse, error)
-	CreateAccount(req *UpdateAccoutRequest) (GetAccountResponse, error)
-	UpdateAccount(userID int, req *UpdateAccoutRequest) (GetAccountResponse, error)
+	CreateAccount(req *UpdateAccountRequest) (GetAccountResponse, error)
+	UpdateAccount(userID int, req *UpdateAccountRequest) (GetAccountResponse, error)
 	DeleteAccount(userID int) error
 
 	Login(req *LoginRequest) (LoginResponse, domain.Session, error)
@@ -22,7 +22,7 @@ type accountController struct {
 	AccountInteractor interactor.AccountInteractor
 }
 
-// NewAccountController
+// NewAccountController アカウントコントローラの作成
 func NewAccountController(ai interactor.AccountInteractor) AccountController {
 	return &accountController{
 		AccountInteractor: ai,
@@ -59,6 +59,7 @@ func (ac *accountController) ShowAccountByStudentID(studentID string) (res GetAc
 	return
 }
 
+// GetAccountResponse アカウント情報の返却
 type GetAccountResponse struct {
 	ID         int    `json:"id"`
 	Name       string `json:"name"`
@@ -69,7 +70,7 @@ type GetAccountResponse struct {
 	Comment    string `json:"comments"`
 }
 
-func (ac *accountController) CreateAccount(req *UpdateAccoutRequest) (res GetAccountResponse, err error) {
+func (ac *accountController) CreateAccount(req *UpdateAccountRequest) (res GetAccountResponse, err error) {
 	// TODO: リクエストのバリデーションチェック
 	if req.Password == "" {
 		logger.Warn("CreateAccount: password is empty")
@@ -96,7 +97,8 @@ func (ac *accountController) CreateAccount(req *UpdateAccoutRequest) (res GetAcc
 	return
 }
 
-type UpdateAccoutRequest struct {
+// UpdateAccountRequest アカウントの作成、更新のリクエスト
+type UpdateAccountRequest struct {
 	Name       string `json:"name"`
 	StudentID  string `json:"student_id"`
 	Password   string `json:"password"`
@@ -106,12 +108,13 @@ type UpdateAccoutRequest struct {
 	Comment    string `json:"comment"`
 }
 
-func (ac *accountController) UpdateAccount(userID int, req *UpdateAccoutRequest) (res GetAccountResponse, err error) {
+func (ac *accountController) UpdateAccount(userID int, req *UpdateAccountRequest) (res GetAccountResponse, err error) {
 	user, err := ac.AccountInteractor.UpdateAccount(userID, req.Name, req.Password, req.Role, req.StudentID, req.Department, req.Comment, req.Grade)
 	if err != nil {
 		return res, err
 	}
 
+	res.ID = userID
 	res.Name = user.Name
 	res.StudentID = user.StudentID
 	res.Role = user.Role
@@ -122,7 +125,6 @@ func (ac *accountController) UpdateAccount(userID int, req *UpdateAccoutRequest)
 }
 
 func (ac *accountController) DeleteAccount(userID int) error {
-	// TODO: 実装して
 	err := ac.AccountInteractor.DeleteAccount(userID)
 	return err
 }
@@ -149,11 +151,13 @@ func (ac *accountController) Login(req *LoginRequest) (res LoginResponse, sess d
 	return
 }
 
+// LoginRequest ログインリクエスト
 type LoginRequest struct {
 	StudentID string `json:"student_id"`
 	Password  string `json:"password"`
 }
 
+// LoginResponse ログイン時のレスポンス
 type LoginResponse struct {
 	StudentID string `json:"student_id"`
 }

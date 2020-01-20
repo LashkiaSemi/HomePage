@@ -37,12 +37,12 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// studentIDを取得
-		studentID, ok := sess.Values["studentID"].(string)
-		if !ok || studentID == "" {
-			logger.Warn("studentID is empty")
-			response.HTTPError(w, domain.Unauthorized(errors.New("studentID is empty")))
-			return
-		}
+		// studentID, ok := sess.Values["studentID"].(string)
+		// if !ok || studentID == "" {
+		// 	logger.Warn("studentID is empty")
+		// 	response.HTTPError(w, domain.Unauthorized(errors.New("studentID is empty")))
+		// 	return
+		// }
 		userID, ok := sess.Values["userID"].(int)
 		if !ok || userID == 0 {
 			logger.Warn("userID is empty")
@@ -51,14 +51,14 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// sessionを確認
-		if sessList[studentID] != sess.Values["sessionID"].(string) {
+		if sessList[userID] != sess.Values["sessionID"].(string) {
 			logger.Warn("wrong sessionID")
 			response.HTTPError(w, domain.Unauthorized(errors.New("wrong sessionID")))
 			return
 		}
 
 		// contextにuserIDを保存
-		ctx = dcontext.SetStudentID(ctx, studentID)
+		// ctx = dcontext.SetStudentID(ctx, studentID)
 		ctx = dcontext.SetUserID(ctx, userID)
 
 		// nextfnc
