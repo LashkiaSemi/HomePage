@@ -36,6 +36,10 @@ func (ah *appHandler) ManageAccount() http.HandlerFunc {
 			middleware.Authorized(ah.AccountHandler.GetAccount).ServeHTTP(w, r)
 		case http.MethodPost:
 			ah.AccountHandler.CreateAccount(w, r)
+		case http.MethodPut:
+			middleware.Authorized(ah.AccountHandler.UpdateAccount).ServeHTTP(w, r)
+		case http.MethodDelete:
+			middleware.Authorized(ah.AccountHandler.DeleteAccount).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))

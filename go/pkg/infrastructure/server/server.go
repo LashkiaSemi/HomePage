@@ -2,7 +2,7 @@ package server
 
 import (
 	"fmt"
-	"log"
+	"homepage/pkg/domain/logger"
 	"net/http"
 )
 
@@ -11,8 +11,12 @@ type server struct {
 	Port string
 }
 
+// Server サーバ管理用
 type Server interface {
+	// Serve サーバを走らせる
 	Serve()
+
+	// Handle サーバのルーティング
 	Handle(endpoint string, apiFunc http.HandlerFunc)
 }
 
@@ -25,7 +29,7 @@ func NewServer(addr, port string) Server {
 }
 
 func (s *server) Serve() {
-	log.Println("server starting...")
+	logger.Info(fmt.Sprintf("Server running. http://%s:%s", s.Addr, s.Port))
 	http.ListenAndServe(
 		fmt.Sprintf("%s:%s", s.Addr, s.Port),
 		nil,

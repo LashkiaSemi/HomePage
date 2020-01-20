@@ -5,6 +5,7 @@ import (
 	"homepage/conf"
 	"homepage/pkg/domain"
 	"homepage/pkg/domain/logger"
+	"homepage/pkg/infrastructure/dcontext"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/infrastructure/server/session"
 	"homepage/pkg/interface/controller"
@@ -41,12 +42,10 @@ func NewAccountHandler(sh repository.SQLHandler, ah interactor.AuthHandler) Acco
 }
 
 func (ah *accountHandler) GetAccount(w http.ResponseWriter, r *http.Request) {
-	logger.Debug("getAccount")
-	// TODO: コンテキストからid読み出し
-	//       とりあえずハードコーディングします
-	id := 1
+	// コンテキストからstudentIDの取得
+	studentID := dcontext.GetStudentIDFromContext(r.Context())
 
-	res, err := ah.AccountController.ShowAccountByUserID(id)
+	res, err := ah.AccountController.ShowAccountByStudentID(studentID)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -83,10 +82,47 @@ func (ah *accountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) 
 
 func (ah *accountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) {
 	logger.Debug("update account")
+	// TODO: 実装して
+	// studentID := dcontext.GetStudentIDFromContext(r.Context())
+	userID := dcontext.GetUserIDFromContext(r.Context())
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		logger.Warn(err)
+		response.HTTPError(w, domain.BadRequest(err))
+		return
+	}
+	var req controller.UpdateAccoutRequest
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		logger.Error(err)
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+
+	res, err := ah.AccountController.UpdateAccount(userID, &req)
+	if err != nil {
+		logger.Error(err)
+		response.HTTPError(w, err)
+		return
+	}
+
+	response.Success(w, res)
+
 }
 
 func (ah *accountHandler) DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	logger.Debug("delete account")
+	// TODO: 実装して
+	userID := dcontext.GetUserIDFromContext(r.Context())
+
+	err := ah.AccountController.DeleteAccount(userID)
+	if err != nil {
+		response.HTTPError(w, err)
+		return
+	}
+
+	response.NoContent(w)
 }
 
 func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -118,6 +154,7 @@ func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	sess.Values["sessionID"] = sessData.SessionID
 	sess.Values["studentID"] = sessData.StudentID
+	sess.Values["userID"] = sessData.UserID
 	err = sess.Save(r, w)
 	if err != nil {
 		response.HTTPError(w, domain.InternalServerError(err))

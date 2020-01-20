@@ -55,7 +55,7 @@ func (ar *accountRepository) FindAccountByStudentID(studentID string) (user doma
 }
 
 func (ar *accountRepository) StoreAccount(name, password, role, studentID, department, comment string, grade int, createdAt time.Time) error {
-	return Transact(ar.SQLHandler, func(tx Tx) error {
+	return transact(ar.SQLHandler, func(tx Tx) error {
 		ret, err := tx.Execute(
 			"INSERT INTO users(name, password_digest, role, student_id, created_at, updated_at) VALUES (?,?,?,?,?,?)",
 			name, password, role, studentID, createdAt, createdAt,
@@ -75,6 +75,57 @@ func (ar *accountRepository) StoreAccount(name, password, role, studentID, depar
 		); err != nil {
 			return err
 		}
+		return nil
+	})
+}
+
+func (ar *accountRepository) UpdateAccount(userID int, name, password, role, studentID, department, comment string, grade int, updatedAt time.Time) error {
+	return transact(ar.SQLHandler, func(tx Tx) error {
+		// users table
+		values := map[interface{}]interface{}{
+			"name":            name,
+			"password_digest": password,
+			"role":            role,
+			"updated_at":      updatedAt,
+		}
+		conds := map[interface{}]interface{}{
+			"id": userID,
+		}
+		query, args, _ := makeUpdateQuery("users", values, conds)
+		_, err := tx.Execute(query, args...)
+		if err != nil {
+			return err
+		}
+
+		// introduction
+		values = map[interface{}]interface{}{
+			"department": department,
+			"grade":      grade,
+			"comments":   comment,
+			"updated_at": updatedAt,
+		}
+		conds = map[interface{}]interface{}{
+			"user_id": userID,
+		}
+		query, args, _ = makeUpdateQuery("introductions", values, conds)
+		if _, err := tx.Execute(query, args...); err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+func (ar *accountRepository) DeleteAccount(userID int) error {
+	return transact(ar.SQLHandler, func(tx Tx) error {
+		if _, err := tx.Execute("DELETE FROM users WHERE id=?", userID); err != nil {
+			return err
+		}
+
+		if _, err := tx.Execute("DELETE FROM introductions WHERE user_id=?", userID); err != nil {
+			return err
+		}
+
 		return nil
 	})
 }

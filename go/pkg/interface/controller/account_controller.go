@@ -10,7 +10,10 @@ import (
 // AccountController
 type AccountController interface {
 	ShowAccountByUserID(userID int) (GetAccountResponse, error)
+	ShowAccountByStudentID(studentID string) (GetAccountResponse, error)
 	CreateAccount(req *UpdateAccoutRequest) (GetAccountResponse, error)
+	UpdateAccount(userID int, req *UpdateAccoutRequest) (GetAccountResponse, error)
+	DeleteAccount(userID int) error
 
 	Login(req *LoginRequest) (LoginResponse, domain.Session, error)
 }
@@ -28,6 +31,21 @@ func NewAccountController(ai interactor.AccountInteractor) AccountController {
 
 func (ac *accountController) ShowAccountByUserID(userID int) (res GetAccountResponse, err error) {
 	user, err := ac.AccountInteractor.FetchAccountByUserID(userID)
+	if err != nil {
+		return
+	}
+	res.ID = user.ID
+	res.Name = user.Name
+	res.StudentID = user.StudentID
+	res.Role = user.Role
+	res.Department = user.Department
+	res.Grade = user.Grade
+	res.Comment = user.Comment
+	return
+}
+
+func (ac *accountController) ShowAccountByStudentID(studentID string) (res GetAccountResponse, err error) {
+	user, err := ac.AccountInteractor.FetchAccountByStudentID(studentID)
 	if err != nil {
 		return
 	}
@@ -88,8 +106,29 @@ type UpdateAccoutRequest struct {
 	Comment    string `json:"comment"`
 }
 
+func (ac *accountController) UpdateAccount(userID int, req *UpdateAccoutRequest) (res GetAccountResponse, err error) {
+	user, err := ac.AccountInteractor.UpdateAccount(userID, req.Name, req.Password, req.Role, req.StudentID, req.Department, req.Comment, req.Grade)
+	if err != nil {
+		return res, err
+	}
+
+	res.Name = user.Name
+	res.StudentID = user.StudentID
+	res.Role = user.Role
+	res.Department = user.Department
+	res.Grade = user.Grade
+	res.Comment = user.Comment
+	return
+}
+
+func (ac *accountController) DeleteAccount(userID int) error {
+	// TODO: 実装して
+	err := ac.AccountInteractor.DeleteAccount(userID)
+	return err
+}
+
 func (ac *accountController) Login(req *LoginRequest) (res LoginResponse, sess domain.Session, err error) {
-	// TODO: バリデーションチェック
+	// バリデーションチェック
 	if req.StudentID == "" {
 		logger.Warn("studentID is empty")
 		return res, sess, domain.BadRequest(errors.New("studentID is empty"))

@@ -6,6 +6,7 @@ var sessionList map[string]string = map[string]string{}
 type Session struct {
 	SessionID string
 	StudentID string
+	UserID    int
 }
 
 func (s *Session) SetSessionList() {

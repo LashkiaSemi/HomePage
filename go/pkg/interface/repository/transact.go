@@ -1,7 +1,14 @@
 package repository
 
-// Transact トランザクションを作成する
-func Transact(sh SQLHandler, txFunc func(Tx) error) (err error) {
+import (
+	"fmt"
+	"homepage/pkg/domain/logger"
+	"strings"
+	"time"
+)
+
+// transact トランザクションを作成する
+func transact(sh SQLHandler, txFunc func(Tx) error) (err error) {
 	tx, err := sh.Begin()
 	if err != nil {
 		return
@@ -18,4 +25,70 @@ func Transact(sh SQLHandler, txFunc func(Tx) error) (err error) {
 	}()
 	err = txFunc(tx)
 	return err
+}
+
+// makeUpdateQuery updateのsqlクエリの作成。tableと、map[field]value
+func makeUpdateQuery(table string, values map[interface{}]interface{}, conds map[interface{}]interface{}) (string, []interface{}, error) {
+	var query = fmt.Sprintf("UPDATE %s SET", table)
+	var args []interface{}
+	// ここでvalue
+	for key, value := range values {
+		switch value.(type) {
+		case int:
+			if value != 0 {
+				query += fmt.Sprintf(" %v=?,", key)
+				args = append(args, value)
+			}
+		case int64:
+			if value != 0 {
+				query += fmt.Sprintf(" %v=?,", key)
+				args = append(args, value)
+			}
+		case string:
+			if value != "" {
+				query += fmt.Sprintf(" %v=?,", key)
+				args = append(args, value)
+			}
+		case time.Time:
+			// TODO: ここnil？
+			if value != nil {
+				query += fmt.Sprintf(" %v=?,", key)
+				args = append(args, value)
+			}
+		default:
+			logger.Debug(fmt.Sprintf("%T", value))
+		}
+	}
+
+	query = strings.TrimSuffix(query, ",")
+
+	// ここでwhere
+	for key, value := range conds {
+		switch value.(type) {
+		case int:
+			if value != 0 {
+				query += fmt.Sprintf(" WHERE %v=?", key)
+				args = append(args, value)
+			}
+		case int64:
+			if value != 0 {
+				query += fmt.Sprintf(" WHERE %v=?", key)
+				args = append(args, value)
+			}
+		case string:
+			if value != "" {
+				query += fmt.Sprintf(" WHERE %v=?", key)
+				args = append(args, value)
+			}
+		case time.Time:
+			// TODO: ここnil？
+			if value != nil {
+				query += fmt.Sprintf(" WHERE %v=?", key)
+				args = append(args, value)
+			}
+		default:
+			logger.Debug(fmt.Sprintf("%T", value))
+		}
+	}
+	return query, args, nil
 }

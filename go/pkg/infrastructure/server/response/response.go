@@ -31,10 +31,10 @@ func HTTPError(w http.ResponseWriter, err error) {
 		e = domain.InternalServerError(err)
 	}
 	jsonData, _ := json.Marshal(&errorResponse{
-		Code:    e.GetStatusCode(),
+		Code:    e.StatusCode(),
 		Message: e.Error(),
 	})
-	w.WriteHeader(e.GetStatusCode())
+	w.WriteHeader(e.StatusCode())
 	w.Write(jsonData)
 }
 

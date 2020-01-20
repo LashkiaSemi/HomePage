@@ -2,14 +2,21 @@ package interactor
 
 import (
 	"homepage/pkg/domain"
+	"homepage/pkg/domain/logger"
 	"time"
 
 	"github.com/google/uuid"
 )
 
+// AccountInteractor
 type AccountInteractor interface {
 	FetchAccountByUserID(userID int) (domain.User, error)
+	FetchAccountByStudentID(studentID string) (domain.User, error)
 	AddAccount(name, password, role, studentID, department, comment string, grade int) (domain.User, error)
+	UpdateAccount(userID int, name, password, role, studentID, department, comment string, grade int) (domain.User, error)
+	DeleteAccount(userID int) error
+
+	// Login ログイン機能
 	Login(studentID, password string) (domain.Session, error)
 }
 
@@ -27,6 +34,10 @@ func NewAccountInteractor(ar AccountRepository, ah AuthHandler) AccountInteracto
 
 func (ai *accountInteractor) FetchAccountByUserID(userID int) (domain.User, error) {
 	return ai.AccountRepository.FindAccountByUserID(userID)
+}
+
+func (ai *accountInteractor) FetchAccountByStudentID(studentID string) (domain.User, error) {
+	return ai.AccountRepository.FindAccountByStudentID(studentID)
 }
 
 func (ai *accountInteractor) AddAccount(name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
@@ -63,6 +74,31 @@ func (ai *accountInteractor) AddAccount(name, password, role, studentID, departm
 	return
 }
 
+func (ai *accountInteractor) UpdateAccount(userID int, name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
+	// passwordあるならハッシュ
+	var hash string
+	if password != "" {
+		hash, err = ai.PasswordHash(password)
+		if err != nil {
+			logger.Error(err)
+			return user, domain.InternalServerError(err)
+		}
+	}
+
+	// time
+	updatedAt := time.Now()
+
+	err = ai.AccountRepository.UpdateAccount(userID, name, hash, role, studentID, department, comment, grade, updatedAt)
+	user, err = ai.AccountRepository.FindAccountByUserID(userID)
+	return
+}
+
+func (ai *accountInteractor) DeleteAccount(userID int) error {
+	// TODO: 実装して
+	err := ai.AccountRepository.DeleteAccount(userID)
+	return err
+}
+
 func (ai *accountInteractor) Login(studentID, password string) (sess domain.Session, err error) {
 	// データの取得
 	user, err := ai.AccountRepository.FindAccountByStudentID(studentID)
@@ -84,6 +120,7 @@ func (ai *accountInteractor) Login(studentID, password string) (sess domain.Sess
 
 	sess.StudentID = user.StudentID
 	sess.SessionID = sessionID.String()
+	sess.UserID = user.ID
 
 	return sess, nil
 }
