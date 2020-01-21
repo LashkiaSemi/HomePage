@@ -83,12 +83,24 @@ CREATE TABLE IF NOT EXISTS `homepage`.`companies` (
 
 CREATE TABLE IF NOT EXISTS `homepage`.`activities` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `date` date NOT NULL,
+  `date` date DEFAULT NULL,
   `activity` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='活動内容';
+
+CREATE TABLE IF NOT EXISTS `homepage`.`societies` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `author` varchar(255) DEFAULT NULL,
+  `society` varchar(255) DEFAULT NULL,
+  `award` varchar(255) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='学会';
 
 CREATE TABLE IF NOT EXISTS `homepage`.`tags` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
