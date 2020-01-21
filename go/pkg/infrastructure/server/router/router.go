@@ -13,4 +13,7 @@ func SettingRouter(s server.Server, h handler.AppHandler) {
 
 	s.Handle("/users", h.ManageUser())
 	s.Handle("/users/", h.ManageOneUser())
+
+	s.Handle("/activities", h.ManageActivity())
+	s.Handle("/activities/", h.ManageOneActivity())
 }

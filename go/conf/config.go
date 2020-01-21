@@ -5,6 +5,12 @@ const (
 	CookieMaxAge = 3600 * 1
 )
 
+const (
+	DatetimeFormat    = "2006/01/02 15:04:05"
+	DateFormat        = "2006/01/02"
+	LogDatetimeFormat = "2006/01/02 15:04:05"
+)
+
 // LoadServerConfig サーバの設定をmapで返す
 func LoadServerConfig() map[string]string {
 	return map[string]string{

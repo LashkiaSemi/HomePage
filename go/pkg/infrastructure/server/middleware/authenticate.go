@@ -82,7 +82,7 @@ func Permission(nextFunc http.HandlerFunc) http.HandlerFunc {
 		// roleの取得
 		if sessList[userID].Role != "owner" {
 			logger.Warn("permission error.")
-			response.HTTPError(w, domain.InternalServerError(errors.New("permission error")))
+			response.HTTPError(w, domain.Unauthorized(errors.New("permission error")))
 			return
 		}
 

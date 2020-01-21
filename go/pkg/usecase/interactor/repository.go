@@ -22,3 +22,12 @@ type UserRepository interface {
 	UpdateUser(userID int, name, password, role, studentID, department, comment string, grade int, updatedAt time.Time) error
 	DeleteUser(userID int) error
 }
+
+// ActivityRepository dbにつなぐ。実装は interface > *_repository
+type ActivityRepository interface {
+	FindActivities() (domain.Activities, error)
+	FindActivityByID(actID int) (domain.Activity, error)
+	StoreActivity(date time.Time, act string, createdAt time.Time) (int, error)
+	UpdateActivity(actID int, date time.Time, act string, updatedAt time.Time) error
+	DeleteActivity(actID int) error
+}

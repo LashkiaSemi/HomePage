@@ -50,8 +50,8 @@ func makeUpdateQuery(table string, values map[string]interface{}, conds map[stri
 				args = append(args, value)
 			}
 		case time.Time:
-			// TODO: ここnil？
-			if value != nil {
+			t, _ := value.(time.Time)
+			if !t.IsZero() {
 				query += fmt.Sprintf(" %v=?,", key)
 				args = append(args, value)
 			}
@@ -82,9 +82,9 @@ func makeUpdateQuery(table string, values map[string]interface{}, conds map[stri
 				args = append(args, value)
 			}
 		case time.Time:
-			// TODO: ここnil？
-			if value != nil {
-				query += fmt.Sprintf(" %v=?", key)
+			t, _ := value.(time.Time)
+			if !t.IsZero() {
+				query += fmt.Sprintf(" %v=?,", key)
 				args = append(args, value)
 			}
 		default:

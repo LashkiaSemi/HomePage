@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"homepage/conf"
 	"os"
 	"time"
 )
@@ -41,5 +42,5 @@ func Fatal(v ...interface{}) {
 }
 
 func logText(logLevel string, v ...interface{}) string {
-	return fmt.Sprintf("%s [%s] %s\n", time.Now().Format("2006/01/02 15:04:05"), logLevel, fmt.Sprint(v...))
+	return fmt.Sprintf("%s [%s] %s\n", time.Now().Format(conf.LogDatetimeFormat), logLevel, fmt.Sprint(v...))
 }

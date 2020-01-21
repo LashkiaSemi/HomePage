@@ -19,6 +19,11 @@ func Unauthorized(err error) Error {
 	return newError(StatusUnauthorized, err)
 }
 
+// NotFound コンテンツが見つからない(404)の処理
+func NotFound(err error) Error {
+	return newError(StatusNotFound, err)
+}
+
 // MethodNotAllowed メソッドエラー(405)の処理
 func MethodNotAllowed(err error) Error {
 	return newError(StatusMethodNotAllowed, err)
@@ -56,6 +61,7 @@ const (
 	StatusDefault             = 500
 	StatusBadRequest          = 400
 	StatusUnauthorized        = 401
+	StatusNotFound            = 404
 	StatusMethodNotAllowed    = 405
 	StatusInternalServerError = 500
 )
