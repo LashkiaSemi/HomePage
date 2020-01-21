@@ -40,3 +40,12 @@ type SocietyRepository interface {
 	UpdateSociety(socID int, title, author, society, award string, date, updatedAt time.Time) error
 	DeleteSociety(socID int) error
 }
+
+// ResearchRepository dbにつなぐ。実装は interface > *_repository
+type ResearchRepository interface {
+	FindAll() (domain.Researches, error)
+	FindByID(resID int) (domain.Research, error)
+	Store(title, author, file, comment string, createdAt time.Time) (int, error)
+	Update(resID int, title, author, file, comment string, updatedAt time.Time) error
+	Delete(resID int) error
+}

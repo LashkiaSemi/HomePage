@@ -19,4 +19,7 @@ func SettingRouter(s server.Server, h handler.AppHandler) {
 
 	s.Handle("/societies", h.ManageSociety())
 	s.Handle("/societies/", h.ManageOneSociety())
+
+	s.Handle("/researches", h.ManageResearch())
+	s.Handle("/researches/", h.ManageOneResearch())
 }
