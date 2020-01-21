@@ -31,3 +31,12 @@ type ActivityRepository interface {
 	UpdateActivity(actID int, date time.Time, act string, updatedAt time.Time) error
 	DeleteActivity(actID int) error
 }
+
+// SocietyRepository dbにつなぐ。実装は interface > *_repository
+type SocietyRepository interface {
+	FindSocieties() (domain.Societies, error)
+	FindSocietyByID(socID int) (domain.Society, error)
+	StoreSociety(title, author, society, award string, date, createdAt time.Time) (int, error)
+	UpdateSociety(socID int, title, author, society, award string, date, updatedAt time.Time) error
+	DeleteSociety(socID int) error
+}

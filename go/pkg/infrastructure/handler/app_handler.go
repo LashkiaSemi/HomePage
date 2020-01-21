@@ -25,12 +25,17 @@ type AppHandler interface {
 	// activity
 	ManageActivity() http.HandlerFunc
 	ManageOneActivity() http.HandlerFunc
+
+	// society
+	ManageSociety() http.HandlerFunc
+	ManageOneSociety() http.HandlerFunc
 }
 
 type appHandler struct {
 	AccountHandler
 	UserHandler
 	ActivityHandler
+	SocietyHandler
 }
 
 // NewAppHandler アプリケーションハンドラを作成
@@ -39,9 +44,11 @@ func NewAppHandler(sh repository.SQLHandler, ah interactor.AuthHandler) AppHandl
 		AccountHandler:  NewAccountHandler(sh, ah),
 		UserHandler:     NewUserHandler(sh, ah),
 		ActivityHandler: NewActivityHandler(sh),
+		SocietyHandler:  NewSocietyHandler(sh),
 	}
 }
 
+// Account
 func (ah *appHandler) ManageAccount() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
@@ -60,6 +67,7 @@ func (ah *appHandler) ManageAccount() http.HandlerFunc {
 	}
 }
 
+// Session
 func (ah *appHandler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
@@ -84,6 +92,7 @@ func (ah *appHandler) Logout() http.HandlerFunc {
 	}
 }
 
+// User
 func (ah *appHandler) ManageUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
@@ -114,6 +123,7 @@ func (ah *appHandler) ManageOneUser() http.HandlerFunc {
 	}
 }
 
+// Activity
 func (ah *appHandler) ManageActivity() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
@@ -137,6 +147,37 @@ func (ah *appHandler) ManageOneActivity() http.HandlerFunc {
 			middleware.Authorized(middleware.Permission(ah.ActivityHandler.UpdateActivity)).ServeHTTP(w, r)
 		case http.MethodDelete:
 			middleware.Authorized(middleware.Permission(ah.ActivityHandler.DeleteActivity)).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+// Society
+func (ah *appHandler) ManageSociety() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.SocietyHandler.GetSocieties(w, r)
+		case http.MethodPost:
+			middleware.Authorized(middleware.Permission(ah.SocietyHandler.CreateSociety)).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+func (ah *appHandler) ManageOneSociety() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.SocietyHandler.GetSocietyByID(w, r)
+		case http.MethodPut:
+			middleware.Authorized(middleware.Permission(ah.SocietyHandler.UpdateSociety)).ServeHTTP(w, r)
+		case http.MethodDelete:
+			middleware.Authorized(middleware.Permission(ah.SocietyHandler.DeleteSociety)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
