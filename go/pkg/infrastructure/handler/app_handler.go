@@ -33,6 +33,10 @@ type AppHandler interface {
 	// research
 	ManageResearch() http.HandlerFunc
 	ManageOneResearch() http.HandlerFunc
+
+	// employment
+	ManageEmploy() http.HandlerFunc
+	ManageOneEmploy() http.HandlerFunc
 }
 
 type appHandler struct {
@@ -41,6 +45,7 @@ type appHandler struct {
 	ActivityHandler
 	SocietyHandler
 	ResearchHandler
+	EmployHandler
 }
 
 // NewAppHandler アプリケーションハンドラを作成
@@ -51,6 +56,7 @@ func NewAppHandler(sh repository.SQLHandler, ah interactor.AuthHandler) AppHandl
 		ActivityHandler: NewActivityHandler(sh),
 		SocietyHandler:  NewSocietyHandler(sh),
 		ResearchHandler: NewResearchHandler(sh),
+		EmployHandler:   NewEmployHandler(sh),
 	}
 }
 
@@ -215,6 +221,37 @@ func (ah *appHandler) ManageOneResearch() http.HandlerFunc {
 			middleware.Authorized(middleware.Permission(ah.ResearchHandler.Update)).ServeHTTP(w, r)
 		case http.MethodDelete:
 			middleware.Authorized(middleware.Permission(ah.ResearchHandler.Delete)).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+// employment
+func (ah *appHandler) ManageEmploy() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.EmployHandler.GetAll(w, r)
+		case http.MethodPost:
+			middleware.Authorized(middleware.Permission(ah.EmployHandler.Create)).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+func (ah *appHandler) ManageOneEmploy() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.EmployHandler.GetByID(w, r)
+		case http.MethodPut:
+			middleware.Authorized(middleware.Permission(ah.EmployHandler.Update)).ServeHTTP(w, r)
+		case http.MethodDelete:
+			middleware.Authorized(middleware.Permission(ah.EmployHandler.Delete)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
