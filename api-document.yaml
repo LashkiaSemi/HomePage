@@ -25,7 +25,6 @@ tags:
     description: 'レクチャーのcrud'
   - name: 'tag'
     description: 'タグのcrud'
-  
 
 paths:
   /login:
@@ -205,6 +204,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetUserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: 'アカウントの更新'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'user'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUser'
+      responses:
+        '200':
+          description: 'return infomation of member'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: 'アカウントの削除'
+      description: 'ユーザがowner/adminである必要がある'
+      tags:
+        - 'user'
+      parameters:
+        - $ref: '#/components/parameters/SessionToken'
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -1045,7 +1092,6 @@ components:
           type: 'string'
         role:
           type: 'string'
-    # TODO: 何が必要か...
     UpdateUserRequest:
       type: 'object'
       properties:
@@ -1058,6 +1104,9 @@ components:
         password:
           type: 'string'
           description: 'パスワード'
+        role:
+          type: 'string'
+          description: 'owner/admin/member'
         department:
           type: 'string'
           description: '学科'
@@ -1083,16 +1132,23 @@ components:
           type: 'string'
         activiry:
           type: 'string'
-    # TODO: DBと合わせて設計
     GetSocietyResponse:
       type: 'object'
       properties:
         id:
           type: 'integer'
+        titie:
+          type: 'string'
+        author:
+          type: 'string'
+        society:
+          type: 'string'
+          description: '学会の名前'
+        award:
+          type: 'string'
+          description: '賞の名前'
         date:
           type: 'string'
-        user:
-          $ref: '#/components/schemas/GetUserResponse'
     UpdateSocieryRequest:
       type: 'object'
       properties:
@@ -1269,6 +1325,18 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     Unauthorized:
       description: 'unauthorized. status code: 401'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: 'not found. status code: 404'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MethodNotAllowed:
+      description: 'method not allowed. status code: 405'
       content:
         application/json:
           schema:
