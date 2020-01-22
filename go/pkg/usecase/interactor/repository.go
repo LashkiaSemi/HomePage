@@ -67,3 +67,12 @@ type EquipmentRepository interface {
 	Update(equID int, name, note string, stock, tagID int, updatedAt time.Time) error
 	Delete(equID int) error
 }
+
+// LectureRepository dbにつなぐ。実装は interface > *_repository
+type LectureRepository interface {
+	FindAll() (domain.Lectures, error)
+	FindByID(lecID int) (domain.Lecture, error)
+	Store(title, file, comment string, userID int, createdAt time.Time) (int, error)
+	Update(lecID int, title, file, comment string, userID int, updatedAt time.Time) error
+	Delete(lecID int) error
+}

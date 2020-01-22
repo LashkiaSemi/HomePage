@@ -41,6 +41,10 @@ type AppHandler interface {
 	// equipment
 	ManageEquipment() http.HandlerFunc
 	ManageOneEquipment() http.HandlerFunc
+
+	// lecture
+	ManageLecture() http.HandlerFunc
+	ManageOneLecture() http.HandlerFunc
 }
 
 type appHandler struct {
@@ -51,6 +55,7 @@ type appHandler struct {
 	ResearchHandler
 	EmployHandler
 	EquipmentHandler
+	LectureHandler
 }
 
 // NewAppHandler アプリケーションハンドラを作成
@@ -63,6 +68,7 @@ func NewAppHandler(sh repository.SQLHandler, ah interactor.AuthHandler) AppHandl
 		ResearchHandler:  NewResearchHandler(sh),
 		EmployHandler:    NewEmployHandler(sh),
 		EquipmentHandler: NewEquipmentHandler(sh),
+		LectureHandler:   NewLectureHandler(sh),
 	}
 }
 
@@ -265,6 +271,7 @@ func (ah *appHandler) ManageOneEmploy() http.HandlerFunc {
 	}
 }
 
+// equipment
 func (ah *appHandler) ManageEquipment() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
@@ -288,6 +295,37 @@ func (ah *appHandler) ManageOneEquipment() http.HandlerFunc {
 			middleware.Authorized(middleware.Permission(ah.EquipmentHandler.Update)).ServeHTTP(w, r)
 		case http.MethodDelete:
 			middleware.Authorized(middleware.Permission(ah.EquipmentHandler.Delete)).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+// lecture
+func (ah *appHandler) ManageLecture() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.LectureHandler.GetAll(w, r)
+		case http.MethodPost:
+			middleware.Authorized(ah.LectureHandler.Create).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+func (ah *appHandler) ManageOneLecture() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.LectureHandler.GetByID(w, r)
+		case http.MethodPut:
+			middleware.Authorized(ah.LectureHandler.Update).ServeHTTP(w, r)
+		case http.MethodDelete:
+			middleware.Authorized(ah.LectureHandler.Delete).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))

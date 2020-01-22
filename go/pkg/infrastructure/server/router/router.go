@@ -28,4 +28,7 @@ func SettingRouter(s server.Server, h handler.AppHandler) {
 
 	s.Handle("/equipments", h.ManageEquipment())
 	s.Handle("/equipments/", h.ManageOneEquipment())
+
+	s.Handle("/lectures", h.ManageLecture())
+	s.Handle("/lectures/", h.ManageOneLecture())
 }
