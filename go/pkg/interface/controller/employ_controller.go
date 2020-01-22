@@ -6,11 +6,11 @@ import (
 
 // EmployController コントローラ
 type EmployController interface {
-	ShowAll() (GetCompaniesResponse, error)
-	ShowByID(compID int) (GetCompanyResponse, error)
-	Create(req *UpdateCompanyRequest) (GetCompanyResponse, error)
-	Update(compID int, req *UpdateCompanyRequest) (GetCompanyResponse, error)
-	Delete(compID int) error
+	ShowAll() (GetJobsResponse, error)
+	ShowByID(jobID int) (GetJobResponse, error)
+	Create(req *UpdateJobRequest) (GetJobResponse, error)
+	Update(jobID int, req *UpdateJobRequest) (GetJobResponse, error)
+	Delete(jobID int) error
 }
 
 type employController struct {
@@ -24,66 +24,72 @@ func NewEmployController(ei interactor.EmployInteractor) EmployController {
 	}
 }
 
-func (ec *employController) ShowAll() (res GetCompaniesResponse, err error) {
-	comps, err := ec.EmployInteractor.FetchAll()
+func (ec *employController) ShowAll() (res GetJobsResponse, err error) {
+	jobs, err := ec.EmployInteractor.FetchAll()
 	if err != nil {
 		return
 	}
-	for _, comp := range comps {
-		res.Companies = append(res.Companies, GetCompanyResponse{
-			ID:      comp.ID,
-			Company: comp.Company,
+	for _, job := range jobs {
+		res.Jobs = append(res.Jobs, GetJobResponse{
+			ID:      job.ID,
+			Company: job.Company,
+			Job:     job.Job,
 		})
 	}
 	return
 }
 
-// GetCompaniesResponse 企業
-type GetCompaniesResponse struct {
-	Companies []GetCompanyResponse `json:"companies"`
+// GetJobsResponse 企業
+type GetJobsResponse struct {
+	Jobs []GetJobResponse `json:"jobs"`
 }
 
-// GetCompanyResponse 企業
-type GetCompanyResponse struct {
+// GetJobResponse 企業
+type GetJobResponse struct {
 	ID      int    `json:"id"`
 	Company string `json:"company"`
+	Job     string `json:"job"`
 }
 
-func (ec *employController) ShowByID(compID int) (res GetCompanyResponse, err error) {
-	comp, err := ec.EmployInteractor.FetchByID(compID)
+func (ec *employController) ShowByID(jobID int) (res GetJobResponse, err error) {
+	job, err := ec.EmployInteractor.FetchByID(jobID)
 	if err != nil {
 		return
 	}
-	res.ID = comp.ID
-	res.Company = comp.Company
+	res.ID = job.ID
+	res.Company = job.Company
+	res.Job = job.Job
 	return
 }
 
-func (ec *employController) Create(req *UpdateCompanyRequest) (res GetCompanyResponse, err error) {
-	comp, err := ec.EmployInteractor.Add(req.Company)
+func (ec *employController) Create(req *UpdateJobRequest) (res GetJobResponse, err error) {
+	job, err := ec.EmployInteractor.Add(req.Company, req.Job)
 	if err != nil {
 		return
 	}
-	res.ID = comp.ID
-	res.Company = comp.Company
+	res.ID = job.ID
+	res.Company = job.Company
+	res.Job = job.Job
 	return
 }
 
-// UpdateCompanyRequest 新規と更新のリクエスト
-type UpdateCompanyRequest struct {
+// UpdateJobRequest 新規と更新のリクエスト
+type UpdateJobRequest struct {
 	Company string `json:"company"`
+	Job     string `json:"job"`
 }
 
-func (ec *employController) Update(compID int, req *UpdateCompanyRequest) (res GetCompanyResponse, err error) {
-	comp, err := ec.EmployInteractor.Update(compID, req.Company)
+func (ec *employController) Update(jobID int, req *UpdateJobRequest) (res GetJobResponse, err error) {
+	job, err := ec.EmployInteractor.Update(jobID, req.Company, req.Job)
 	if err != nil {
 		return
 	}
-	res.ID = comp.ID
-	res.Company = comp.Company
+	res.ID = job.ID
+	res.Company = job.Company
+	res.Job = job.Job
 	return
 }
 
-func (ec *employController) Delete(compID int) error {
-	return ec.EmployInteractor.Delete(compID)
+func (ec *employController) Delete(jobID int) error {
+	return ec.EmployInteractor.Delete(jobID)
 }

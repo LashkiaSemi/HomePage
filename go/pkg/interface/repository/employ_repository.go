@@ -19,35 +19,35 @@ func NewEmployRepository(sh SQLHandler) interactor.EmployRepository {
 	}
 }
 
-func (er *employRepository) FindAll() (comps domain.Companies, err error) {
-	rows, err := er.SQLHandler.Query("SELECT id, company FROM companies")
+func (er *employRepository) FindAll() (jobs domain.Jobs, err error) {
+	rows, err := er.SQLHandler.Query("SELECT id, company, job FROM jobs")
 	for rows.Next() {
-		var comp domain.Company
-		if err = rows.Scan(&comp.ID, &comp.Company); err != nil {
+		var job domain.Job
+		if err = rows.Scan(&job.ID, &job.Company, &job.Job); err != nil {
 			continue
 		}
-		comps = append(comps, comp)
+		jobs = append(jobs, job)
 	}
 	return
 }
 
-func (er *employRepository) FindByID(compID int) (comp domain.Company, err error) {
-	row := er.SQLHandler.QueryRow("SELECT id, company FROM companies WHERE id=?", compID)
-	if row.Scan(&comp.ID, &comp.Company); err != nil {
+func (er *employRepository) FindByID(jobID int) (job domain.Job, err error) {
+	row := er.SQLHandler.QueryRow("SELECT id, company, job FROM jobs WHERE id=?", jobID)
+	if row.Scan(&job.ID, &job.Company, &job.Job); err != nil {
 		if err == er.SQLHandler.ErrNoRows() {
 			logger.Warn("employ findByID: ", err)
-			return comp, domain.NotFound(errors.New("content not found"))
+			return job, domain.NotFound(errors.New("content not found"))
 		}
 		logger.Error("employ findByID: ", err)
-		return comp, domain.InternalServerError(err)
+		return job, domain.InternalServerError(err)
 	}
 	return
 }
 
-func (er *employRepository) Store(company string, createdAt time.Time) (int, error) {
+func (er *employRepository) Store(company, job string, createdAt time.Time) (int, error) {
 	result, err := er.SQLHandler.Execute(
-		"INSERT INTO companies(company, created_at, updated_at) VALUES (?,?,?)",
-		company, createdAt, createdAt,
+		"INSERT INTO jobs(company, job, created_at, updated_at) VALUES (?,?,?,?)",
+		company, job, createdAt, createdAt,
 	)
 	if err != nil {
 		return 0, err
@@ -56,22 +56,23 @@ func (er *employRepository) Store(company string, createdAt time.Time) (int, err
 	return int(id), err
 }
 
-func (er *employRepository) Update(compID int, company string, updatedAt time.Time) error {
+func (er *employRepository) Update(jobID int, company, job string, updatedAt time.Time) error {
 	query, args, _ := makeUpdateQuery(
-		"companies",
+		"jobs",
 		map[string]interface{}{
 			"company":    company,
+			"job":        job,
 			"updated_at": updatedAt,
 		},
 		map[string]interface{}{
-			"id": compID,
+			"id": jobID,
 		},
 	)
 	_, err := er.SQLHandler.Execute(query, args...)
 	return err
 }
 
-func (er *employRepository) Delete(compID int) error {
-	_, err := er.SQLHandler.Execute("DELETE FROM companies WHERE id=?", compID)
+func (er *employRepository) Delete(jobID int) error {
+	_, err := er.SQLHandler.Execute("DELETE FROM jobs WHERE id=?", jobID)
 	return err
 }

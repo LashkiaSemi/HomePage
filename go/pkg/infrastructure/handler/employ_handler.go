@@ -47,14 +47,14 @@ func (eh *employHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (eh *employHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	compID, err := getIntParameter(r.URL.Path, "/employments/", "")
+	jobID, err := getIntParameter(r.URL.Path, "/jobs/", "")
 	if err != nil {
-		logger.Warn("employ getByID: params error. companyID parameter is not int. companyID is ", compID)
+		logger.Warn("employ getByID: params error. jobID parameter is not int. jobID is ", jobID)
 		response.HTTPError(w, domain.BadRequest(errors.New("params error")))
 		return
 	}
 
-	res, err := eh.EmployController.ShowByID(compID)
+	res, err := eh.EmployController.ShowByID(jobID)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -69,7 +69,7 @@ func (eh *employHandler) Create(w http.ResponseWriter, r *http.Request) {
 		response.HTTPError(w, domain.BadRequest(err))
 		return
 	}
-	var req controller.UpdateCompanyRequest
+	var req controller.UpdateJobRequest
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		logger.Error(err)
@@ -86,9 +86,9 @@ func (eh *employHandler) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (eh *employHandler) Update(w http.ResponseWriter, r *http.Request) {
-	compID, err := getIntParameter(r.URL.Path, "/employments/", "")
+	jobID, err := getIntParameter(r.URL.Path, "/jobs/", "")
 	if err != nil {
-		logger.Warn("employ update: params error. companyID parameter is not int. companyID is ", compID)
+		logger.Warn("employ update: params error. jobID parameter is not int. jobID is ", jobID)
 		response.HTTPError(w, domain.BadRequest(errors.New("params error")))
 		return
 	}
@@ -99,7 +99,7 @@ func (eh *employHandler) Update(w http.ResponseWriter, r *http.Request) {
 		response.HTTPError(w, domain.BadRequest(err))
 		return
 	}
-	var req controller.UpdateCompanyRequest
+	var req controller.UpdateJobRequest
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		logger.Error(err)
@@ -107,7 +107,7 @@ func (eh *employHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := eh.EmployController.Update(compID, &req)
+	res, err := eh.EmployController.Update(jobID, &req)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -116,13 +116,13 @@ func (eh *employHandler) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (eh *employHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	compID, err := getIntParameter(r.URL.Path, "/employments/", "")
+	jobID, err := getIntParameter(r.URL.Path, "/jobs/", "")
 	if err != nil {
-		logger.Warn("employ delete: params error. companyID parameter is not int. companyID is ", compID)
+		logger.Warn("employ delete: params error. jobID parameter is not int. jobID is ", jobID)
 		response.HTTPError(w, domain.BadRequest(errors.New("params error")))
 		return
 	}
-	err = eh.EmployController.Delete(compID)
+	err = eh.EmployController.Delete(jobID)
 	if err != nil {
 		response.HTTPError(w, err)
 		return

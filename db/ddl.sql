@@ -73,9 +73,10 @@ CREATE TABLE IF NOT EXISTS `homepage`.`researches` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='研究';
 
-CREATE TABLE IF NOT EXISTS `homepage`.`companies` (
+CREATE TABLE IF NOT EXISTS `homepage`.`jobs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `company` varchar(255) DEFAULT NULL,
+  `job` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)

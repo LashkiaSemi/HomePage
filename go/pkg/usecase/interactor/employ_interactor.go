@@ -7,11 +7,11 @@ import (
 
 // EmployInteractor インタラクタ
 type EmployInteractor interface {
-	FetchAll() (domain.Companies, error)
-	FetchByID(compID int) (domain.Company, error)
-	Add(company string) (domain.Company, error)
-	Update(compID int, company string) (domain.Company, error)
-	Delete(compID int) error
+	FetchAll() (domain.Jobs, error)
+	FetchByID(jobID int) (domain.Job, error)
+	Add(company, job string) (domain.Job, error)
+	Update(jobID int, company, job string) (domain.Job, error)
+	Delete(jobID int) error
 }
 
 type employInteractor struct {
@@ -25,34 +25,35 @@ func NewEmployInteractor(er EmployRepository) EmployInteractor {
 	}
 }
 
-func (ei *employInteractor) FetchAll() (domain.Companies, error) {
+func (ei *employInteractor) FetchAll() (domain.Jobs, error) {
 	return ei.EmployRepository.FindAll()
 }
 
-func (ei *employInteractor) FetchByID(compID int) (domain.Company, error) {
-	return ei.EmployRepository.FindByID(compID)
+func (ei *employInteractor) FetchByID(jobID int) (domain.Job, error) {
+	return ei.EmployRepository.FindByID(jobID)
 }
 
-func (ei *employInteractor) Add(company string) (comp domain.Company, err error) {
+func (ei *employInteractor) Add(company, jobName string) (job domain.Job, err error) {
 	createdAt := time.Now()
-	id, err := ei.EmployRepository.Store(company, createdAt)
+	id, err := ei.EmployRepository.Store(company, jobName, createdAt)
 	if err != nil {
 		return
 	}
-	comp.ID = id
-	comp.Company = company
+	job.ID = id
+	job.Company = company
+	job.Job = jobName
 	return
 }
 
-func (ei *employInteractor) Update(compID int, company string) (comp domain.Company, err error) {
+func (ei *employInteractor) Update(jobID int, company, jobName string) (job domain.Job, err error) {
 	updatedAt := time.Now()
-	err = ei.EmployRepository.Update(compID, company, updatedAt)
+	err = ei.EmployRepository.Update(jobID, company, jobName, updatedAt)
 	if err != nil {
 		return
 	}
-	return ei.EmployRepository.FindByID(compID)
+	return ei.EmployRepository.FindByID(jobID)
 }
 
-func (ei *employInteractor) Delete(compID int) error {
-	return ei.EmployRepository.Delete(compID)
+func (ei *employInteractor) Delete(jobID int) error {
+	return ei.EmployRepository.Delete(jobID)
 }

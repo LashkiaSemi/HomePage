@@ -52,9 +52,9 @@ type ResearchRepository interface {
 
 // EmployRepository dbにつなぐ。実装は interface > *_repository
 type EmployRepository interface {
-	FindAll() (domain.Companies, error)
-	FindByID(compID int) (domain.Company, error)
-	Store(company string, createdAt time.Time) (int, error)
-	Update(compID int, company string, updatedAt time.Time) error
-	Delete(compID int) error
+	FindAll() (domain.Jobs, error)
+	FindByID(jobID int) (domain.Job, error)
+	Store(company, job string, createdAt time.Time) (int, error)
+	Update(jobID int, company, job string, updatedAt time.Time) error
+	Delete(jobID int) error
 }

@@ -23,6 +23,6 @@ func SettingRouter(s server.Server, h handler.AppHandler) {
 	s.Handle("/researches", h.ManageResearch())
 	s.Handle("/researches/", h.ManageOneResearch())
 
-	s.Handle("/employments", h.ManageEmploy())
-	s.Handle("/employments/", h.ManageOneEmploy())
+	s.Handle("/jobs", h.ManageEmploy())
+	s.Handle("/jobs/", h.ManageOneEmploy())
 }

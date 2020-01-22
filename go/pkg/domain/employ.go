@@ -1,12 +1,13 @@
 package domain
 
-// Company 就職先企業
-type Company struct {
+// Job 就職先企業
+type Job struct {
 	ID        int
 	Company   string
+	Job       string
 	CreatedAt string
 	UpdatedAt string
 }
 
-// Companies 就職先企業
-type Companies []Company
+// Jobs 就職先企業
+type Jobs []Job
