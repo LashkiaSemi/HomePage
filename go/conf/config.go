@@ -11,6 +11,11 @@ const (
 	LogDatetimeFormat = "2006/01/02 15:04:05"
 )
 
+const (
+	// DefaultTagID 備品を登録する時、タグの入力がなかったら、その他に誘導したい...
+	DefaultTagID = 6
+)
+
 // LoadServerConfig サーバの設定をmapで返す
 func LoadServerConfig() map[string]string {
 	return map[string]string{

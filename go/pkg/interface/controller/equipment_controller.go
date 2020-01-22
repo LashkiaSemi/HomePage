@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"homepage/conf"
 	"homepage/pkg/usecase/interactor"
 )
 
@@ -29,14 +30,16 @@ func (ec *equipmentController) ShowAll() (res GetEquipmentsResponse, err error) 
 	if err != nil {
 		return
 	}
-	// TODO: tags
 	for _, equ := range equs {
 		res.Equipments = append(res.Equipments, GetEquipmentResponse{
 			ID:    equ.ID,
 			Name:  equ.Name,
 			Stock: equ.Stock,
 			Note:  equ.Note,
-			// Tag:
+			Tag: GetTagResponse{
+				ID:   equ.Tag.ID,
+				Name: equ.Tag.Name,
+			},
 		})
 	}
 	return
@@ -51,14 +54,15 @@ func (ec *equipmentController) ShowByID(equID int) (res GetEquipmentResponse, er
 	res.Name = equ.Name
 	res.Stock = equ.Stock
 	res.Note = equ.Note
-	// TODO: tag
+	res.Tag.ID = equ.Tag.ID
+	res.Tag.Name = equ.Tag.Name
 	return
 }
 
 func (ec *equipmentController) Create(req *UpdateEquipmentRequest) (res GetEquipmentResponse, err error) {
-	// TODO: バリデーション。あれば
+	// warn: とりあえずその他に突っ込んでます。DB側にNOT NULLつけたいレベルです
 	if req.TagID == 0 {
-		req.TagID = 6
+		req.TagID = conf.DefaultTagID
 	}
 
 	equ, err := ec.EquipmentInteractor.Add(req.Name, req.Note, req.Stock, req.TagID)
@@ -69,14 +73,15 @@ func (ec *equipmentController) Create(req *UpdateEquipmentRequest) (res GetEquip
 	res.Name = equ.Name
 	res.Stock = equ.Stock
 	res.Note = equ.Note
-	// TODO: tag
+	res.Tag.ID = equ.Tag.ID
+	res.Tag.Name = equ.Tag.Name
 	return
 }
 
 func (ec *equipmentController) Update(equID int, req *UpdateEquipmentRequest) (res GetEquipmentResponse, err error) {
-	// TODO: バリデーション。あれば
+	// warn: とりあえずその他に突っ込んでます。DB側にNOT NULLつけたい
 	if req.TagID == 0 {
-		req.TagID = 6
+		req.TagID = conf.DefaultTagID
 	}
 
 	equ, err := ec.EquipmentInteractor.Update(equID, req.Name, req.Note, req.Stock, req.TagID)
@@ -87,7 +92,8 @@ func (ec *equipmentController) Update(equID int, req *UpdateEquipmentRequest) (r
 	res.Name = equ.Name
 	res.Stock = equ.Stock
 	res.Note = equ.Note
-	// TODO: tag
+	res.Tag.ID = equ.Tag.ID
+	res.Tag.Name = equ.Tag.Name
 	return
 }
 
@@ -102,12 +108,11 @@ type GetEquipmentsResponse struct {
 
 // GetEquipmentResponse 一件取得
 type GetEquipmentResponse struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Stock int    `json:"stock"`
-	Note  string `json:"note"`
-	// TODO: tags
-	// Tag GetTagResponse `json:"tag"`
+	ID    int            `json:"id"`
+	Name  string         `json:"name"`
+	Stock int            `json:"stock"`
+	Note  string         `json:"note"`
+	Tag   GetTagResponse `json:"tag"`
 }
 
 // UpdateEquipmentRequest 作成、更新リクエスト

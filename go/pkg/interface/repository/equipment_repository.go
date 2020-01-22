@@ -40,7 +40,6 @@ func (er *equipmentRepository) FindAll() (equs domain.Equipments, err error) {
 }
 
 func (er *equipmentRepository) FindByID(equID int) (equ domain.Equipment, err error) {
-	// TODO: タグがnullのやつ表示されないかも知れない
 	row := er.SQLHandler.QueryRow(
 		`SELECT equipments.id, equipments.name, num, note, equipments.created_at, equipments.updated_at, tags.id, tags.name
 		FROM equipments
