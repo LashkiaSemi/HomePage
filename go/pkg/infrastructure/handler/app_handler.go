@@ -37,6 +37,10 @@ type AppHandler interface {
 	// employment
 	ManageEmploy() http.HandlerFunc
 	ManageOneEmploy() http.HandlerFunc
+
+	// equipment
+	ManageEquipment() http.HandlerFunc
+	ManageOneEquipment() http.HandlerFunc
 }
 
 type appHandler struct {
@@ -46,17 +50,19 @@ type appHandler struct {
 	SocietyHandler
 	ResearchHandler
 	EmployHandler
+	EquipmentHandler
 }
 
 // NewAppHandler アプリケーションハンドラを作成
 func NewAppHandler(sh repository.SQLHandler, ah interactor.AuthHandler) AppHandler {
 	return &appHandler{
-		AccountHandler:  NewAccountHandler(sh, ah),
-		UserHandler:     NewUserHandler(sh, ah),
-		ActivityHandler: NewActivityHandler(sh),
-		SocietyHandler:  NewSocietyHandler(sh),
-		ResearchHandler: NewResearchHandler(sh),
-		EmployHandler:   NewEmployHandler(sh),
+		AccountHandler:   NewAccountHandler(sh, ah),
+		UserHandler:      NewUserHandler(sh, ah),
+		ActivityHandler:  NewActivityHandler(sh),
+		SocietyHandler:   NewSocietyHandler(sh),
+		ResearchHandler:  NewResearchHandler(sh),
+		EmployHandler:    NewEmployHandler(sh),
+		EquipmentHandler: NewEquipmentHandler(sh),
 	}
 }
 
@@ -252,6 +258,36 @@ func (ah *appHandler) ManageOneEmploy() http.HandlerFunc {
 			middleware.Authorized(middleware.Permission(ah.EmployHandler.Update)).ServeHTTP(w, r)
 		case http.MethodDelete:
 			middleware.Authorized(middleware.Permission(ah.EmployHandler.Delete)).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+func (ah *appHandler) ManageEquipment() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.EquipmentHandler.GetAll(w, r)
+		case http.MethodPost:
+			middleware.Authorized(middleware.Permission(ah.EquipmentHandler.Create)).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+func (ah *appHandler) ManageOneEquipment() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.EquipmentHandler.GetByID(w, r)
+		case http.MethodPut:
+			middleware.Authorized(middleware.Permission(ah.EquipmentHandler.Update)).ServeHTTP(w, r)
+		case http.MethodDelete:
+			middleware.Authorized(middleware.Permission(ah.EquipmentHandler.Delete)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))

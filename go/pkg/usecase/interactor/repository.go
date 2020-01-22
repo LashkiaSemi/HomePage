@@ -58,3 +58,12 @@ type EmployRepository interface {
 	Update(jobID int, company, job string, updatedAt time.Time) error
 	Delete(jobID int) error
 }
+
+// EquipmentRepository dbにつなぐ。実装は interface > *_repository
+type EquipmentRepository interface {
+	FindAll() (domain.Equipments, error)
+	FindByID(equID int) (domain.Equipment, error)
+	Store(name, note string, stock, tagID int, createdAt time.Time) (int, error)
+	Update(equID int, name, note string, stock, tagID int, updatedAt time.Time) error
+	Delete(equID int) error
+}
