@@ -45,6 +45,10 @@ type AppHandler interface {
 	// lecture
 	ManageLecture() http.HandlerFunc
 	ManageOneLecture() http.HandlerFunc
+
+	// tag
+	ManageTag() http.HandlerFunc
+	ManageOneTag() http.HandlerFunc
 }
 
 type appHandler struct {
@@ -56,6 +60,7 @@ type appHandler struct {
 	EmployHandler
 	EquipmentHandler
 	LectureHandler
+	TagHandler
 }
 
 // NewAppHandler アプリケーションハンドラを作成
@@ -69,6 +74,7 @@ func NewAppHandler(sh repository.SQLHandler, ah interactor.AuthHandler) AppHandl
 		EmployHandler:    NewEmployHandler(sh),
 		EquipmentHandler: NewEquipmentHandler(sh),
 		LectureHandler:   NewLectureHandler(sh),
+		TagHandler:       NewTagHandler(sh),
 	}
 }
 
@@ -326,6 +332,37 @@ func (ah *appHandler) ManageOneLecture() http.HandlerFunc {
 			middleware.Authorized(ah.LectureHandler.Update).ServeHTTP(w, r)
 		case http.MethodDelete:
 			middleware.Authorized(ah.LectureHandler.Delete).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+// tag
+func (ah *appHandler) ManageTag() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.TagHandler.GetAll(w, r)
+		case http.MethodPost:
+			middleware.Authorized(middleware.Permission(ah.TagHandler.Create)).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+func (ah *appHandler) ManageOneTag() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.TagHandler.GetByID(w, r)
+		case http.MethodPut:
+			middleware.Authorized(middleware.Permission(ah.TagHandler.Update)).ServeHTTP(w, r)
+		case http.MethodDelete:
+			middleware.Authorized(middleware.Permission(ah.TagHandler.Delete)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))

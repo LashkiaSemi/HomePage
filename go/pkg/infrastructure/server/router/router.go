@@ -31,4 +31,7 @@ func SettingRouter(s server.Server, h handler.AppHandler) {
 
 	s.Handle("/lectures", h.ManageLecture())
 	s.Handle("/lectures/", h.ManageOneLecture())
+
+	s.Handle("/tags", h.ManageTag())
+	s.Handle("/tags/", h.ManageOneTag())
 }

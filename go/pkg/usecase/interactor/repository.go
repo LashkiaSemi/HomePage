@@ -76,3 +76,12 @@ type LectureRepository interface {
 	Update(lecID int, title, file, comment string, userID int, updatedAt time.Time) error
 	Delete(lecID int) error
 }
+
+// TagRepository dbにつなぐ。実装は interface > *_repository
+type TagRepository interface {
+	FindAll() (domain.Tags, error)
+	FindByID(tagID int) (domain.Tag, error)
+	Store(name string, createdAt time.Time) (int, error)
+	Update(tagID int, name string, updatedAt time.Time) error
+	Delete(tagID int) error
+}
