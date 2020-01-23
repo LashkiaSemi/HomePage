@@ -28,6 +28,10 @@ func (lr *lectureRepository) FindAll() (lecs domain.Lectures, err error) {
 		INNER JOIN introductions as intr
 		ON users.id = intr.user_id`,
 	)
+	if err != nil {
+		return lecs, domain.InternalServerError(err)
+	}
+
 	for rows.Next() {
 		var lec domain.Lecture
 		if err = rows.Scan(&lec.ID, &lec.Title, &lec.File, &lec.Comment, &lec.CreatedAt, &lec.UpdatedAt, &lec.User.ID, &lec.User.Name, &lec.User.Role, &lec.User.StudentID, &lec.User.Comment, &lec.User.Department, &lec.User.Grade); err != nil {
@@ -56,7 +60,7 @@ func (lr *lectureRepository) FindByID(lecID int) (lec domain.Lecture, err error)
 			return lec, domain.NotFound(errors.New("content not found"))
 		}
 		logger.Error("lecture findByID: ", err)
-		return
+		return lec, domain.InternalServerError(err)
 	}
 	return
 }

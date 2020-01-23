@@ -19,7 +19,7 @@ func NewSocietyRepository(sh SQLHandler) interactor.SocietyRepository {
 	}
 }
 
-func (sr *societyRepository) FindSocieties() (socs domain.Societies, err error) {
+func (sr *societyRepository) FindAll() (socs domain.Societies, err error) {
 	rows, err := sr.SQLHandler.Query("SELECT id, title, author, society, award, date FROM societies")
 	if err != nil {
 		return
@@ -34,7 +34,7 @@ func (sr *societyRepository) FindSocieties() (socs domain.Societies, err error) 
 	return
 }
 
-func (sr *societyRepository) FindSocietyByID(socID int) (soc domain.Society, err error) {
+func (sr *societyRepository) FindByID(socID int) (soc domain.Society, err error) {
 	row := sr.SQLHandler.QueryRow("SELECT id, title, author, society, award, date FROM societies WHERE id=?", socID)
 	if err = row.Scan(&soc.ID, &soc.Title, &soc.Author, &soc.Society, &soc.Award, &soc.Date); err != nil {
 		if err == sr.SQLHandler.ErrNoRows() {
@@ -47,20 +47,19 @@ func (sr *societyRepository) FindSocietyByID(socID int) (soc domain.Society, err
 	return
 }
 
-func (sr *societyRepository) StoreSociety(title, author, society, award string, date, createdAt time.Time) (int, error) {
+func (sr *societyRepository) Store(title, author, society, award string, date, createdAt time.Time) (int, error) {
 	result, err := sr.SQLHandler.Execute(
 		"INSERT INTO societies(title, author, society, award, date, created_at, updated_at) VALUES (?,?,?,?,?,?,?)",
 		title, author, society, award, date, createdAt, createdAt,
 	)
 	if err != nil {
-		logger.Error("storeSociety: ", err)
 		return 0, err
 	}
 	id, _ := result.LastInsertId()
 	return int(id), nil
 }
 
-func (sr *societyRepository) UpdateSociety(socID int, title, author, society, award string, date, updatedAt time.Time) error {
+func (sr *societyRepository) Update(socID int, title, author, society, award string, date, updatedAt time.Time) error {
 	query, args, _ := makeUpdateQuery(
 		"societies",
 		map[string]interface{}{
@@ -79,7 +78,7 @@ func (sr *societyRepository) UpdateSociety(socID int, title, author, society, aw
 	return err
 }
 
-func (sr *societyRepository) DeleteSociety(socID int) error {
+func (sr *societyRepository) Delete(socID int) error {
 	_, err := sr.SQLHandler.Execute("DELETE FROM societies WHERE id=?", socID)
 	return err
 }

@@ -9,26 +9,28 @@ import (
 	"time"
 )
 
+// ActivityController コントローラ
 type ActivityController interface {
-	ShowActivities() (GetActivitiesResponse, error)
-	ShowActivityByID(actID int) (GetActivityResponse, error)
-	CreateActivity(req *UpdateActivityRequest) (GetActivityResponse, error)
-	UpdateActivity(actID int, req *UpdateActivityRequest) (GetActivityResponse, error)
-	DeleteActivity(actID int) error
+	ShowAll() (GetActivitiesResponse, error)
+	ShowByID(actID int) (GetActivityResponse, error)
+	Create(req *UpdateActivityRequest) (GetActivityResponse, error)
+	Update(actID int, req *UpdateActivityRequest) (GetActivityResponse, error)
+	Delete(actID int) error
 }
 
 type activityController struct {
 	ActivityInteractor interactor.ActivityInteractor
 }
 
+// NewActivityController コントローラの作成
 func NewActivityController(ai interactor.ActivityInteractor) ActivityController {
 	return &activityController{
 		ActivityInteractor: ai,
 	}
 }
 
-func (ac *activityController) ShowActivities() (res GetActivitiesResponse, err error) {
-	acts, err := ac.ActivityInteractor.FetchActivities()
+func (ac *activityController) ShowAll() (res GetActivitiesResponse, err error) {
+	acts, err := ac.ActivityInteractor.FetchAll()
 	if err != nil {
 		return
 	}
@@ -43,12 +45,13 @@ func (ac *activityController) ShowActivities() (res GetActivitiesResponse, err e
 	return
 }
 
+// GetActivitiesResponse 複数
 type GetActivitiesResponse struct {
 	Activities []GetActivityResponse `json:"activities"`
 }
 
-func (ac *activityController) ShowActivityByID(actID int) (res GetActivityResponse, err error) {
-	act, err := ac.ActivityInteractor.FetchActivityByID(actID)
+func (ac *activityController) ShowByID(actID int) (res GetActivityResponse, err error) {
+	act, err := ac.ActivityInteractor.FetchByID(actID)
 	if err != nil {
 		return
 	}
@@ -58,13 +61,14 @@ func (ac *activityController) ShowActivityByID(actID int) (res GetActivityRespon
 	return
 }
 
+// GetActivityResponse 一件
 type GetActivityResponse struct {
 	ID       int    `json:"id"`
 	Date     string `json:"date"`
 	Activity string `json:"activity"`
 }
 
-func (ah *activityController) CreateActivity(req *UpdateActivityRequest) (res GetActivityResponse, err error) {
+func (ac *activityController) Create(req *UpdateActivityRequest) (res GetActivityResponse, err error) {
 	// 入力へのバリデーション
 	if req.Activity == "" {
 		logger.Warn("createActivity: activity is empty")
@@ -82,7 +86,7 @@ func (ah *activityController) CreateActivity(req *UpdateActivityRequest) (res Ge
 		return res, domain.BadRequest(errors.New("fail time parse"))
 	}
 
-	act, err := ah.ActivityInteractor.AddActiviry(date, req.Activity)
+	act, err := ac.ActivityInteractor.Add(date, req.Activity)
 	if err != nil {
 		return res, err
 	}
@@ -93,12 +97,13 @@ func (ah *activityController) CreateActivity(req *UpdateActivityRequest) (res Ge
 	return
 }
 
+// UpdateActivityRequest 新規、更新
 type UpdateActivityRequest struct {
 	Date     string `json:"date"`
 	Activity string `json:"activity"`
 }
 
-func (ah *activityController) UpdateActivity(actID int, req *UpdateActivityRequest) (res GetActivityResponse, err error) {
+func (ac *activityController) Update(actID int, req *UpdateActivityRequest) (res GetActivityResponse, err error) {
 	// 時刻をパース
 	var date time.Time
 	if req.Date != "" {
@@ -109,7 +114,7 @@ func (ah *activityController) UpdateActivity(actID int, req *UpdateActivityReque
 		}
 	}
 
-	act, err := ah.ActivityInteractor.UpdateActiviry(actID, date, req.Activity)
+	act, err := ac.ActivityInteractor.Update(actID, date, req.Activity)
 	if err != nil {
 		return res, err
 	}
@@ -120,6 +125,6 @@ func (ah *activityController) UpdateActivity(actID int, req *UpdateActivityReque
 	return
 }
 
-func (ah *activityController) DeleteActivity(actID int) error {
-	return ah.ActivityInteractor.DeleteActiviry(actID)
+func (ac *activityController) Delete(actID int) error {
+	return ac.ActivityInteractor.Delete(actID)
 }

@@ -9,11 +9,11 @@ import (
 
 // AccountController リクエストを受け取ってレスポンスを返却
 type AccountController interface {
-	ShowAccountByUserID(userID int) (GetAccountResponse, error)
-	ShowAccountByStudentID(studentID string) (GetAccountResponse, error)
-	CreateAccount(req *UpdateAccountRequest) (GetAccountResponse, error)
-	UpdateAccount(userID int, req *UpdateAccountRequest) (GetAccountResponse, error)
-	DeleteAccount(userID int) error
+	ShowByID(userID int) (GetAccountResponse, error)
+	ShowByStudentID(studentID string) (GetAccountResponse, error)
+	Create(req *UpdateAccountRequest) (GetAccountResponse, error)
+	Update(userID int, req *UpdateAccountRequest) (GetAccountResponse, error)
+	Delete(userID int) error
 
 	Login(req *LoginRequest) (LoginResponse, domain.Session, error)
 }
@@ -29,8 +29,8 @@ func NewAccountController(ai interactor.AccountInteractor) AccountController {
 	}
 }
 
-func (ac *accountController) ShowAccountByUserID(userID int) (res GetAccountResponse, err error) {
-	user, err := ac.AccountInteractor.FetchAccountByUserID(userID)
+func (ac *accountController) ShowByID(userID int) (res GetAccountResponse, err error) {
+	user, err := ac.AccountInteractor.FetchByID(userID)
 	if err != nil {
 		return
 	}
@@ -44,8 +44,8 @@ func (ac *accountController) ShowAccountByUserID(userID int) (res GetAccountResp
 	return
 }
 
-func (ac *accountController) ShowAccountByStudentID(studentID string) (res GetAccountResponse, err error) {
-	user, err := ac.AccountInteractor.FetchAccountByStudentID(studentID)
+func (ac *accountController) ShowByStudentID(studentID string) (res GetAccountResponse, err error) {
+	user, err := ac.AccountInteractor.FetchByStudentID(studentID)
 	if err != nil {
 		return
 	}
@@ -70,7 +70,7 @@ type GetAccountResponse struct {
 	Comment    string `json:"comments"`
 }
 
-func (ac *accountController) CreateAccount(req *UpdateAccountRequest) (res GetAccountResponse, err error) {
+func (ac *accountController) Create(req *UpdateAccountRequest) (res GetAccountResponse, err error) {
 	// TODO: リクエストのバリデーションチェック
 	if req.Password == "" {
 		logger.Warn("CreateAccount: password is empty")
@@ -82,7 +82,7 @@ func (ac *accountController) CreateAccount(req *UpdateAccountRequest) (res GetAc
 	}
 
 	// interactor
-	user, err := ac.AccountInteractor.AddAccount(req.Name, req.Password, req.Role, req.StudentID, req.Department, req.Comment, req.Grade)
+	user, err := ac.AccountInteractor.Add(req.Name, req.Password, req.Role, req.StudentID, req.Department, req.Comment, req.Grade)
 	if err != nil {
 		return
 	}
@@ -108,8 +108,8 @@ type UpdateAccountRequest struct {
 	Comment    string `json:"comment"`
 }
 
-func (ac *accountController) UpdateAccount(userID int, req *UpdateAccountRequest) (res GetAccountResponse, err error) {
-	user, err := ac.AccountInteractor.UpdateAccount(userID, req.Name, req.Password, req.Role, req.StudentID, req.Department, req.Comment, req.Grade)
+func (ac *accountController) Update(userID int, req *UpdateAccountRequest) (res GetAccountResponse, err error) {
+	user, err := ac.AccountInteractor.Update(userID, req.Name, req.Password, req.Role, req.StudentID, req.Department, req.Comment, req.Grade)
 	if err != nil {
 		return res, err
 	}
@@ -124,8 +124,8 @@ func (ac *accountController) UpdateAccount(userID int, req *UpdateAccountRequest
 	return
 }
 
-func (ac *accountController) DeleteAccount(userID int) error {
-	err := ac.AccountInteractor.DeleteAccount(userID)
+func (ac *accountController) Delete(userID int) error {
+	err := ac.AccountInteractor.Delete(userID)
 	return err
 }
 

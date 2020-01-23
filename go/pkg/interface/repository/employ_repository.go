@@ -21,6 +21,9 @@ func NewEmployRepository(sh SQLHandler) interactor.EmployRepository {
 
 func (er *employRepository) FindAll() (jobs domain.Jobs, err error) {
 	rows, err := er.SQLHandler.Query("SELECT id, company, job FROM jobs")
+	if err != nil {
+		return
+	}
 	for rows.Next() {
 		var job domain.Job
 		if err = rows.Scan(&job.ID, &job.Company, &job.Job); err != nil {

@@ -15,11 +15,11 @@ import (
 
 // SocietyHandler ハンドラ
 type SocietyHandler interface {
-	GetSocieties(w http.ResponseWriter, r *http.Request)
-	GetSocietyByID(w http.ResponseWriter, r *http.Request)
-	CreateSociety(w http.ResponseWriter, r *http.Request)
-	UpdateSociety(w http.ResponseWriter, r *http.Request)
-	DeleteSociety(w http.ResponseWriter, r *http.Request)
+	GetAll(w http.ResponseWriter, r *http.Request)
+	GetByID(w http.ResponseWriter, r *http.Request)
+	Create(w http.ResponseWriter, r *http.Request)
+	Update(w http.ResponseWriter, r *http.Request)
+	Delete(w http.ResponseWriter, r *http.Request)
 }
 
 type societyHandler struct {
@@ -37,8 +37,8 @@ func NewSocietyHandler(sh repository.SQLHandler) SocietyHandler {
 	}
 }
 
-func (sh *societyHandler) GetSocieties(w http.ResponseWriter, r *http.Request) {
-	res, err := sh.SocietyController.ShowSocieties()
+func (sh *societyHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+	res, err := sh.SocietyController.ShowAll()
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -46,14 +46,14 @@ func (sh *societyHandler) GetSocieties(w http.ResponseWriter, r *http.Request) {
 	response.Success(w, res)
 }
 
-func (sh *societyHandler) GetSocietyByID(w http.ResponseWriter, r *http.Request) {
+func (sh *societyHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	socID, err := getIntParameter(r.URL.Path, "/societies/", "")
 	if err != nil {
 		logger.Warn("getSocietyByID: can not get societyID from path")
 		response.HTTPError(w, domain.BadRequest(errors.New("can not get societyID from path")))
 		return
 	}
-	res, err := sh.SocietyController.ShowSocietyByID(socID)
+	res, err := sh.SocietyController.ShowByID(socID)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -61,7 +61,7 @@ func (sh *societyHandler) GetSocietyByID(w http.ResponseWriter, r *http.Request)
 	response.Success(w, res)
 }
 
-func (sh *societyHandler) CreateSociety(w http.ResponseWriter, r *http.Request) {
+func (sh *societyHandler) Create(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		logger.Warn(err)
@@ -76,7 +76,7 @@ func (sh *societyHandler) CreateSociety(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	res, err := sh.SocietyController.CreateSociety(&req)
+	res, err := sh.SocietyController.Create(&req)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -84,7 +84,7 @@ func (sh *societyHandler) CreateSociety(w http.ResponseWriter, r *http.Request) 
 	response.Success(w, res)
 }
 
-func (sh *societyHandler) UpdateSociety(w http.ResponseWriter, r *http.Request) {
+func (sh *societyHandler) Update(w http.ResponseWriter, r *http.Request) {
 	socID, err := getIntParameter(r.URL.Path, "/societies/", "")
 	if err != nil {
 		logger.Warn("getSocietyByID: can not get societyID from path")
@@ -105,7 +105,7 @@ func (sh *societyHandler) UpdateSociety(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	res, err := sh.SocietyController.UpdateSociety(socID, &req)
+	res, err := sh.SocietyController.Update(socID, &req)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -114,14 +114,14 @@ func (sh *societyHandler) UpdateSociety(w http.ResponseWriter, r *http.Request) 
 
 }
 
-func (sh *societyHandler) DeleteSociety(w http.ResponseWriter, r *http.Request) {
+func (sh *societyHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	socID, err := getIntParameter(r.URL.Path, "/societies/", "")
 	if err != nil {
 		logger.Warn("getSocietyByID: can not get societyID from path")
 		response.HTTPError(w, domain.BadRequest(errors.New("can not get societyID from path")))
 		return
 	}
-	err = sh.SocietyController.DeleteSociety(socID)
+	err = sh.SocietyController.Delete(socID)
 	if err != nil {
 		response.HTTPError(w, err)
 		return

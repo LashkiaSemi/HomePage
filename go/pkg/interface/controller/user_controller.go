@@ -7,26 +7,28 @@ import (
 	"homepage/pkg/usecase/interactor"
 )
 
+// UserController コントローラ
 type UserController interface {
-	ShowUsers() (GetUsersResponse, error)
-	ShowUserByUserID(userID int) (GetUserResponse, error)
-	CreateUser(req *UpdateUserRequest) (GetUserResponse, error)
-	UpdateUser(userID int, req *UpdateUserRequest) (GetUserResponse, error)
-	DeleteUser(userID int) error
+	ShowAll() (GetUsersResponse, error)
+	ShowByID(userID int) (GetUserResponse, error)
+	Create(req *UpdateUserRequest) (GetUserResponse, error)
+	Update(userID int, req *UpdateUserRequest) (GetUserResponse, error)
+	Delete(userID int) error
 }
 
 type userController struct {
 	UserInteractor interactor.UserInteractor
 }
 
+// NewUserController コントローラの作成
 func NewUserController(ui interactor.UserInteractor) UserController {
 	return &userController{
 		UserInteractor: ui,
 	}
 }
 
-func (uc *userController) ShowUsers() (res GetUsersResponse, err error) {
-	users, err := uc.UserInteractor.FetchUsers()
+func (uc *userController) ShowAll() (res GetUsersResponse, err error) {
+	users, err := uc.UserInteractor.FetchAll()
 	if err != nil {
 		return
 	}
@@ -44,17 +46,18 @@ func (uc *userController) ShowUsers() (res GetUsersResponse, err error) {
 	return
 }
 
+// GetUsersResponse 複数
 type GetUsersResponse struct {
 	Users []GetUserResponse `json:"users"`
 }
 
-func (uc *userController) ShowUserByUserID(userID int) (res GetUserResponse, err error) {
+func (uc *userController) ShowByID(userID int) (res GetUserResponse, err error) {
 	if userID == 0 {
 		logger.Warn("ShowUserByUserID: userID is empty")
 		return res, domain.BadRequest(errors.New("userID is empty"))
 	}
 
-	user, err := uc.UserInteractor.FetchUserByUserID(userID)
+	user, err := uc.UserInteractor.FetchByID(userID)
 	if err != nil {
 		return
 	}
@@ -68,6 +71,7 @@ func (uc *userController) ShowUserByUserID(userID int) (res GetUserResponse, err
 	return
 }
 
+// GetUserResponse 一件データ
 type GetUserResponse struct {
 	ID         int    `json:"id"`
 	Name       string `json:"name"`
@@ -78,7 +82,7 @@ type GetUserResponse struct {
 	Comment    string `json:"comments"`
 }
 
-func (uc *userController) CreateUser(req *UpdateUserRequest) (res GetUserResponse, err error) {
+func (uc *userController) Create(req *UpdateUserRequest) (res GetUserResponse, err error) {
 	// 入力に対してのバリデーション
 	if req.Password == "" {
 		logger.Warn("CreateAccount: password is empty")
@@ -90,7 +94,7 @@ func (uc *userController) CreateUser(req *UpdateUserRequest) (res GetUserRespons
 	}
 
 	// interactor
-	user, err := uc.UserInteractor.AddUser(req.Name, req.Password, req.Role, req.StudentID, req.Department, req.Comment, req.Grade)
+	user, err := uc.UserInteractor.Add(req.Name, req.Password, req.Role, req.StudentID, req.Department, req.Comment, req.Grade)
 	if err != nil {
 		return
 	}
@@ -105,6 +109,7 @@ func (uc *userController) CreateUser(req *UpdateUserRequest) (res GetUserRespons
 	return
 }
 
+// UpdateUserRequest 新規、更新時リクエスト
 type UpdateUserRequest struct {
 	Name       string `json:"name"`
 	StudentID  string `json:"student_id"`
@@ -115,8 +120,8 @@ type UpdateUserRequest struct {
 	Comment    string `json:"comment"`
 }
 
-func (uc *userController) UpdateUser(userID int, req *UpdateUserRequest) (res GetUserResponse, err error) {
-	user, err := uc.UserInteractor.UpdateUser(userID, req.Name, req.Password, req.Role, req.StudentID, req.Department, req.Comment, req.Grade)
+func (uc *userController) Update(userID int, req *UpdateUserRequest) (res GetUserResponse, err error) {
+	user, err := uc.UserInteractor.Update(userID, req.Name, req.Password, req.Role, req.StudentID, req.Department, req.Comment, req.Grade)
 	if err != nil {
 		return
 	}
@@ -131,6 +136,6 @@ func (uc *userController) UpdateUser(userID int, req *UpdateUserRequest) (res Ge
 
 }
 
-func (uc *userController) DeleteUser(userID int) error {
-	return uc.UserInteractor.DeleteUser(userID)
+func (uc *userController) Delete(userID int) error {
+	return uc.UserInteractor.Delete(userID)
 }

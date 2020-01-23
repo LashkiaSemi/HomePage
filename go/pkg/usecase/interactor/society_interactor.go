@@ -8,11 +8,11 @@ import (
 
 // SocietyInteractor インタラクタ
 type SocietyInteractor interface {
-	FetchSocieties() (domain.Societies, error)
-	FetchSocietyByID(socID int) (domain.Society, error)
-	AddSociety(title, author, society, award string, date time.Time) (domain.Society, error)
-	UpdateSociety(socID int, title, author, society, award string, date time.Time) (domain.Society, error)
-	DeleteSociety(socID int) error
+	FetchAll() (domain.Societies, error)
+	FetchByID(socID int) (domain.Society, error)
+	Add(title, author, society, award string, date time.Time) (domain.Society, error)
+	Update(socID int, title, author, society, award string, date time.Time) (domain.Society, error)
+	Delete(socID int) error
 }
 
 type societyInteractor struct {
@@ -26,17 +26,17 @@ func NewSocietyInteractor(sr SocietyRepository) SocietyInteractor {
 	}
 }
 
-func (si *societyInteractor) FetchSocieties() (domain.Societies, error) {
-	return si.SocietyRepository.FindSocieties()
+func (si *societyInteractor) FetchAll() (domain.Societies, error) {
+	return si.SocietyRepository.FindAll()
 }
 
-func (si *societyInteractor) FetchSocietyByID(socID int) (domain.Society, error) {
-	return si.SocietyRepository.FindSocietyByID(socID)
+func (si *societyInteractor) FetchByID(socID int) (domain.Society, error) {
+	return si.SocietyRepository.FindByID(socID)
 }
 
-func (si *societyInteractor) AddSociety(title, author, society, award string, date time.Time) (soc domain.Society, err error) {
+func (si *societyInteractor) Add(title, author, society, award string, date time.Time) (soc domain.Society, err error) {
 	createdAt := time.Now()
-	id, err := si.SocietyRepository.StoreSociety(title, author, society, award, date, createdAt)
+	id, err := si.SocietyRepository.Store(title, author, society, award, date, createdAt)
 	if err != nil {
 		return
 	}
@@ -49,15 +49,15 @@ func (si *societyInteractor) AddSociety(title, author, society, award string, da
 	return
 }
 
-func (si *societyInteractor) UpdateSociety(socID int, title, author, society, award string, date time.Time) (soc domain.Society, err error) {
+func (si *societyInteractor) Update(socID int, title, author, society, award string, date time.Time) (soc domain.Society, err error) {
 	updatedAt := time.Now()
-	err = si.SocietyRepository.UpdateSociety(socID, title, author, society, award, date, updatedAt)
+	err = si.SocietyRepository.Update(socID, title, author, society, award, date, updatedAt)
 	if err != nil {
 		return soc, err
 	}
-	return si.SocietyRepository.FindSocietyByID(socID)
+	return si.SocietyRepository.FindByID(socID)
 }
 
-func (si *societyInteractor) DeleteSociety(socID int) error {
-	return si.SocietyRepository.DeleteSociety(socID)
+func (si *societyInteractor) Delete(socID int) error {
+	return si.SocietyRepository.Delete(socID)
 }
