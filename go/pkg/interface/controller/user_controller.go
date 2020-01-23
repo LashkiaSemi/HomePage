@@ -33,15 +33,7 @@ func (uc *userController) ShowAll() (res GetUsersResponse, err error) {
 		return
 	}
 	for _, user := range users {
-		res.Users = append(res.Users, GetUserResponse{
-			ID:         user.ID,
-			Name:       user.Name,
-			StudentID:  user.StudentID,
-			Role:       user.Role,
-			Department: user.Department,
-			Grade:      user.Grade,
-			Comment:    user.Comment,
-		})
+		res.Users = append(res.Users, convertUserToResponse(&user))
 	}
 	return
 }
@@ -61,14 +53,7 @@ func (uc *userController) ShowByID(userID int) (res GetUserResponse, err error) 
 	if err != nil {
 		return
 	}
-	res.ID = user.ID
-	res.Name = user.Name
-	res.StudentID = user.StudentID
-	res.Role = user.Role
-	res.Department = user.Department
-	res.Grade = user.Grade
-	res.Comment = user.Comment
-	return
+	return convertUserToResponse(&user), nil
 }
 
 // GetUserResponse 一件データ
@@ -100,13 +85,7 @@ func (uc *userController) Create(req *UpdateUserRequest) (res GetUserResponse, e
 	}
 
 	// resをつくる
-	res.Name = user.Name
-	res.StudentID = user.StudentID
-	res.Role = user.Role
-	res.Department = user.Department
-	res.Grade = user.Grade
-	res.Comment = user.Comment
-	return
+	return convertUserToResponse(&user), nil
 }
 
 // UpdateUserRequest 新規、更新時リクエスト
@@ -125,17 +104,22 @@ func (uc *userController) Update(userID int, req *UpdateUserRequest) (res GetUse
 	if err != nil {
 		return
 	}
-	res.ID = userID
-	res.Name = user.Name
-	res.StudentID = user.StudentID
-	res.Role = user.Role
-	res.Department = user.Department
-	res.Grade = user.Grade
-	res.Comment = user.Comment
-	return
+	return convertUserToResponse(&user), nil
 
 }
 
 func (uc *userController) Delete(userID int) error {
 	return uc.UserInteractor.Delete(userID)
+}
+
+func convertUserToResponse(user *domain.User) GetUserResponse {
+	return GetUserResponse{
+		ID:         user.ID,
+		Name:       user.Name,
+		StudentID:  user.StudentID,
+		Role:       user.Role,
+		Department: user.Department,
+		Grade:      user.Grade,
+		Comment:    user.Comment,
+	}
 }

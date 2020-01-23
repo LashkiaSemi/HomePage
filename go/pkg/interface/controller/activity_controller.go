@@ -36,11 +36,7 @@ func (ac *activityController) ShowAll() (res GetActivitiesResponse, err error) {
 	}
 
 	for _, act := range acts {
-		res.Activities = append(res.Activities, GetActivityResponse{
-			ID:       act.ID,
-			Date:     act.Date,
-			Activity: act.Activity,
-		})
+		res.Activities = append(res.Activities, convertActivityToResponse(&act))
 	}
 	return
 }
@@ -55,10 +51,7 @@ func (ac *activityController) ShowByID(actID int) (res GetActivityResponse, err 
 	if err != nil {
 		return
 	}
-	res.ID = act.ID
-	res.Date = act.Date
-	res.Activity = act.Activity
-	return
+	return convertActivityToResponse(&act), nil
 }
 
 // GetActivityResponse 一件
@@ -91,10 +84,7 @@ func (ac *activityController) Create(req *UpdateActivityRequest) (res GetActivit
 		return res, err
 	}
 
-	res.ID = act.ID
-	res.Date = act.Date
-	res.Activity = act.Activity
-	return
+	return convertActivityToResponse(&act), nil
 }
 
 // UpdateActivityRequest 新規、更新
@@ -118,13 +108,17 @@ func (ac *activityController) Update(actID int, req *UpdateActivityRequest) (res
 	if err != nil {
 		return res, err
 	}
-
-	res.ID = act.ID
-	res.Date = act.Date
-	res.Activity = act.Activity
-	return
+	return convertActivityToResponse(&act), nil
 }
 
 func (ac *activityController) Delete(actID int) error {
 	return ac.ActivityInteractor.Delete(actID)
+}
+
+func convertActivityToResponse(act *domain.Activity) GetActivityResponse {
+	return GetActivityResponse{
+		ID:       act.ID,
+		Date:     act.Date,
+		Activity: act.Activity,
+	}
 }

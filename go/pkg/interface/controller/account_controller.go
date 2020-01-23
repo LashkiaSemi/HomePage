@@ -34,14 +34,7 @@ func (ac *accountController) ShowByID(userID int) (res GetAccountResponse, err e
 	if err != nil {
 		return
 	}
-	res.ID = user.ID
-	res.Name = user.Name
-	res.StudentID = user.StudentID
-	res.Role = user.Role
-	res.Department = user.Department
-	res.Grade = user.Grade
-	res.Comment = user.Comment
-	return
+	return convertAccountToResponse(&user), nil
 }
 
 func (ac *accountController) ShowByStudentID(studentID string) (res GetAccountResponse, err error) {
@@ -49,14 +42,7 @@ func (ac *accountController) ShowByStudentID(studentID string) (res GetAccountRe
 	if err != nil {
 		return
 	}
-	res.ID = user.ID
-	res.Name = user.Name
-	res.StudentID = user.StudentID
-	res.Role = user.Role
-	res.Department = user.Department
-	res.Grade = user.Grade
-	res.Comment = user.Comment
-	return
+	return convertAccountToResponse(&user), nil
 }
 
 // GetAccountResponse アカウント情報の返却
@@ -88,13 +74,7 @@ func (ac *accountController) Create(req *UpdateAccountRequest) (res GetAccountRe
 	}
 
 	// resをつくる
-	res.Name = user.Name
-	res.StudentID = user.StudentID
-	res.Role = user.Role
-	res.Department = user.Department
-	res.Grade = user.Grade
-	res.Comment = user.Comment
-	return
+	return convertAccountToResponse(&user), nil
 }
 
 // UpdateAccountRequest アカウントの作成、更新のリクエスト
@@ -114,14 +94,7 @@ func (ac *accountController) Update(userID int, req *UpdateAccountRequest) (res 
 		return res, err
 	}
 
-	res.ID = userID
-	res.Name = user.Name
-	res.StudentID = user.StudentID
-	res.Role = user.Role
-	res.Department = user.Department
-	res.Grade = user.Grade
-	res.Comment = user.Comment
-	return
+	return convertAccountToResponse(&user), nil
 }
 
 func (ac *accountController) Delete(userID int) error {
@@ -160,4 +133,16 @@ type LoginRequest struct {
 // LoginResponse ログイン時のレスポンス
 type LoginResponse struct {
 	StudentID string `json:"student_id"`
+}
+
+func convertAccountToResponse(user *domain.User) GetAccountResponse {
+	return GetAccountResponse{
+		ID:         user.ID,
+		Name:       user.Name,
+		StudentID:  user.StudentID,
+		Role:       user.Role,
+		Department: user.Department,
+		Grade:      user.Grade,
+		Comment:    user.Comment,
+	}
 }

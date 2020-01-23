@@ -36,14 +36,7 @@ func (sc *societyController) ShowAll() (res GetSocietiesResponse, err error) {
 	}
 
 	for _, soc := range socs {
-		res.Societies = append(res.Societies, GetSocietyResponse{
-			ID:      soc.ID,
-			Title:   soc.Title,
-			Author:  soc.Author,
-			Society: soc.Society,
-			Award:   soc.Award,
-			Date:    soc.Date,
-		})
+		res.Societies = append(res.Societies, convertSocietyToResponse(&soc))
 	}
 	return
 }
@@ -68,13 +61,8 @@ func (sc *societyController) ShowByID(socID int) (res GetSocietyResponse, err er
 	if err != nil {
 		return
 	}
-	res.ID = soc.ID
-	res.Title = soc.Title
-	res.Author = soc.Author
-	res.Society = soc.Society
-	res.Award = soc.Award
-	res.Date = soc.Date
-	return
+	return convertSocietyToResponse(&soc), nil
+
 }
 
 func (sc *societyController) Create(req *UpdateSocietyRequest) (res GetSocietyResponse, err error) {
@@ -94,13 +82,10 @@ func (sc *societyController) Create(req *UpdateSocietyRequest) (res GetSocietyRe
 	}
 
 	soc, err := sc.SocietyInteractor.Add(req.Title, req.Author, req.Society, req.Award, date)
-	res.ID = soc.ID
-	res.Title = soc.Title
-	res.Author = soc.Author
-	res.Society = soc.Society
-	res.Award = soc.Award
-	res.Date = soc.Date
-	return
+	if err != nil {
+		return
+	}
+	return convertSocietyToResponse(&soc), nil
 }
 
 // UpdateSocietyRequest 作成と更新の時のリクエスト
@@ -122,15 +107,23 @@ func (sc *societyController) Update(socID int, req *UpdateSocietyRequest) (res G
 		}
 	}
 	soc, err := sc.SocietyInteractor.Update(socID, req.Title, req.Author, req.Society, req.Award, date)
-	res.ID = soc.ID
-	res.Title = soc.Title
-	res.Author = soc.Author
-	res.Society = soc.Society
-	res.Award = soc.Award
-	res.Date = soc.Date
-	return
+	if err != nil {
+		return
+	}
+	return convertSocietyToResponse(&soc), nil
 }
 
 func (sc *societyController) Delete(socID int) error {
 	return sc.SocietyInteractor.Delete(socID)
+}
+
+func convertSocietyToResponse(soc *domain.Society) GetSocietyResponse {
+	return GetSocietyResponse{
+		ID:      soc.ID,
+		Title:   soc.Title,
+		Author:  soc.Author,
+		Society: soc.Society,
+		Award:   soc.Award,
+		Date:    soc.Date,
+	}
 }

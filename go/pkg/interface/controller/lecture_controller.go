@@ -2,6 +2,8 @@ package controller
 
 import "homepage/pkg/usecase/interactor"
 
+import "homepage/pkg/domain"
+
 // LectureController コントローラ
 type LectureController interface {
 	ShowAll() (GetLecturesResponse, error)
@@ -28,21 +30,7 @@ func (lc *lectureController) ShowAll() (res GetLecturesResponse, err error) {
 		return
 	}
 	for _, lec := range lecs {
-		res.Lectures = append(res.Lectures, GetLectureResponse{
-			ID:      lec.ID,
-			Title:   lec.Title,
-			File:    lec.File,
-			Comment: lec.Comment,
-			User: GetUserResponse{
-				ID:         lec.User.ID,
-				Name:       lec.User.Name,
-				StudentID:  lec.User.StudentID,
-				Department: lec.User.Department,
-				Grade:      lec.User.Grade,
-				Comment:    lec.User.Comment,
-				Role:       lec.User.Role,
-			},
-		})
+		res.Lectures = append(res.Lectures, convertLectureToResponse(&lec))
 	}
 	return
 }
@@ -52,18 +40,8 @@ func (lc *lectureController) ShowByID(lecID int) (res GetLectureResponse, err er
 	if err != nil {
 		return
 	}
-	res.ID = lec.ID
-	res.Title = lec.Title
-	res.File = lec.File
-	res.Comment = lec.Comment
-	res.User.ID = lec.User.ID
-	res.User.Name = lec.User.Name
-	res.User.StudentID = lec.User.StudentID
-	res.User.Role = lec.User.Role
-	res.User.Department = lec.User.Department
-	res.User.Grade = lec.User.Grade
-	res.User.Comment = lec.User.Comment
-	return
+	return convertLectureToResponse(&lec), nil
+
 }
 
 func (lc *lectureController) Create(userID int, req *UpdateLectureRequest) (res GetLectureResponse, err error) {
@@ -71,18 +49,8 @@ func (lc *lectureController) Create(userID int, req *UpdateLectureRequest) (res 
 	if err != nil {
 		return
 	}
-	res.ID = lec.ID
-	res.Title = lec.Title
-	res.File = lec.File
-	res.Comment = lec.Comment
-	res.User.ID = lec.User.ID
-	res.User.Name = lec.User.Name
-	res.User.StudentID = lec.User.StudentID
-	res.User.Role = lec.User.Role
-	res.User.Department = lec.User.Department
-	res.User.Grade = lec.User.Grade
-	res.User.Comment = lec.User.Comment
-	return
+	return convertLectureToResponse(&lec), nil
+
 }
 
 func (lc *lectureController) Update(lecID, userID int, req *UpdateLectureRequest) (res GetLectureResponse, err error) {
@@ -90,18 +58,7 @@ func (lc *lectureController) Update(lecID, userID int, req *UpdateLectureRequest
 	if err != nil {
 		return
 	}
-	res.ID = lec.ID
-	res.Title = lec.Title
-	res.File = lec.File
-	res.Comment = lec.Comment
-	res.User.ID = lec.User.ID
-	res.User.Name = lec.User.Name
-	res.User.StudentID = lec.User.StudentID
-	res.User.Role = lec.User.Role
-	res.User.Department = lec.User.Department
-	res.User.Grade = lec.User.Grade
-	res.User.Comment = lec.User.Comment
-	return
+	return convertLectureToResponse(&lec), nil
 }
 
 func (lc *lectureController) Delete(lecID int) error {
@@ -127,4 +84,14 @@ type UpdateLectureRequest struct {
 	Title   string `json:"title"`
 	File    string `json:"file"`
 	Comment string `json:"comment"`
+}
+
+func convertLectureToResponse(lec *domain.Lecture) GetLectureResponse {
+	return GetLectureResponse{
+		ID:      lec.ID,
+		Title:   lec.Title,
+		File:    lec.File,
+		Comment: lec.Comment,
+		User:    convertUserToResponse(&lec.User),
+	}
 }
