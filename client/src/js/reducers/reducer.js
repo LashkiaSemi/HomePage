@@ -1,19 +1,29 @@
-import { ADD_USER } from '../constants/action-types'
+import { LOADED_JOBS, SHOW_LOADING, HIDE_LOADING } from '../constants/action-types'
+import { combineReducers } from 'redux'
 
-const initialState = {
-    sessions: [],
-    users: [] // TODO: 後でけす。。。か？
-}
-
-function rootReducer(state = initialState, action) {
-    switch(action.type) {
-        case ADD_USER:
-            return Object.assign({}, state, {
-                users: state.users.concat(action.payload)
-            })
+function isLoaded(state=false, action) {
+    switch (action.type){
+        case SHOW_LOADING:
+            return true
+        case HIDE_LOADING:
+            return false
         default:
             return state
     }
 }
+
+function jobs(state=[], action) {
+    switch(action.type) {
+        case LOADED_JOBS:
+            return state.concat(action.payload.data.jobs)
+        default:
+            return state
+    }
+}
+
+const rootReducer = combineReducers({
+    isLoaded,
+    jobs,
+})
 
 export default rootReducer

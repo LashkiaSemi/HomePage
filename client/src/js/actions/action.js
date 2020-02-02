@@ -1,8 +1,19 @@
-import { ADD_USER } from '../constants/action-types'
+import { FETCH_JOBS, SHOW_LOADING, HIDE_LOADING } from '../constants/action-types'
 
-export function addUser(payload) {
+export function fetchJobs() {
     return {
-        type: ADD_USER,
-        payload
+        type: FETCH_JOBS,
+    }
+}
+
+export function showLoading() {
+    return {
+        type: SHOW_LOADING
+    }
+}
+
+export function hideLoading(){
+    return {
+        type: HIDE_LOADING
     }
 }

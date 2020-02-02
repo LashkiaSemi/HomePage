@@ -1,13 +1,21 @@
 import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
+
+import '../../css/homepage.css'
+import Header from './header/Header'
+import Container from './container/Container'
+import Footer from './footer/Footer'
 
 class App extends React.Component {
     render (){
         return (
-            <div>
-                <h1>
-                    App
-                </h1>
-            </div>
+            <>
+                <BrowserRouter>
+                    <Header />
+                    <Container />
+                    <Footer />
+                </BrowserRouter>
+            </>
         )
     }
 }
