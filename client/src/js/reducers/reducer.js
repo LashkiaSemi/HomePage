@@ -1,7 +1,7 @@
-import { LOADED_JOBS, SHOW_LOADING, HIDE_LOADING } from '../constants/action-types'
+import { LOADED_JOBS, LOADED_MEMBERS, SHOW_LOADING, HIDE_LOADING } from '../constants/action-types'
 import { combineReducers } from 'redux'
 
-function isLoaded(state=false, action) {
+function isLoading(state=false, action) {
     switch (action.type){
         case SHOW_LOADING:
             return true
@@ -12,17 +12,27 @@ function isLoaded(state=false, action) {
     }
 }
 
+function members(state=[], action) {
+    switch(action.type) {
+        case LOADED_MEMBERS:
+            return Object.assign([], action.payload.data.users)
+        default:
+            return state
+    }
+}
+
 function jobs(state=[], action) {
     switch(action.type) {
         case LOADED_JOBS:
-            return state.concat(action.payload.data.jobs)
+            return Object.assign([], action.payload.data.jobs)
         default:
             return state
     }
 }
 
 const rootReducer = combineReducers({
-    isLoaded,
+    isLoading,
+    members,
     jobs,
 })
 

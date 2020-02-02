@@ -4,7 +4,7 @@ import { fetchJobs } from '../../../actions/action'
 
 const mapStateToProps = state => {
     return {
-        isLoaded: state.isLoaded,
+        isLoading: state.isLoading,
         jobs: state.jobs
     }
 }
@@ -23,7 +23,7 @@ class ConnectedJob extends React.Component {
                 <div className="list">
                     <ul>
                         {
-                            this.props.isLoaded
+                            this.props.isLoading
                             ? <li>Loading</li>
                             :
                             this.props.jobs.map((job) => (

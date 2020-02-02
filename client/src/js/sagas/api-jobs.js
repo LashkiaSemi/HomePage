@@ -1,7 +1,7 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
 import { FETCH_JOBS, LOADED_JOBS, API_ERROR } from '../constants/action-types'
 import { BASE_URL } from '../constants/config'
-import { get } from './request'
+import { get } from '../util/request'
 
 // watch
 export function* watchJobs() {

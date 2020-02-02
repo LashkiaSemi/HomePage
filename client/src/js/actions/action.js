@@ -1,4 +1,6 @@
-import { FETCH_JOBS, SHOW_LOADING, HIDE_LOADING } from '../constants/action-types'
+import { FETCH_JOBS, FETCH_MEMBERS, SHOW_LOADING, HIDE_LOADING } from '../constants/action-types'
+
+export const fetchMembers = () => { return {type: FETCH_MEMBERS} }
 
 export function fetchJobs() {
     return {

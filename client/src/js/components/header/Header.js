@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 // TODO: navigationのリンク
 // TODO: ログイン状態の保存?
@@ -33,7 +34,7 @@ const Navigation = (props) => (
 const Logo = (props) => (
     <div className="logo">
         {/* TODO: ここLinkにして */}
-        <a href="/">Lashkia研究室</a>
+        <Link to="/">Lashkia研究室</Link>
     </div>
 )
 
@@ -56,44 +57,43 @@ const Menu = (props) => {
 const MenuRow = (props) => {
     // TODO: 必要なら、何かしら、分岐のしょりをば
     return (
-        // TODO: link
-        <li><a>{props.menu.display}</a></li>
+        <li><Link to={`/${props.menu.id}`}>{props.menu.display}</Link></li>
     )
 }
 
 // Static datas
 const MENU = [
     {
-        id: "activity",
+        id: "activities",
         display: "活動記録",
     },
     {
-        id: "society",
+        id: "societies",
         display: "学会発表",
     },
     {
-        id: "research",
+        id: "researches",
         display: "卒業研究",
     },
     {
-        id: "job",
+        id: "jobs",
         display: "就職先",
     },
     {
-        id: "member",
+        id: "members",
         display: "メンバー",
     },
     {
-        id: "link",
+        id: "links",
         display: "外部リンク",
     },
     {
-        id: "equipment",
+        id: "equipments",
         display: "研究室備品",
         loginRequired: true,
     },
     {
-        id: "lecture",
+        id: "lectures",
         display: "レクチャー",
         loginRequired: true,
     },
