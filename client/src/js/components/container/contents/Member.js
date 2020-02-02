@@ -16,6 +16,7 @@ class ConnectedMember extends React.Component {
     }
 
     render() {
+        // TODO: isLoading
         return (
             <div className="content">
                 <h1 className="content-title h1-block">メンバー</h1>
@@ -40,7 +41,7 @@ const MemberGrade = (props) => {
         <div className="flex-block">
             {
                 members.map((memberList) => (
-                    <MemberList members={memberList} />
+                    <MemberList key={memberList.grade} members={memberList} />
                 ))
             }
         </div>
@@ -51,7 +52,7 @@ const MemberList = (props) => {
     return (
         <div className="list items-3">
             {/* TODO: 修士以上が滅んでる */}
-            <h3 class="list-title h3">{props.members.grade}年</h3> 
+            <h3 className="list-title h3">{props.members.grade}年</h3> 
             <ul>
                 {
                     props.members.members.map((member)=>(
@@ -71,7 +72,7 @@ const MemberGraduate = (props) => {
             <ul>
                 {
                     members.map((member)=>(
-                        <MemberRow member={member}/>
+                        <MemberRow key={member.id} member={member}/>
                     ))
                 }
             </ul>
