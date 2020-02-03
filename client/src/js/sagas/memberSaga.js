@@ -1,20 +1,23 @@
 import { takeEvery, put, call } from 'redux-saga/effects'
-import { FETCH_MEMBERS, LOADED_MEMBERS, FETCH_MEMBER, LOADED_MEMBER, API_ERROR, UPDATE_MEMBER, UPDATE_MEMBER_REQUEST } from '../constants/action-types'
+import { UPDATE_MEMBER_REQUEST, FETCH_MEMBERS_REQUEST, FETCH_MEMBER_REQUEST } from '../constants/action-types'
 import * as Request from '../util/request'
 import { BASE_URL } from '../constants/config'
-import { apiError, updateMemberSuccess } from '../actions/action'
+import { updateMemberFailure, updateMemberSuccess, 
+    fetchMembersSuccess, fetchMembersFailure, 
+    fetchMemberSuccess, fetchMemberFailure
+    } from '../actions/action'
 
 // members
 export function* watchMembers() {
-    yield takeEvery(FETCH_MEMBERS, fetchMembers)
+    yield takeEvery(FETCH_MEMBERS_REQUEST, fetchMembers)
 }
 
 function* fetchMembers() {
     try {
         const payload = yield call(getMembers)
-        yield put({type: LOADED_MEMBERS, payload})
+        yield put(fetchMembersSuccess(payload))
     } catch(e) {
-        yield put({type: API_ERROR, payload: e})
+        yield put(fetchMembersFailure(e))
     }
 }
 
@@ -24,7 +27,7 @@ function getMembers() {
 
 // member
 export function* watchMember() {
-    yield takeEvery(FETCH_MEMBER, fetchMember)
+    yield takeEvery(FETCH_MEMBER_REQUEST, fetchMember)
     yield takeEvery(UPDATE_MEMBER_REQUEST, updateMember)
 
 }
@@ -32,9 +35,9 @@ export function* watchMember() {
 function* fetchMember(action){
     try {
         const payload = yield call(getMember, action.payload.id)
-        yield put({type: LOADED_MEMBER, payload})
+        yield put(fetchMemberSuccess(payload))
     } catch(e) {
-        yield put({type: API_ERROR, payload: e})
+        yield put(fetchMemberFailure(e))
     }
 }
 
@@ -43,7 +46,7 @@ function* updateMember(action) {
         const payload = yield call(putMember, action.payload.id, action.payload.body)
         yield put(updateMemberSuccess(payload))
     } catch(e) {
-        yield put(apiError(e))
+        yield put(updateMemberFailure(e))
     }
 }
 

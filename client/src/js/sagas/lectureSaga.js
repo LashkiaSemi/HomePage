@@ -1,21 +1,22 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
-import { FETCH_LECTURES, LOADED_LECTURES, API_ERROR } from '../constants/action-types'
+import { FETCH_LECTURES_REQUEST } from '../constants/action-types'
 import { BASE_URL } from '../constants/config'
-import { get } from '../util/request'
+import * as Request from '../util/request'
+import { fetchLecturesSuccess, fetchLecturesFailure } from '../actions/action'
 
 export function* watchLectures() {
-    yield takeEvery(FETCH_LECTURES, fetchLectures)
+    yield takeEvery(FETCH_LECTURES_REQUEST, fetchLectures)
 }
 
 function* fetchLectures() {
     try {
         const payload = yield call(getLectures)
-        yield put({ type: LOADED_LECTURES, payload })
+        yield put(fetchLecturesSuccess(payload))
     } catch (e) {
-        yield put({ type: API_ERROR, payload: e })
+        yield put(fetchLecturesFailure(e))
     }
 }
 
 function getLectures() {
-    return get(BASE_URL + "/lectures")
+    return Request.get(BASE_URL + "/lectures")
 }

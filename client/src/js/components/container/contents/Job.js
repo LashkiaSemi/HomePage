@@ -1,6 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchJobs } from '../../../actions/action'
+import { fetchJobsRequest } from '../../../actions/action'
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchRequest: () => dispatch(fetchJobsRequest())
+    }
+}
 
 const mapStateToProps = state => {
     return {
@@ -11,7 +17,7 @@ const mapStateToProps = state => {
 
 class ConnectedJob extends React.Component {
     componentDidMount(){
-        this.props.fetchJobs()
+        this.props.fetchRequest()
     }
     render(){
         return (
@@ -47,7 +53,7 @@ const JobRow = (props) => {
 
 const Job = connect(
     mapStateToProps,
-    { fetchJobs }
+    mapDispatchToProps
 )(ConnectedJob)
 
 export default Job

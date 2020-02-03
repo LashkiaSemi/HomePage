@@ -1,6 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchEquipments } from '../../../actions/action'
+import { fetchEquipmentsRequest } from '../../../actions/action'
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchRequest: () => dispatch(fetchEquipmentsRequest())
+    }
+}
 
 const mapStateToProps = state => {
     return {
@@ -11,7 +17,7 @@ const mapStateToProps = state => {
 
 class ConnectedEquipment extends React.Component {
     componentDidMount() {
-        this.props.fetchEquipments()
+        this.props.fetchRequest()
     }
 
     render() {
@@ -61,7 +67,7 @@ const EquipmentRow = (props) => {
 
 const Equipment = connect(
     mapStateToProps,
-    { fetchEquipments }
+    mapDispatchToProps,
 )(ConnectedEquipment)
 
 export default Equipment

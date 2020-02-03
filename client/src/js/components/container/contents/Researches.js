@@ -1,6 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchResearches } from '../../../actions/action'
+import { fetchResearchesRequest } from '../../../actions/action'
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchRequest: () => dispatch(fetchResearchesRequest())
+    }
+}
 
 const mapStateToProps = state => {
     return {
@@ -11,7 +17,7 @@ const mapStateToProps = state => {
 
 class ConnectedResearch extends React.Component {
     componentDidMount(){
-        this.props.fetchResearches()
+        this.props.fetchRequest()
     }
 
     render() {
@@ -65,7 +71,7 @@ const ResearchRow = (props) => {
 
 const Research = connect(
     mapStateToProps,
-    { fetchResearches }
+    mapDispatchToProps,
 )(ConnectedResearch)
 
 export default Research

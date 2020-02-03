@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { updateMemberRequest, fetchMember } from '../../../actions/action'
+import { updateMemberRequest, fetchMemberRequest } from '../../../actions/action'
 
 const mapStateToProps = (state) => {
     return {
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchRequest: (id) => dispatch(fetchMember({id: id})),
+        fetchRequest: (id) => dispatch(fetchMemberRequest({id: id})),
         dispatchRequest: (id, form) => dispatch(updateMemberRequest({id: id, body: form}))
     }
 }

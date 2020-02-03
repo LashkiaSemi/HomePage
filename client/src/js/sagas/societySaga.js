@@ -1,21 +1,22 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
-import { FETCH_SOCIETIES, LOADED_SOCIETIES, API_ERROR } from '../constants/action-types'
+import { FETCH_SOCIETIES, LOADED_SOCIETIES, API_ERROR, FETCH_SOCIETIES_REQUEST } from '../constants/action-types'
 import { BASE_URL } from '../constants/config'
-import { get } from '../util/request'
+import * as Request from '../util/request'
+import { fetchSocietiesSuccess, fetchSocietiesFailure } from '../actions/action'
 
 export function* watchSocieties() {
-    yield takeEvery(FETCH_SOCIETIES, fetchSocieties)
+    yield takeEvery(FETCH_SOCIETIES_REQUEST, fetchSocieties)
 }
 
 function* fetchSocieties() {
     try {
         const payload = yield call(getSocieties)
-        yield put({ type: LOADED_SOCIETIES, payload })
+        yield put(fetchSocietiesSuccess(payload))
     } catch (e) {
-        yield put({ type: API_ERROR, payload: e })
+        yield put(fetchSocietiesFailure(e))
     }
 }
 
 function getSocieties() {
-    return get(BASE_URL + "/societies")
+    return Request.get(BASE_URL + "/societies")
 }

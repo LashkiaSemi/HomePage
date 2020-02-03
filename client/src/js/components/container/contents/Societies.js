@@ -1,6 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchSocieties } from '../../../actions/action'
+import { fetchSocietiesRequest } from '../../../actions/action'
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchRequest: () => dispatch(fetchSocietiesRequest())
+    }
+}
 
 const mapStateToProps = state => {
     return {
@@ -11,7 +17,7 @@ const mapStateToProps = state => {
 
 class ConnectedSociey extends React.Component {
     componentDidMount(){
-        this.props.fetchSocieties()
+        this.props.fetchRequest()
     }
 
     render(){
@@ -64,7 +70,7 @@ const SocietyRow = (props) => {
 
 const Society = connect(
     mapStateToProps,
-    { fetchSocieties }
+    mapDispatchToProps
 )(ConnectedSociey)
 
 export default Society

@@ -1,7 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { fetchMembers } from '../../../actions/action'
+import { fetchMembersRequest } from '../../../actions/action'
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchRequest: () => dispatch(fetchMembersRequest())
+    }
+}
 
 const mapStateToProps = state => {
     return {
@@ -12,7 +18,7 @@ const mapStateToProps = state => {
 
 class ConnectedMember extends React.Component {
     componentDidMount(){
-        this.props.fetchMembers()
+        this.props.fetchRequest()
     }
 
     render() {
@@ -91,7 +97,7 @@ const MemberRow = (props) => {
 
 const Member = connect(
     mapStateToProps,
-    { fetchMembers }
+    mapDispatchToProps
 )(ConnectedMember)
 
 export default Member

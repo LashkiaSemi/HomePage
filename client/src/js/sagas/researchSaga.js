@@ -1,21 +1,22 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
-import { FETCH_RESEARCHES, LOADED_RESEARCHES, API_ERROR } from '../constants/action-types'
+import { FETCH_RESEARCHES_REQUEST } from '../constants/action-types'
 import { BASE_URL } from '../constants/config'
-import { get } from '../util/request'
+import * as Request from '../util/request'
+import { fetchResearchesFailure, fetchResearchesSuccess } from '../actions/action'
 
 export function* watchResearches() {
-    yield takeEvery(FETCH_RESEARCHES, fetchResearches)
+    yield takeEvery(FETCH_RESEARCHES_REQUEST, fetchResearches)
 }
 
 function* fetchResearches() {
     try {
         const payload = yield call(getResearches)
-        yield put({ type: LOADED_RESEARCHES, payload })
+        yield put(fetchResearchesSuccess(payload))
     } catch (e) {
-        yield put({ type: API_ERROR, payload: e })
+        yield put(fetchResearchesFailure(e))
     }
 }
 
 function getResearches() {
-    return get(BASE_URL + "/researches")
+    return Request.get(BASE_URL + "/researches")
 }

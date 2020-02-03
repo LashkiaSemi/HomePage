@@ -1,21 +1,22 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
-import { FETCH_ACTIVITIES, LOADED_ACTIVITIES, API_ERROR } from '../constants/action-types'
+import { FETCH_ACTIVITIES_REQUEST } from '../constants/action-types'
 import { BASE_URL } from '../constants/config'
-import { get } from '../util/request'
+import * as Request from '../util/request'
+import { fetchActivitiesSuccess, fetchActivitiesFailure } from '../actions/action'
 
 export function* watchActivities() {
-    yield takeEvery(FETCH_ACTIVITIES, fetchActivities)
+    yield takeEvery(FETCH_ACTIVITIES_REQUEST, fetchActivities)
 }
 
 function* fetchActivities() {
     try {
         const payload = yield call(getActivities)
-        yield put({type: LOADED_ACTIVITIES, payload})
+        yield put(fetchActivitiesSuccess(payload))
     } catch(e) {
-        yield put({type: API_ERROR, payload: e})
+        yield put(fetchActivitiesFailure(e))
     }
 }
 
 function getActivities() {
-    return get(BASE_URL+"/activities")
+    return Request.get(BASE_URL+"/activities")
 }

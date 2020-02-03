@@ -1,44 +1,45 @@
-import { 
-    LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE,
-    FETCH_JOBS, FETCH_MEMBERS, FETCH_MEMBER,
-    FETCH_ACTIVITIES, FETCH_SOCIETIES,
-    FETCH_RESEARCHES, FETCH_EQUIPMENTS,
-    FETCH_LECTURES,
-    SHOW_LOADING, HIDE_LOADING, API_ERROR, UPDATE_MEMBER_REQUEST, UPDATE_MEMBER_SUCCESS, UPDATE_MEMBER_FAILURE,  } 
-    from '../constants/action-types'
+import * as Type from '../constants/action-types'
 
-export const loginRequest = (payload) => { return {type: LOGIN_REQUEST, payload} }
-export const loginSuccess = (payload) => { return {type: LOGIN_SUCCESS, payload} }
-export const loginFailure = (payload) => { return {type: LOGIN_FAILURE, payload} }
+export const loginRequest = (payload) => { return { type: Type.LOGIN_REQUEST, payload} }
+export const loginSuccess = (payload) => { return { type: Type.LOGIN_SUCCESS, payload} }
+export const loginFailure = (payload) => { return { type: Type.LOGIN_FAILURE, payload} }
 
-export const updateMemberRequest = (payload) => { return {type: UPDATE_MEMBER_REQUEST, payload} }
-export const updateMemberSuccess = (payload) => { return {type: UPDATE_MEMBER_SUCCESS, payload} }
-export const updateMemberFailure = (payload) => { return {type: UPDATE_MEMBER_FAILURE, payload} }
+export const updateMemberRequest = (payload) => { return { type: Type.UPDATE_MEMBER_REQUEST, payload} }
+export const updateMemberSuccess = (payload) => { return { type: Type.UPDATE_MEMBER_SUCCESS, payload} }
+export const updateMemberFailure = (payload) => { return { type: Type.UPDATE_MEMBER_FAILURE, payload} }
 
-export const fetchMembers = () => { return {type: FETCH_MEMBERS} }
-export const fetchMember = (payload) => { return {type: FETCH_MEMBER, payload} }
-export const fetchActivities = () => {return {type: FETCH_ACTIVITIES}}
-export const fetchSocieties = () => { return {type: FETCH_SOCIETIES} }
-export const fetchResearches = () => { return {type: FETCH_RESEARCHES} }
-export const fetchEquipments = () => { return {type: FETCH_EQUIPMENTS} }
-export const fetchLectures = () => { return {type: FETCH_LECTURES} }
+export const fetchMembersRequest = () => { return { type: Type.FETCH_MEMBERS_REQUEST } }
+export const fetchMembersSuccess = (payload) => { return { type: Type.FETCH_MEMBERS_SUCCESS, payload } }
+export const fetchMembersFailure = (payload) => { return { type: Type.FETCH_MEMBERS_FAILURE, payload } }
 
-export function fetchJobs() {
-    return {
-        type: FETCH_JOBS,
-    }
-}
+export const fetchMemberRequest = (payload) => { return { type: Type.FETCH_MEMBER_REQUEST, payload } }
+export const fetchMemberSuccess = (payload) => { return { type: Type.FETCH_MEMBER_SUCCESS, payload } }
+export const fetchMemberFailure = (payload) => { return { type: Type.FETCH_MEMBER_FAILURE, payload } }
 
-export function showLoading() {
-    return {
-        type: SHOW_LOADING
-    }
-}
+export const fetchActivitiesRequest = () => { return { type: Type.FETCH_ACTIVITIES_REQUEST } }
+export const fetchActivitiesSuccess = (payload) => { return { type: Type.FETCH_ACTIVITIES_SUCCESS, payload } }
+export const fetchActivitiesFailure = (payload) => { return { type: Type.FETCH_ACTIVITIES_FAILURE, payload } }
 
-export function hideLoading(){
-    return {
-        type: HIDE_LOADING
-    }
-}
+export const fetchSocietiesRequest = () => { return { type: Type.FETCH_SOCIETIES_REQUEST } }
+export const fetchSocietiesSuccess = (payload) => { return { type: Type.FETCH_SOCIETIES_SUCCESS, payload } }
+export const fetchSocietiesFailure = (payload) => { return { type: Type.FETCH_SOCIETIES_FAILURE, payload } }
 
-export const apiError = (payload) => { return {type: API_ERROR, payload} }
+export const fetchResearchesRequest = () => { return { type: Type.FETCH_RESEARCHES_REQUEST } }
+export const fetchResearchesSuccess = (payload) => { return { type: Type.FETCH_RESEARCHES_SUCCESS, payload } }
+export const fetchResearchesFailure = (payload) => { return { type: Type.FETCH_RESEARCHES_FAILURE, payload } }
+
+export const fetchEquipmentsRequest = () => { return { type: Type.FETCH_EQUIPMENTS_REQUEST } }
+export const fetchEquipmentsSuccess = (payload) => { return { type: Type.FETCH_EQUIPMENTS_SUCCESS, payload } }
+export const fetchEquipmentsFailure = (payload) => { return { type: Type.FETCH_EQUIPMENTS_FAILURE, payload } }
+
+export const fetchLecturesRequest = () => { return { type: Type.FETCH_LECTURES_REQUEST } }
+export const fetchLecturesSuccess = (payload) => { return { type: Type.FETCH_LECTURES_SUCCESS, payload } }
+export const fetchLecturesFailure = (payload) => { return { type: Type.FETCH_LECTURES_FAILURE, payload } }
+
+export const fetchJobsRequest = () => { return { type: Type.FETCH_JOBS_REQUEST } }
+export const fetchJobsSuccess = (payload) => { return { type: Type.FETCH_JOBS_SUCCESS, payload } }
+export const fetchJobsFailure = (payload) => { return { type: Type.FETCH_JOBS_FAILURE, payload } }
+
+export const showLoading = () => { return { type: Type.SHOW_LOADING} }
+export const hideLoading = () => { return { type: Type.HIDE_LOADING} }
+export const apiError = (payload) => { return { type: Type.API_ERROR, payload} }

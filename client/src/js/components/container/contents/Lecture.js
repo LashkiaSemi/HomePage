@@ -1,6 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchLectures } from '../../../actions/action'
+import { fetchLecturesRequest } from '../../../actions/action'
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchRequest: () => dispatch(fetchLecturesRequest())
+    }
+}
 
 const mapStateToProps = state => {
     return {
@@ -11,7 +17,7 @@ const mapStateToProps = state => {
 
 class ConnectedLecture extends React.Component {
     componentDidMount() {
-        this.props.fetchLectures()
+        this.props.fetchRequest()
     }
 
     render() {
@@ -65,7 +71,7 @@ const LectureRow = (props) => {
 
 const Lecture = connect(
     mapStateToProps,
-    { fetchLectures }
+    mapDispatchToProps,
 )(ConnectedLecture)
 
 export default Lecture
