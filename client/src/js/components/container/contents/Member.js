@@ -17,6 +17,7 @@ class ConnectedMember extends React.Component {
 
     render() {
         // TODO: isLoading
+        console.log(this.props.members)
         return (
             <div className="content">
                 <h1 className="content-title h1-block">メンバー</h1>

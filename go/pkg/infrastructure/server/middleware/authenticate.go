@@ -45,7 +45,7 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		// }
 		userID, ok := sess.Values["userID"].(int)
 		if !ok || userID == 0 {
-			logger.Warn("userID is empty")
+			logger.Warn("middleware authenticate: userID is empty")
 			response.HTTPError(w, domain.Unauthorized(errors.New("userID is empty")))
 			return
 		}

@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"homepage/conf"
 	"homepage/pkg/domain/logger"
 	"net/http"
 )
@@ -43,7 +44,7 @@ func (s *server) Handle(endpoint string, apiFunc http.HandlerFunc) {
 func httpSetting(apiFunc http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		// CORS対応
-		writer.Header().Add("Access-Control-Allow-Origin", "*") // client server
+		writer.Header().Add("Access-Control-Allow-Origin", conf.ClientServerAddr) // client server
 		writer.Header().Add("Access-Control-Allow-Headers", "Content-Type,Accept,Origin")
 		writer.Header().Add("Access-Control-Allow-Credentials", "true")
 		writer.Header().Add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE")

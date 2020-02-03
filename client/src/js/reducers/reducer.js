@@ -2,8 +2,8 @@ import {
     LOADED_JOBS, LOADED_MEMBERS,
     LOADED_ACTIVITIES, LOADED_SOCIETIES,
     LOADED_RESEARCHES, LOADED_EQUIPMENTS,
-    LOADED_LECTURES,
-    SHOW_LOADING, HIDE_LOADING } from '../constants/action-types'
+    LOADED_LECTURES, LOADED_MEMBER,
+    SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST } from '../constants/action-types'
 import { combineReducers } from 'redux'
 
 function isLoading(state=false, action) {
@@ -12,6 +12,21 @@ function isLoading(state=false, action) {
             return true
         case HIDE_LOADING:
             return false
+        default:
+            return state
+    }
+}
+
+// TODO: なんとかしろ
+function login(state=[], action) {
+    switch(action.type) {
+        case LOGIN_SUCCESS:
+            // sessionを...
+            // TODO: 同じsessionがupdateされない。というかこの辺の管理どうしろと？
+            return Object.assign([], state, state.concat({user_id:action.payload.data.user_id, }))
+        case LOGIN_FAILURE:
+            console.log("reducer: login failure")
+            return state
         default:
             return state
     }
@@ -53,6 +68,18 @@ function members(state=[], action) {
     }
 }
 
+// membersに統合してしまってもいいかもしらん
+function member(state={}, action) {
+    switch(action.type) {
+        case LOADED_MEMBER:
+            return Object.assign({}, action.payload.data)
+        case UPDATE_MEMBER_REQUEST:
+            return Object.assign({}, action.payload.data)
+        default:
+            return state
+    }
+}
+
 function jobs(state=[], action) {
     switch(action.type) {
         case LOADED_JOBS:
@@ -86,9 +113,11 @@ const rootReducer = combineReducers({
     societies,
     researches,
     members,
+    member,
     jobs,
     equipments,
     lectures,
+    login,
 })
 
 export default rootReducer

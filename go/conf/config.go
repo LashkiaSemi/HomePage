@@ -1,10 +1,17 @@
 package conf
 
+// client serverの情報
+const (
+	ClientServerAddr = "http://localhost:3000"
+)
+
+// cookieのこと
 const (
 	CookieName   = "_l_semi_homepage_session"
 	CookieMaxAge = 3600 * 1
 )
 
+// formatまわり
 const (
 	DatetimeFormat    = "2006/01/02 15:04:05"
 	DateFormat        = "2006/01/02"

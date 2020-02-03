@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// ActivityController コントローラ
 type ActivityController interface {
 	ShowActivities() (GetActivitiesResponse, error)
 	ShowActivityByID(actID int) (GetActivityResponse, error)
@@ -21,6 +22,7 @@ type activityController struct {
 	ActivityInteractor interactor.ActivityInteractor
 }
 
+// NewActivityController コントローラを作成する
 func NewActivityController(ai interactor.ActivityInteractor) ActivityController {
 	return &activityController{
 		ActivityInteractor: ai,
@@ -43,6 +45,7 @@ func (ac *activityController) ShowActivities() (res GetActivitiesResponse, err e
 	return
 }
 
+// GetActivitiesResponse レスポンス
 type GetActivitiesResponse struct {
 	Activities []GetActivityResponse `json:"activities"`
 }
@@ -58,6 +61,7 @@ func (ac *activityController) ShowActivityByID(actID int) (res GetActivityRespon
 	return
 }
 
+// GetActivityResponse レスポンス
 type GetActivityResponse struct {
 	ID       int    `json:"id"`
 	Date     string `json:"date"`
@@ -93,6 +97,7 @@ func (ah *activityController) CreateActivity(req *UpdateActivityRequest) (res Ge
 	return
 }
 
+// UpdateActivityRequest 新規、更新時のbody
 type UpdateActivityRequest struct {
 	Date     string `json:"date"`
 	Activity string `json:"activity"`

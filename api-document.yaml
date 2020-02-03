@@ -17,7 +17,7 @@ tags:
     description: '学会発表のcrud。owner, adminまわりが編集できるやつ'
   - name: 'research'
     description: '卒業研究のcrud'
-  - name: 'employment'
+  - name: 'job'
     description: '就職先のcrud'
   - name: 'equipment'
     description: '備品のcrud'
@@ -25,11 +25,13 @@ tags:
     description: 'レクチャーのcrud'
   - name: 'tag'
     description: 'タグのcrud'
+  
 
 paths:
   /login:
     post:
       summary: 'ログイン'
+      description: 'ログインしたら、クッキーに情報が乗ります。userIDとsessionIDをvalueとして持った子です'
       tags:
         - 'auth'
       requestBody:
@@ -598,11 +600,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
   
-  /employments:
+  /jobs:
     get:
       summary: '就職先の全件取得'
       tags:
-        - 'employment'
+        - 'job'
       responses:
         '200':
           description: '企業の配列'
@@ -624,7 +626,7 @@ paths:
       summary: '就職先の追加'
       description: 'ユーザがowner/adminである必要がある'
       tags:
-        - 'employment'
+        - 'job'
       parameters:
         - $ref: '#/components/parameters/SessionToken'
       requestBody:
@@ -642,11 +644,11 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /employments/{id}:
+  /jobs/{id}:
     get:
       summary: '就職先を一件取得'
       tags:
-        - 'employment'
+        - 'job'
       parameters:
         - name: 'id'
           in: 'path'
@@ -668,7 +670,7 @@ paths:
       summary: '就職先のデータを更新'
       description: 'ユーザがowner/adminである必要がある'
       tags:
-        - 'employment'
+        - 'job'
       parameters:
         - $ref: '#/components/parameters/SessionToken'
         - name: 'id'
@@ -695,7 +697,7 @@ paths:
       summary: '就職先のデータを削除'
       description: 'ユーザがowner/adminである必要がある'
       tags:
-        - 'employment'
+        - 'job'
       parameters:
         - $ref: '#/components/parameters/SessionToken'
         - name: 'id'
@@ -1073,7 +1075,13 @@ components:
     LoginResponse:
       type: 'object'
       properties:
+        user_id:
+          type: 'integer'
         student_id:
+          type: 'string'
+        session_id:
+          type: 'string'
+        role:
           type: 'string'
     GetUserResponse:
       type: 'object'
@@ -1188,10 +1196,14 @@ components:
           type: 'integer'
         company:
           type: 'string'
+        job:
+          type: 'string'
     UpdateEmploymentRequest:
       type: 'object'
       properties:
         company:
+          type: 'string'
+        job:
           type: 'string'
     GetEquipmentResponse:
       type: 'object'

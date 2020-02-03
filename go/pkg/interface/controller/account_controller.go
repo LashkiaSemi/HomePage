@@ -147,7 +147,10 @@ func (ac *accountController) Login(req *LoginRequest) (res LoginResponse, sess d
 	}
 
 	// れすぽんす
+	res.UserID = sess.UserID
+	res.SessionID = sess.SessionID
 	res.StudentID = req.StudentID
+	res.Role = sess.Role
 	return
 }
 
@@ -159,5 +162,8 @@ type LoginRequest struct {
 
 // LoginResponse ログイン時のレスポンス
 type LoginResponse struct {
+	UserID    int    `json:"user_id"`
 	StudentID string `json:"student_id"`
+	SessionID string `json:"session_id"`
+	Role      string `json:"role"`
 }
