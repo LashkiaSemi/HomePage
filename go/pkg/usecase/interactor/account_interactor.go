@@ -8,13 +8,13 @@ import (
 	"github.com/google/uuid"
 )
 
-// AccountInteractor
+// AccountInteractor インタラクタ
 type AccountInteractor interface {
-	FetchAccountByUserID(userID int) (domain.User, error)
-	FetchAccountByStudentID(studentID string) (domain.User, error)
-	AddAccount(name, password, role, studentID, department, comment string, grade int) (domain.User, error)
-	UpdateAccount(userID int, name, password, role, studentID, department, comment string, grade int) (domain.User, error)
-	DeleteAccount(userID int) error
+	FetchByID(userID int) (domain.User, error)
+	FetchByStudentID(studentID string) (domain.User, error)
+	Add(name, password, role, studentID, department, comment string, grade int) (domain.User, error)
+	Update(userID int, name, password, role, studentID, department, comment string, grade int) (domain.User, error)
+	Delete(userID int) error
 
 	// Login ログイン機能
 	Login(studentID, password string) (domain.Session, error)
@@ -25,6 +25,7 @@ type accountInteractor struct {
 	AuthHandler
 }
 
+// NewAccountInteractor インタラクタの作成
 func NewAccountInteractor(ar AccountRepository, ah AuthHandler) AccountInteractor {
 	return &accountInteractor{
 		AccountRepository: ar,
@@ -32,15 +33,15 @@ func NewAccountInteractor(ar AccountRepository, ah AuthHandler) AccountInteracto
 	}
 }
 
-func (ai *accountInteractor) FetchAccountByUserID(userID int) (domain.User, error) {
-	return ai.AccountRepository.FindAccountByUserID(userID)
+func (ai *accountInteractor) FetchByID(userID int) (domain.User, error) {
+	return ai.AccountRepository.FindByID(userID)
 }
 
-func (ai *accountInteractor) FetchAccountByStudentID(studentID string) (domain.User, error) {
-	return ai.AccountRepository.FindAccountByStudentID(studentID)
+func (ai *accountInteractor) FetchByStudentID(studentID string) (domain.User, error) {
+	return ai.AccountRepository.FindByStudentID(studentID)
 }
 
-func (ai *accountInteractor) AddAccount(name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
+func (ai *accountInteractor) Add(name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
 	// password hashing
 	hash, err := ai.AuthHandler.PasswordHash(password)
 	if err != nil {
@@ -56,7 +57,7 @@ func (ai *accountInteractor) AddAccount(name, password, role, studentID, departm
 	createdAt := time.Now()
 
 	// do repository
-	err = ai.AccountRepository.StoreAccount(name, hash, role, studentID, department, comment, grade, createdAt)
+	err = ai.AccountRepository.Store(name, hash, role, studentID, department, comment, grade, createdAt)
 	if err != nil {
 		return user, err
 	}
@@ -74,7 +75,7 @@ func (ai *accountInteractor) AddAccount(name, password, role, studentID, departm
 	return
 }
 
-func (ai *accountInteractor) UpdateAccount(userID int, name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
+func (ai *accountInteractor) Update(userID int, name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
 	// passwordあるならハッシュ
 	var hash string
 	if password != "" {
@@ -88,20 +89,20 @@ func (ai *accountInteractor) UpdateAccount(userID int, name, password, role, stu
 	// time
 	updatedAt := time.Now()
 
-	err = ai.AccountRepository.UpdateAccount(userID, name, hash, role, studentID, department, comment, grade, updatedAt)
-	user, err = ai.AccountRepository.FindAccountByUserID(userID)
+	err = ai.AccountRepository.Update(userID, name, hash, role, studentID, department, comment, grade, updatedAt)
+	user, err = ai.AccountRepository.FindByID(userID)
 	return
 }
 
-func (ai *accountInteractor) DeleteAccount(userID int) error {
+func (ai *accountInteractor) Delete(userID int) error {
 	// TODO: 実装して
-	err := ai.AccountRepository.DeleteAccount(userID)
+	err := ai.AccountRepository.Delete(userID)
 	return err
 }
 
 func (ai *accountInteractor) Login(studentID, password string) (sess domain.Session, err error) {
 	// データの取得
-	user, err := ai.AccountRepository.FindAccountByStudentID(studentID)
+	user, err := ai.AccountRepository.FindByStudentID(studentID)
 	if err != nil {
 		return sess, err
 	}

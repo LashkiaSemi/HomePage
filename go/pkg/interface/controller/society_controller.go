@@ -11,11 +11,11 @@ import (
 
 // SocietyController コントローラ
 type SocietyController interface {
-	ShowSocieties() (GetSocietiesResponse, error)
-	ShowSocietyByID(socID int) (GetSocietyResponse, error)
-	CreateSociety(req *UpdateSocietyRequest) (GetSocietyResponse, error)
-	UpdateSociety(socID int, req *UpdateSocietyRequest) (GetSocietyResponse, error)
-	DeleteSociety(socID int) error
+	ShowAll() (GetSocietiesResponse, error)
+	ShowByID(socID int) (GetSocietyResponse, error)
+	Create(req *UpdateSocietyRequest) (GetSocietyResponse, error)
+	Update(socID int, req *UpdateSocietyRequest) (GetSocietyResponse, error)
+	Delete(socID int) error
 }
 
 type societyController struct {
@@ -29,21 +29,14 @@ func NewSocietyController(si interactor.SocietyInteractor) SocietyController {
 	}
 }
 
-func (sc *societyController) ShowSocieties() (res GetSocietiesResponse, err error) {
-	socs, err := sc.SocietyInteractor.FetchSocieties()
+func (sc *societyController) ShowAll() (res GetSocietiesResponse, err error) {
+	socs, err := sc.SocietyInteractor.FetchAll()
 	if err != nil {
 		return
 	}
 
 	for _, soc := range socs {
-		res.Societies = append(res.Societies, GetSocietyResponse{
-			ID:      soc.ID,
-			Title:   soc.Title,
-			Author:  soc.Author,
-			Society: soc.Society,
-			Award:   soc.Award,
-			Date:    soc.Date,
-		})
+		res.Societies = append(res.Societies, convertSocietyToResponse(&soc))
 	}
 	return
 }
@@ -63,21 +56,16 @@ type GetSocietyResponse struct {
 	Date    string `json:"date"`
 }
 
-func (sc *societyController) ShowSocietyByID(socID int) (res GetSocietyResponse, err error) {
-	soc, err := sc.SocietyInteractor.FetchSocietyByID(socID)
+func (sc *societyController) ShowByID(socID int) (res GetSocietyResponse, err error) {
+	soc, err := sc.SocietyInteractor.FetchByID(socID)
 	if err != nil {
 		return
 	}
-	res.ID = soc.ID
-	res.Title = soc.Title
-	res.Author = soc.Author
-	res.Society = soc.Society
-	res.Award = soc.Award
-	res.Date = soc.Date
-	return
+	return convertSocietyToResponse(&soc), nil
+
 }
 
-func (sc *societyController) CreateSociety(req *UpdateSocietyRequest) (res GetSocietyResponse, err error) {
+func (sc *societyController) Create(req *UpdateSocietyRequest) (res GetSocietyResponse, err error) {
 	if req.Society == "" {
 		logger.Warn("createSociety: society is empty")
 		return res, domain.BadRequest(errors.New("society is empty"))
@@ -93,14 +81,11 @@ func (sc *societyController) CreateSociety(req *UpdateSocietyRequest) (res GetSo
 		return res, domain.BadRequest(errors.New("fail time parse"))
 	}
 
-	soc, err := sc.SocietyInteractor.AddSociety(req.Title, req.Author, req.Society, req.Award, date)
-	res.ID = soc.ID
-	res.Title = soc.Title
-	res.Author = soc.Author
-	res.Society = soc.Society
-	res.Award = soc.Award
-	res.Date = soc.Date
-	return
+	soc, err := sc.SocietyInteractor.Add(req.Title, req.Author, req.Society, req.Award, date)
+	if err != nil {
+		return
+	}
+	return convertSocietyToResponse(&soc), nil
 }
 
 // UpdateSocietyRequest 作成と更新の時のリクエスト
@@ -112,7 +97,7 @@ type UpdateSocietyRequest struct {
 	Date    string `json:"date"`
 }
 
-func (sc *societyController) UpdateSociety(socID int, req *UpdateSocietyRequest) (res GetSocietyResponse, err error) {
+func (sc *societyController) Update(socID int, req *UpdateSocietyRequest) (res GetSocietyResponse, err error) {
 	var date time.Time
 	if req.Date != "" {
 		date, err = time.Parse(conf.DateFormat, req.Date)
@@ -121,16 +106,24 @@ func (sc *societyController) UpdateSociety(socID int, req *UpdateSocietyRequest)
 			return res, domain.BadRequest(errors.New("fail time parse"))
 		}
 	}
-	soc, err := sc.SocietyInteractor.UpdateSociety(socID, req.Title, req.Author, req.Society, req.Award, date)
-	res.ID = soc.ID
-	res.Title = soc.Title
-	res.Author = soc.Author
-	res.Society = soc.Society
-	res.Award = soc.Award
-	res.Date = soc.Date
-	return
+	soc, err := sc.SocietyInteractor.Update(socID, req.Title, req.Author, req.Society, req.Award, date)
+	if err != nil {
+		return
+	}
+	return convertSocietyToResponse(&soc), nil
 }
 
-func (sc *societyController) DeleteSociety(socID int) error {
-	return sc.SocietyInteractor.DeleteSociety(socID)
+func (sc *societyController) Delete(socID int) error {
+	return sc.SocietyInteractor.Delete(socID)
+}
+
+func convertSocietyToResponse(soc *domain.Society) GetSocietyResponse {
+	return GetSocietyResponse{
+		ID:      soc.ID,
+		Title:   soc.Title,
+		Author:  soc.Author,
+		Society: soc.Society,
+		Award:   soc.Award,
+		Date:    soc.Date,
+	}
 }

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"homepage/pkg/domain"
 	"homepage/pkg/usecase/interactor"
 )
 
@@ -27,14 +28,7 @@ func NewResearchController(ri interactor.ResearchInteractor) ResearchController 
 func (rc *researchController) ShowAll() (res GetResearchesResponse, err error) {
 	datas, err := rc.ResearchInteractor.FetchAll()
 	for _, data := range datas {
-		res.Researches = append(res.Researches, GetResearchResponse{
-			ID:        data.ID,
-			Title:     data.Title,
-			Author:    data.Author,
-			File:      data.File,
-			Comment:   data.Comment,
-			CreatedAt: data.CreatedAt,
-		})
+		res.Researches = append(res.Researches, convertResearchToResponse(&data))
 	}
 	return
 }
@@ -59,13 +53,7 @@ func (rc *researchController) ShowByID(resID int) (res GetResearchResponse, err 
 	if err != nil {
 		return
 	}
-	res.ID = data.ID
-	res.Title = data.Title
-	res.Author = data.Author
-	res.File = data.File
-	res.Comment = data.Comment
-	res.CreatedAt = data.CreatedAt
-	return
+	return convertResearchToResponse(&data), nil
 }
 
 func (rc *researchController) Create(req *UpdateResearchRequest) (res GetResearchResponse, err error) {
@@ -73,13 +61,8 @@ func (rc *researchController) Create(req *UpdateResearchRequest) (res GetResearc
 	if err != nil {
 		return
 	}
-	res.ID = data.ID
-	res.Title = data.Title
-	res.Author = data.Author
-	res.File = data.File
-	res.Comment = data.Comment
-	res.CreatedAt = data.CreatedAt
-	return
+	return convertResearchToResponse(&data), nil
+
 }
 
 // UpdateResearchRequest 新規、更新時のリクエスト
@@ -96,15 +79,20 @@ func (rc *researchController) Update(resID int, req *UpdateResearchRequest) (res
 	if err != nil {
 		return
 	}
-	res.ID = data.ID
-	res.Title = data.Title
-	res.Author = data.Author
-	res.File = data.File
-	res.Comment = data.Comment
-	res.CreatedAt = data.CreatedAt
-	return
+	return convertResearchToResponse(&data), nil
 }
 
 func (rc *researchController) Delete(resID int) error {
 	return rc.ResearchInteractor.Delete(resID)
+}
+
+func convertResearchToResponse(res *domain.Research) GetResearchResponse {
+	return GetResearchResponse{
+		ID:        res.ID,
+		Title:     res.Title,
+		Author:    res.Author,
+		File:      res.File,
+		Comment:   res.Comment,
+		CreatedAt: res.CreatedAt,
+	}
 }

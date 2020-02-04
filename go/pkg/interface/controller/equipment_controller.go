@@ -2,6 +2,7 @@ package controller
 
 import (
 	"homepage/conf"
+	"homepage/pkg/domain"
 	"homepage/pkg/usecase/interactor"
 )
 
@@ -31,16 +32,7 @@ func (ec *equipmentController) ShowAll() (res GetEquipmentsResponse, err error) 
 		return
 	}
 	for _, equ := range equs {
-		res.Equipments = append(res.Equipments, GetEquipmentResponse{
-			ID:    equ.ID,
-			Name:  equ.Name,
-			Stock: equ.Stock,
-			Note:  equ.Note,
-			Tag: GetTagResponse{
-				ID:   equ.Tag.ID,
-				Name: equ.Tag.Name,
-			},
-		})
+		res.Equipments = append(res.Equipments, convertEquipmentToResponse(&equ))
 	}
 	return
 }
@@ -50,13 +42,7 @@ func (ec *equipmentController) ShowByID(equID int) (res GetEquipmentResponse, er
 	if err != nil {
 		return
 	}
-	res.ID = equ.ID
-	res.Name = equ.Name
-	res.Stock = equ.Stock
-	res.Note = equ.Note
-	res.Tag.ID = equ.Tag.ID
-	res.Tag.Name = equ.Tag.Name
-	return
+	return convertEquipmentToResponse(&equ), nil
 }
 
 func (ec *equipmentController) Create(req *UpdateEquipmentRequest) (res GetEquipmentResponse, err error) {
@@ -69,13 +55,7 @@ func (ec *equipmentController) Create(req *UpdateEquipmentRequest) (res GetEquip
 	if err != nil {
 		return
 	}
-	res.ID = equ.ID
-	res.Name = equ.Name
-	res.Stock = equ.Stock
-	res.Note = equ.Note
-	res.Tag.ID = equ.Tag.ID
-	res.Tag.Name = equ.Tag.Name
-	return
+	return convertEquipmentToResponse(&equ), nil
 }
 
 func (ec *equipmentController) Update(equID int, req *UpdateEquipmentRequest) (res GetEquipmentResponse, err error) {
@@ -88,13 +68,7 @@ func (ec *equipmentController) Update(equID int, req *UpdateEquipmentRequest) (r
 	if err != nil {
 		return
 	}
-	res.ID = equ.ID
-	res.Name = equ.Name
-	res.Stock = equ.Stock
-	res.Note = equ.Note
-	res.Tag.ID = equ.Tag.ID
-	res.Tag.Name = equ.Tag.Name
-	return
+	return convertEquipmentToResponse(&equ), nil
 }
 
 func (ec *equipmentController) Delete(equID int) error {
@@ -121,4 +95,14 @@ type UpdateEquipmentRequest struct {
 	Stock int    `json:"stock"`
 	Note  string `json:"note"`
 	TagID int    `json:"tag_id"`
+}
+
+func convertEquipmentToResponse(equ *domain.Equipment) GetEquipmentResponse {
+	return GetEquipmentResponse{
+		ID:    equ.ID,
+		Name:  equ.Name,
+		Stock: equ.Stock,
+		Note:  equ.Note,
+		Tag:   convertTagToResponse(&equ.Tag),
+	}
 }

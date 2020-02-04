@@ -83,13 +83,13 @@ func (ah *appHandler) ManageAccount() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			middleware.Authorized(ah.AccountHandler.GetAccount).ServeHTTP(w, r)
+			middleware.Authorized(ah.AccountHandler.Get).ServeHTTP(w, r)
 		case http.MethodPost:
-			ah.AccountHandler.CreateAccount(w, r)
+			ah.AccountHandler.Create(w, r)
 		case http.MethodPut:
-			middleware.Authorized(ah.AccountHandler.UpdateAccount).ServeHTTP(w, r)
+			middleware.Authorized(ah.AccountHandler.Update).ServeHTTP(w, r)
 		case http.MethodDelete:
-			middleware.Authorized(ah.AccountHandler.DeleteAccount).ServeHTTP(w, r)
+			middleware.Authorized(ah.AccountHandler.Delete).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
@@ -127,9 +127,9 @@ func (ah *appHandler) ManageUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			ah.UserHandler.GetUsers(w, r)
+			ah.UserHandler.GetAll(w, r)
 		case http.MethodPost:
-			middleware.Authorized(middleware.Permission(ah.UserHandler.CreateUser)).ServeHTTP(w, r)
+			middleware.Authorized(middleware.Permission(ah.UserHandler.Create)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
@@ -141,11 +141,11 @@ func (ah *appHandler) ManageOneUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			ah.UserHandler.GetUserByUserID(w, r)
+			ah.UserHandler.GetByID(w, r)
 		case http.MethodPut:
-			middleware.Authorized(middleware.Permission(ah.UserHandler.UpdateUser)).ServeHTTP(w, r)
+			middleware.Authorized(middleware.Permission(ah.UserHandler.Update)).ServeHTTP(w, r)
 		case http.MethodDelete:
-			middleware.Authorized(middleware.Permission(ah.UserHandler.DeleteUser)).ServeHTTP(w, r)
+			middleware.Authorized(middleware.Permission(ah.UserHandler.Delete)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
@@ -158,9 +158,9 @@ func (ah *appHandler) ManageActivity() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			ah.ActivityHandler.GetActivities(w, r)
+			ah.ActivityHandler.GetAll(w, r)
 		case http.MethodPost:
-			middleware.Authorized(middleware.Permission(ah.ActivityHandler.CreateActivity)).ServeHTTP(w, r)
+			middleware.Authorized(middleware.Permission(ah.ActivityHandler.Create)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
@@ -172,11 +172,11 @@ func (ah *appHandler) ManageOneActivity() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			ah.ActivityHandler.GetActivityByID(w, r)
+			ah.ActivityHandler.GetByID(w, r)
 		case http.MethodPut:
-			middleware.Authorized(middleware.Permission(ah.ActivityHandler.UpdateActivity)).ServeHTTP(w, r)
+			middleware.Authorized(middleware.Permission(ah.ActivityHandler.Update)).ServeHTTP(w, r)
 		case http.MethodDelete:
-			middleware.Authorized(middleware.Permission(ah.ActivityHandler.DeleteActivity)).ServeHTTP(w, r)
+			middleware.Authorized(middleware.Permission(ah.ActivityHandler.Delete)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
@@ -189,9 +189,9 @@ func (ah *appHandler) ManageSociety() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			ah.SocietyHandler.GetSocieties(w, r)
+			ah.SocietyHandler.GetAll(w, r)
 		case http.MethodPost:
-			middleware.Authorized(middleware.Permission(ah.SocietyHandler.CreateSociety)).ServeHTTP(w, r)
+			middleware.Authorized(middleware.Permission(ah.SocietyHandler.Create)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
@@ -203,11 +203,11 @@ func (ah *appHandler) ManageOneSociety() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			ah.SocietyHandler.GetSocietyByID(w, r)
+			ah.SocietyHandler.GetByID(w, r)
 		case http.MethodPut:
-			middleware.Authorized(middleware.Permission(ah.SocietyHandler.UpdateSociety)).ServeHTTP(w, r)
+			middleware.Authorized(middleware.Permission(ah.SocietyHandler.Update)).ServeHTTP(w, r)
 		case http.MethodDelete:
-			middleware.Authorized(middleware.Permission(ah.SocietyHandler.DeleteSociety)).ServeHTTP(w, r)
+			middleware.Authorized(middleware.Permission(ah.SocietyHandler.Delete)).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))

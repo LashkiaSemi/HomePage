@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"homepage/pkg/domain"
 	"homepage/pkg/usecase/interactor"
 )
 
@@ -30,11 +31,7 @@ func (ec *employController) ShowAll() (res GetJobsResponse, err error) {
 		return
 	}
 	for _, job := range jobs {
-		res.Jobs = append(res.Jobs, GetJobResponse{
-			ID:      job.ID,
-			Company: job.Company,
-			Job:     job.Job,
-		})
+		res.Jobs = append(res.Jobs, convertEmployToResponse(&job))
 	}
 	return
 }
@@ -56,10 +53,8 @@ func (ec *employController) ShowByID(jobID int) (res GetJobResponse, err error) 
 	if err != nil {
 		return
 	}
-	res.ID = job.ID
-	res.Company = job.Company
-	res.Job = job.Job
-	return
+	return convertEmployToResponse(&job), nil
+
 }
 
 func (ec *employController) Create(req *UpdateJobRequest) (res GetJobResponse, err error) {
@@ -67,10 +62,8 @@ func (ec *employController) Create(req *UpdateJobRequest) (res GetJobResponse, e
 	if err != nil {
 		return
 	}
-	res.ID = job.ID
-	res.Company = job.Company
-	res.Job = job.Job
-	return
+	return convertEmployToResponse(&job), nil
+
 }
 
 // UpdateJobRequest 新規と更新のリクエスト
@@ -84,12 +77,17 @@ func (ec *employController) Update(jobID int, req *UpdateJobRequest) (res GetJob
 	if err != nil {
 		return
 	}
-	res.ID = job.ID
-	res.Company = job.Company
-	res.Job = job.Job
-	return
+	return convertEmployToResponse(&job), nil
 }
 
 func (ec *employController) Delete(jobID int) error {
 	return ec.EmployInteractor.Delete(jobID)
+}
+
+func convertEmployToResponse(job *domain.Job) GetJobResponse {
+	return GetJobResponse{
+		ID:      job.ID,
+		Company: job.Company,
+		Job:     job.Job,
+	}
 }

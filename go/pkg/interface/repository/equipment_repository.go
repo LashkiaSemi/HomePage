@@ -53,6 +53,8 @@ func (er *equipmentRepository) FindByID(equID int) (equ domain.Equipment, err er
 			logger.Warn("equipment findByID: no content")
 			return equ, domain.NotFound(errors.New("content not found"))
 		}
+		logger.Error("equipment findByID: ", err)
+		return equ, domain.InternalServerError(err)
 	}
 	return
 }

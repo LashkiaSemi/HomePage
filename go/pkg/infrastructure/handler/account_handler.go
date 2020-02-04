@@ -15,19 +15,19 @@ import (
 	"net/http"
 )
 
-type accountHandler struct {
-	AccountController controller.AccountController
-}
-
 // AccountHandler アカウント管理ハンドラ
 type AccountHandler interface {
-	GetAccount(w http.ResponseWriter, r *http.Request)
-	CreateAccount(w http.ResponseWriter, r *http.Request)
-	UpdateAccount(w http.ResponseWriter, r *http.Request)
-	DeleteAccount(w http.ResponseWriter, r *http.Request)
+	Get(w http.ResponseWriter, r *http.Request)
+	Create(w http.ResponseWriter, r *http.Request)
+	Update(w http.ResponseWriter, r *http.Request)
+	Delete(w http.ResponseWriter, r *http.Request)
 
 	Login(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
+}
+
+type accountHandler struct {
+	AccountController controller.AccountController
 }
 
 // NewAccountHandler accountHandlerを作成
@@ -42,11 +42,11 @@ func NewAccountHandler(sh repository.SQLHandler, ah interactor.AuthHandler) Acco
 	}
 }
 
-func (ah *accountHandler) GetAccount(w http.ResponseWriter, r *http.Request) {
+func (ah *accountHandler) Get(w http.ResponseWriter, r *http.Request) {
 	// コンテキストからuserIDの取得
 	userID := dcontext.GetUserIDFromContext(r.Context())
 
-	res, err := ah.AccountController.ShowAccountByUserID(userID)
+	res, err := ah.AccountController.ShowByID(userID)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -56,7 +56,7 @@ func (ah *accountHandler) GetAccount(w http.ResponseWriter, r *http.Request) {
 	response.Success(w, res)
 }
 
-func (ah *accountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) {
+func (ah *accountHandler) Create(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		logger.Warn(err)
@@ -71,7 +71,7 @@ func (ah *accountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	res, err := ah.AccountController.CreateAccount(&req)
+	res, err := ah.AccountController.Create(&req)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -80,7 +80,7 @@ func (ah *accountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) 
 	response.Success(w, res)
 }
 
-func (ah *accountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) {
+func (ah *accountHandler) Update(w http.ResponseWriter, r *http.Request) {
 	userID := dcontext.GetUserIDFromContext(r.Context())
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -97,7 +97,7 @@ func (ah *accountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	res, err := ah.AccountController.UpdateAccount(userID, &req)
+	res, err := ah.AccountController.Update(userID, &req)
 	if err != nil {
 		logger.Error(err)
 		response.HTTPError(w, err)
@@ -118,16 +118,27 @@ func (ah *accountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) 
 
 }
 
-func (ah *accountHandler) DeleteAccount(w http.ResponseWriter, r *http.Request) {
+func (ah *accountHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	userID := dcontext.GetUserIDFromContext(r.Context())
 
-	err := ah.AccountController.DeleteAccount(userID)
+	// sessionの削除
+	sess, err := session.Store.Get(r, conf.CookieName)
+	if err != nil {
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+	sess.Options.MaxAge = -1
+	err = sess.Save(r, w)
+	if err != nil {
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+
+	err = ah.AccountController.Delete(userID)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
 	}
-
-	// TODO: セッションの削除
 
 	response.NoContent(w)
 }

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"homepage/pkg/domain"
 	"homepage/pkg/usecase/interactor"
 )
 
@@ -30,10 +31,7 @@ func (tc *tagController) ShowAll() (res GetTagsResponse, err error) {
 		return
 	}
 	for _, tag := range tags {
-		res.Tags = append(res.Tags, GetTagResponse{
-			ID:   tag.ID,
-			Name: tag.Name,
-		})
+		res.Tags = append(res.Tags, convertTagToResponse(&tag))
 	}
 	return
 }
@@ -43,9 +41,8 @@ func (tc *tagController) ShowByID(tagID int) (res GetTagResponse, err error) {
 	if err != nil {
 		return
 	}
-	res.ID = tag.ID
-	res.Name = tag.Name
-	return
+	return convertTagToResponse(&tag), nil
+
 }
 
 func (tc *tagController) Create(req *UpdateTagRequest) (res GetTagResponse, err error) {
@@ -53,9 +50,8 @@ func (tc *tagController) Create(req *UpdateTagRequest) (res GetTagResponse, err 
 	if err != nil {
 		return
 	}
-	res.ID = tag.ID
-	res.Name = tag.Name
-	return
+	return convertTagToResponse(&tag), nil
+
 }
 
 func (tc *tagController) Update(tagID int, req *UpdateTagRequest) (res GetTagResponse, err error) {
@@ -63,9 +59,7 @@ func (tc *tagController) Update(tagID int, req *UpdateTagRequest) (res GetTagRes
 	if err != nil {
 		return
 	}
-	res.ID = tag.ID
-	res.Name = tag.Name
-	return
+	return convertTagToResponse(&tag), nil
 }
 
 func (tc *tagController) Delete(tagID int) error {
@@ -86,4 +80,11 @@ type GetTagResponse struct {
 // UpdateTagRequest 新規、更新のリクエスト
 type UpdateTagRequest struct {
 	Name string `json:"name"`
+}
+
+func convertTagToResponse(tag *domain.Tag) GetTagResponse {
+	return GetTagResponse{
+		ID:   tag.ID,
+		Name: tag.Name,
+	}
 }

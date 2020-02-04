@@ -6,12 +6,13 @@ import (
 	"time"
 )
 
+// UserInteractor インたらクタ
 type UserInteractor interface {
-	FetchUsers() (domain.Users, error)
-	FetchUserByUserID(userID int) (domain.User, error)
-	AddUser(name, password, role, studentID, department, comment string, grade int) (domain.User, error)
-	UpdateUser(userID int, name, password, role, studentID, department, comment string, grade int) (domain.User, error)
-	DeleteUser(userID int) error
+	FetchAll() (domain.Users, error)
+	FetchByID(userID int) (domain.User, error)
+	Add(name, password, role, studentID, department, comment string, grade int) (domain.User, error)
+	Update(userID int, name, password, role, studentID, department, comment string, grade int) (domain.User, error)
+	Delete(userID int) error
 }
 
 type userInteractor struct {
@@ -19,6 +20,7 @@ type userInteractor struct {
 	AuthHandler
 }
 
+// NewUserInteractor インたらクタの作成
 func NewUserInteractor(ur UserRepository, ah AuthHandler) UserInteractor {
 	return &userInteractor{
 		UserRepository: ur,
@@ -26,15 +28,15 @@ func NewUserInteractor(ur UserRepository, ah AuthHandler) UserInteractor {
 	}
 }
 
-func (ui *userInteractor) FetchUsers() (domain.Users, error) {
-	return ui.UserRepository.FindUsers()
+func (ui *userInteractor) FetchAll() (domain.Users, error) {
+	return ui.UserRepository.FindAll()
 }
 
-func (ui *userInteractor) FetchUserByUserID(userID int) (domain.User, error) {
-	return ui.UserRepository.FindUserByUserID(userID)
+func (ui *userInteractor) FetchByID(userID int) (domain.User, error) {
+	return ui.UserRepository.FindByID(userID)
 }
 
-func (ui *userInteractor) AddUser(name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
+func (ui *userInteractor) Add(name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
 	// password hashing
 	hash, err := ui.AuthHandler.PasswordHash(password)
 	if err != nil {
@@ -50,7 +52,7 @@ func (ui *userInteractor) AddUser(name, password, role, studentID, department, c
 	createdAt := time.Now()
 
 	// do repository
-	err = ui.UserRepository.StoreUser(name, hash, role, studentID, department, comment, grade, createdAt)
+	err = ui.UserRepository.Store(name, hash, role, studentID, department, comment, grade, createdAt)
 	if err != nil {
 		return user, err
 	}
@@ -68,7 +70,7 @@ func (ui *userInteractor) AddUser(name, password, role, studentID, department, c
 	return
 }
 
-func (ui *userInteractor) UpdateUser(userID int, name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
+func (ui *userInteractor) Update(userID int, name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
 	var hash string
 	if password == "" {
 		hash, err = ui.AuthHandler.PasswordHash(password)
@@ -80,13 +82,13 @@ func (ui *userInteractor) UpdateUser(userID int, name, password, role, studentID
 
 	updatedAt := time.Now()
 
-	err = ui.UserRepository.UpdateUser(userID, name, hash, role, studentID, department, comment, grade, updatedAt)
+	err = ui.UserRepository.Update(userID, name, hash, role, studentID, department, comment, grade, updatedAt)
 	if err != nil {
 		return user, err
 	}
-	return ui.UserRepository.FindUserByUserID(userID)
+	return ui.UserRepository.FindByID(userID)
 }
 
-func (ui *userInteractor) DeleteUser(userID int) error {
-	return ui.UserRepository.DeleteUser(userID)
+func (ui *userInteractor) Delete(userID int) error {
+	return ui.UserRepository.Delete(userID)
 }

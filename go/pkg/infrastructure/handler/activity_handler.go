@@ -13,18 +13,20 @@ import (
 	"net/http"
 )
 
+// ActivityHandler ハンドラ
 type ActivityHandler interface {
-	GetActivities(w http.ResponseWriter, r *http.Request)
-	GetActivityByID(w http.ResponseWriter, r *http.Request)
-	CreateActivity(w http.ResponseWriter, r *http.Request)
-	UpdateActivity(w http.ResponseWriter, r *http.Request)
-	DeleteActivity(w http.ResponseWriter, r *http.Request)
+	GetAll(w http.ResponseWriter, r *http.Request)
+	GetByID(w http.ResponseWriter, r *http.Request)
+	Create(w http.ResponseWriter, r *http.Request)
+	Update(w http.ResponseWriter, r *http.Request)
+	Delete(w http.ResponseWriter, r *http.Request)
 }
 
 type activityHandler struct {
 	ActivityController controller.ActivityController
 }
 
+// NewActivityHandler ハンドラの作成
 func NewActivityHandler(sh repository.SQLHandler) ActivityHandler {
 	return &activityHandler{
 		ActivityController: controller.NewActivityController(
@@ -35,8 +37,8 @@ func NewActivityHandler(sh repository.SQLHandler) ActivityHandler {
 	}
 }
 
-func (ah *activityHandler) GetActivities(w http.ResponseWriter, r *http.Request) {
-	res, err := ah.ActivityController.ShowActivities()
+func (ah *activityHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+	res, err := ah.ActivityController.ShowAll()
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -45,7 +47,7 @@ func (ah *activityHandler) GetActivities(w http.ResponseWriter, r *http.Request)
 	response.Success(w, res)
 }
 
-func (ah *activityHandler) GetActivityByID(w http.ResponseWriter, r *http.Request) {
+func (ah *activityHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	actID, err := getIntParameter(r.URL.Path, "/activities/", "")
 	if err != nil {
 		logger.Warn("getActivity: can not get activityID from path")
@@ -53,7 +55,7 @@ func (ah *activityHandler) GetActivityByID(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	res, err := ah.ActivityController.ShowActivityByID(actID)
+	res, err := ah.ActivityController.ShowByID(actID)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -62,7 +64,7 @@ func (ah *activityHandler) GetActivityByID(w http.ResponseWriter, r *http.Reques
 	response.Success(w, res)
 }
 
-func (ah *activityHandler) CreateActivity(w http.ResponseWriter, r *http.Request) {
+func (ah *activityHandler) Create(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		logger.Warn(err)
@@ -77,7 +79,7 @@ func (ah *activityHandler) CreateActivity(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	res, err := ah.ActivityController.CreateActivity(&req)
+	res, err := ah.ActivityController.Create(&req)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -86,7 +88,7 @@ func (ah *activityHandler) CreateActivity(w http.ResponseWriter, r *http.Request
 	response.Success(w, res)
 }
 
-func (ah *activityHandler) UpdateActivity(w http.ResponseWriter, r *http.Request) {
+func (ah *activityHandler) Update(w http.ResponseWriter, r *http.Request) {
 	actID, err := getIntParameter(r.URL.Path, "/activities/", "")
 	if err != nil {
 		logger.Warn("updateActivity: can not get activityID from path")
@@ -108,7 +110,7 @@ func (ah *activityHandler) UpdateActivity(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	res, err := ah.ActivityController.UpdateActivity(actID, &req)
+	res, err := ah.ActivityController.Update(actID, &req)
 	if err != nil {
 		response.HTTPError(w, err)
 		return
@@ -117,7 +119,7 @@ func (ah *activityHandler) UpdateActivity(w http.ResponseWriter, r *http.Request
 
 }
 
-func (ah *activityHandler) DeleteActivity(w http.ResponseWriter, r *http.Request) {
+func (ah *activityHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	actID, err := getIntParameter(r.URL.Path, "/activities/", "")
 	if err != nil {
 		logger.Warn("deleteActivity: can not get activityID from path")
@@ -125,7 +127,7 @@ func (ah *activityHandler) DeleteActivity(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = ah.ActivityController.DeleteActivity(actID)
+	err = ah.ActivityController.Delete(actID)
 	if err != nil {
 		response.HTTPError(w, err)
 		return

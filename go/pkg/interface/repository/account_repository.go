@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"homepage/pkg/domain"
 	"homepage/pkg/domain/logger"
 	"homepage/pkg/usecase/interactor"
@@ -18,7 +19,7 @@ func NewAccountRepository(sh SQLHandler) interactor.AccountRepository {
 	}
 }
 
-func (ar *accountRepository) FindAccountByUserID(userID int) (user domain.User, err error) {
+func (ar *accountRepository) FindByID(userID int) (user domain.User, err error) {
 	row := ar.SQLHandler.QueryRow(
 		`SELECT users.id, name, password_digest, role, student_id, users.created_at, users.updated_at, department, grade, comments 
 		FROM users
@@ -28,14 +29,16 @@ func (ar *accountRepository) FindAccountByUserID(userID int) (user domain.User, 
 		userID)
 	if err = row.Scan(&user.ID, &user.Name, &user.Password, &user.Role, &user.StudentID, &user.CreatedAt, &user.UpdatedAt, &user.Department, &user.Grade, &user.Comment); err != nil {
 		if err != ar.SQLHandler.ErrNoRows() {
-			logger.Warn(err)
-			return user, domain.BadRequest(err)
+			logger.Warn("accoutn findByID: content not found")
+			return user, domain.NotFound(errors.New("content not found"))
 		}
+		logger.Error("account findByID: ", err)
+		return user, domain.InternalServerError(err)
 	}
 	return user, nil
 }
 
-func (ar *accountRepository) FindAccountByStudentID(studentID string) (user domain.User, err error) {
+func (ar *accountRepository) FindByStudentID(studentID string) (user domain.User, err error) {
 	row := ar.SQLHandler.QueryRow(
 		`SELECT users.id, name, password_digest, role, student_id, users.created_at, users.updated_at, department, grade, comments 
 		FROM users
@@ -45,15 +48,16 @@ func (ar *accountRepository) FindAccountByStudentID(studentID string) (user doma
 		studentID)
 	if err = row.Scan(&user.ID, &user.Name, &user.Password, &user.Role, &user.StudentID, &user.CreatedAt, &user.UpdatedAt, &user.Department, &user.Grade, &user.Comment); err != nil {
 		if err != ar.SQLHandler.ErrNoRows() {
-			logger.Warn(err)
-			domain.BadRequest(err)
-			return
+			logger.Warn("accoutn findByStudentID: content not found")
+			return user, domain.NotFound(errors.New("content not found"))
 		}
+		logger.Error("account findByStudentID: ", err)
+		return user, domain.InternalServerError(err)
 	}
 	return user, nil
 }
 
-func (ar *accountRepository) StoreAccount(name, password, role, studentID, department, comment string, grade int, createdAt time.Time) error {
+func (ar *accountRepository) Store(name, password, role, studentID, department, comment string, grade int, createdAt time.Time) error {
 	return transact(ar.SQLHandler, func(tx Tx) error {
 		ret, err := tx.Execute(
 			"INSERT INTO users(name, password_digest, role, student_id, created_at, updated_at) VALUES (?,?,?,?,?,?)",
@@ -78,7 +82,7 @@ func (ar *accountRepository) StoreAccount(name, password, role, studentID, depar
 	})
 }
 
-func (ar *accountRepository) UpdateAccount(userID int, name, password, role, studentID, department, comment string, grade int, updatedAt time.Time) error {
+func (ar *accountRepository) Update(userID int, name, password, role, studentID, department, comment string, grade int, updatedAt time.Time) error {
 	return transact(ar.SQLHandler, func(tx Tx) error {
 		// users table
 		values := map[string]interface{}{
@@ -116,7 +120,7 @@ func (ar *accountRepository) UpdateAccount(userID int, name, password, role, stu
 	})
 }
 
-func (ar *accountRepository) DeleteAccount(userID int) error {
+func (ar *accountRepository) Delete(userID int) error {
 	return transact(ar.SQLHandler, func(tx Tx) error {
 		if _, err := tx.Execute("DELETE FROM users WHERE id=?", userID); err != nil {
 			return err

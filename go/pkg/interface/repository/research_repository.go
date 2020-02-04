@@ -22,7 +22,7 @@ func NewResearchRepository(sh SQLHandler) interactor.ResearchRepository {
 func (rr *researchRepository) FindAll() (ress domain.Researches, err error) {
 	rows, err := rr.SQLHandler.Query("SELECT id, title, author, file, comments, created_at FROM researches")
 	if err != nil {
-		return ress, err
+		return
 	}
 	for rows.Next() {
 		var res domain.Research

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"homepage/pkg/domain"
 	"homepage/pkg/domain/logger"
 	"homepage/pkg/usecase/interactor"
@@ -18,7 +19,7 @@ func NewUserRepository(sh SQLHandler) interactor.UserRepository {
 	}
 }
 
-func (ur *userRepository) FindUsers() (users domain.Users, err error) {
+func (ur *userRepository) FindAll() (users domain.Users, err error) {
 	rows, err := ur.SQLHandler.Query(
 		`SELECT users.id, name, password_digest, role, student_id, users.created_at, users.updated_at, department, grade, comments 
 		FROM users
@@ -26,10 +27,6 @@ func (ur *userRepository) FindUsers() (users domain.Users, err error) {
 		ON users.id = introductions.user_id`,
 	)
 	if err != nil {
-		if err == ur.SQLHandler.ErrNoRows() {
-			logger.Warn(err)
-			return users, domain.BadRequest(err)
-		}
 		return users, domain.InternalServerError(err)
 	}
 
@@ -44,7 +41,7 @@ func (ur *userRepository) FindUsers() (users domain.Users, err error) {
 	return
 }
 
-func (ur *userRepository) FindUserByUserID(userID int) (user domain.User, err error) {
+func (ur *userRepository) FindByID(userID int) (user domain.User, err error) {
 	row := ur.SQLHandler.QueryRow(
 		`SELECT users.id, name, password_digest, role, student_id, users.created_at, users.updated_at, department, grade, comments 
 		FROM users
@@ -56,14 +53,16 @@ func (ur *userRepository) FindUserByUserID(userID int) (user domain.User, err er
 
 	if err := row.Scan(&user.ID, &user.Name, &user.Password, &user.Role, &user.StudentID, &user.CreatedAt, &user.UpdatedAt, &user.Department, &user.Grade, &user.Comment); err != nil {
 		if err == ur.SQLHandler.ErrNoRows() {
-			return user, domain.BadRequest(err)
+			logger.Warn("user findByID: content not found")
+			return user, domain.NotFound(errors.New("content not found"))
 		}
+		logger.Error("user findByID: ", err)
+		return user, domain.InternalServerError(err)
 	}
-
 	return
 }
 
-func (ur *userRepository) StoreUser(name, password, role, studentID, department, comment string, grade int, createdAt time.Time) error {
+func (ur *userRepository) Store(name, password, role, studentID, department, comment string, grade int, createdAt time.Time) error {
 	return transact(ur.SQLHandler, func(tx Tx) error {
 		ret, err := tx.Execute(
 			"INSERT INTO users(name, password_digest, role, student_id, created_at, updated_at) VALUES (?,?,?,?,?,?)",
@@ -88,7 +87,7 @@ func (ur *userRepository) StoreUser(name, password, role, studentID, department,
 	})
 }
 
-func (ur *userRepository) UpdateUser(userID int, name, password, role, studentID, department, comment string, grade int, updatedAt time.Time) error {
+func (ur *userRepository) Update(userID int, name, password, role, studentID, department, comment string, grade int, updatedAt time.Time) error {
 	return transact(ur.SQLHandler, func(tx Tx) error {
 		// users の更新
 		query, args, _ := makeUpdateQuery(
@@ -130,7 +129,7 @@ func (ur *userRepository) UpdateUser(userID int, name, password, role, studentID
 	})
 }
 
-func (ur *userRepository) DeleteUser(userID int) error {
+func (ur *userRepository) Delete(userID int) error {
 	return transact(ur.SQLHandler, func(tx Tx) error {
 		if _, err := tx.Execute("DELETE FROM users WHERE id=?", userID); err != nil {
 			return err
