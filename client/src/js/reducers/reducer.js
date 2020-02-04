@@ -10,7 +10,7 @@ import {
     SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST, UPDATE_MEMBER_SUCCESS, FETCH_ACCOUNT_SUCCESS, UPDATE_ACCOUNT_SUCCESS, FETCH_ACCOUNT_FAILURE, LOGOUT_SUCCESS, LOGOUT_FAILURE } from '../constants/action-types'
 import { combineReducers } from 'redux'
 
-import { STRAGE_KET } from '../constants/config'
+import { HOST_URL, STRAGE_KET } from '../constants/config'
 
 // TODO: reducerの分割した方がよくね？
 
@@ -32,7 +32,7 @@ function logged(state=[], action) {
             //TODO: 納得いかないw
             // localstrageにidをタンク
             localStorage.setItem(STRAGE_KET, action.payload.data.user_id)
-            window.location.href = "http://localhost:3000/"
+            window.location.href = HOST_URL
             return Object.assign([], state, state.concat({user_id:action.payload.data.user_id}))
         
         case LOGIN_FAILURE:
@@ -44,7 +44,7 @@ function logged(state=[], action) {
             // localstarageを消せ！
             localStorage.removeItem(STRAGE_KET)
             // TODO: redirect
-            window.location.href = "http://localhost:3000"
+            window.location.href = HOST_URL
             return state
         
         case LOGOUT_FAILURE:
