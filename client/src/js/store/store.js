@@ -6,7 +6,7 @@ import rootSaga from '../sagas/index'
 // init saga
 const sagaMiddleware = createSagaMiddleware()
 
-// TODO: 第二引数に、initStateをつけられるらしい
+// tips: 第二引数に、initStateをつけられるらしい
 // 初期化するならここ？
 const store = createStore(
     rootReducer,

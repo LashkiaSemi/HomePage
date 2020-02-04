@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { fetchMemberRequest } from '../../../actions/action'
 import { connect } from 'react-redux'
+import { STRAGE_KET } from '../../../constants/config'
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -17,13 +18,20 @@ const mapStateToProps = state => {
 }
 
 class ConnectedMemberDetail extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            id: this.props.match.params.id,
+            isEdit: localStorage.getItem(STRAGE_KET) === this.props.match.params.id
+        }
+    }
+
     componentDidMount(){
-        const id = this.props.match.params.id
-        this.props.fetchRequest(id)
+        this.props.fetchRequest(this.state.id)
     }
 
     render() {
-        // console.log(this.props.member)
         return (
             <div className="content">
                 <div className="card mt-50">
@@ -41,11 +49,15 @@ class ConnectedMemberDetail extends React.Component {
                         <div className="card-item">
                             <label className="label-block">コメント：{this.props.member.comment}</label>
                         </div>
-                        {/* 本人だった場合 */}
-                        <div className="card-item">
-                            <Link to={`/account/edit`} className="btn btn-success">編集する</Link>
-                            <Link to={`/members/${this.props.member.id}/edit_pass`} className="btn btn-info">パスワードの変更</Link>
-                        </div>
+                        {
+                            !this.state.isEdit
+                            ? <></>
+                            : <div className="card-item">
+                                <Link to={`/account/edit`} className="btn btn-success">編集する</Link>
+                                <Link to={`/account/edit_pass`} className="btn btn-info">パスワードの変更</Link>
+                            </div>
+                            
+                        }
                     </div>
                 </div>
             </div>

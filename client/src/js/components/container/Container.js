@@ -14,6 +14,7 @@ import MemberDetail from './contents/MemberDetail'
 import MemberEdit from './contents/MemberEdit'
 import Login from './contents/Login'
 import Logout from './contents/Logout'
+import PasswordEdit from './contents/PasswordEdit'
 
 class Container extends React.Component {
     render() {
@@ -23,6 +24,7 @@ class Container extends React.Component {
                 <Route exact path="/members" component={Member}/>
                 <Route exact path="/members/:id" component={MemberDetail}/>
                 <Route exact path="/account/edit" component={MemberEdit} />
+                <Route exact path="/account/edit_pass" component={PasswordEdit} />
                 <Route exact path="/jobs" component={Job}/>
                 <Route exact path="/activities" component={Activity} />
                 <Route exact path="/societies" component={Society} />

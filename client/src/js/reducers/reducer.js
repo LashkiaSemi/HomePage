@@ -10,6 +10,10 @@ import {
     SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST, UPDATE_MEMBER_SUCCESS, FETCH_ACCOUNT_SUCCESS, UPDATE_ACCOUNT_SUCCESS, FETCH_ACCOUNT_FAILURE, LOGOUT_SUCCESS, LOGOUT_FAILURE } from '../constants/action-types'
 import { combineReducers } from 'redux'
 
+import { STRAGE_KET } from '../constants/config'
+
+// TODO: reducerの分割した方がよくね？
+
 function isLoading(state=false, action) {
     switch (action.type){
         case SHOW_LOADING:
@@ -26,17 +30,23 @@ function logged(state=[], action) {
     switch(action.type) {
         case LOGIN_SUCCESS:
             //TODO: 納得いかないw
+            // localstrageにidをタンク
+            localStorage.setItem(STRAGE_KET, action.payload.data.user_id)
             window.location.href = "http://localhost:3000/"
             return Object.assign([], state, state.concat({user_id:action.payload.data.user_id}))
+        
         case LOGIN_FAILURE:
             console.log("reducer: login failure")
             return state
+        
         case LOGOUT_SUCCESS:
             console.log("reducer: logout success")
+            // localstarageを消せ！
+            localStorage.removeItem(STRAGE_KET)
             // TODO: redirect
             window.location.href = "http://localhost:3000"
-            // TODO: localstarageを消せ！
             return state
+        
         case LOGOUT_FAILURE:
             console.log("reducer: logout failure")
             return state
