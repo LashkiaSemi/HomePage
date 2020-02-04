@@ -75,7 +75,7 @@ type GetUserResponse struct {
 	Role       string `json:"role"`
 	Department string `json:"department"`
 	Grade      int    `json:"grade"`
-	Comment    string `json:"comments"`
+	Comment    string `json:"comment"`
 }
 
 func (uc *userController) CreateUser(req *UpdateUserRequest) (res GetUserResponse, err error) {

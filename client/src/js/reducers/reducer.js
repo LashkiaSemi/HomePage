@@ -7,7 +7,7 @@ import {
     FETCH_MEMBER_SUCCESS, FETCH_MEMBER_FAILURE,
     FETCH_RESEARCHES_SUCCESS, FETCH_RESEARCHES_FAILURE,
     FETCH_SOCIETIES_SUCCESS, FETCH_SOCIETIES_FAILURE,
-    SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST } from '../constants/action-types'
+    SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST, UPDATE_MEMBER_SUCCESS, FETCH_ACCOUNT_SUCCESS, UPDATE_ACCOUNT_SUCCESS, FETCH_ACCOUNT_FAILURE, LOGOUT_SUCCESS, LOGOUT_FAILURE } from '../constants/action-types'
 import { combineReducers } from 'redux'
 
 function isLoading(state=false, action) {
@@ -22,14 +22,23 @@ function isLoading(state=false, action) {
 }
 
 // TODO: なんとかしろ
-function login(state=[], action) {
+function logged(state=[], action) {
     switch(action.type) {
         case LOGIN_SUCCESS:
-            // sessionを...
-            // TODO: 同じsessionがupdateされない。というかこの辺の管理どうしろと？
-            return Object.assign([], state, state.concat({user_id:action.payload.data.user_id, }))
+            //TODO: 納得いかないw
+            window.location.href = "http://localhost:3000/"
+            return Object.assign([], state, state.concat({user_id:action.payload.data.user_id}))
         case LOGIN_FAILURE:
             console.log("reducer: login failure")
+            return state
+        case LOGOUT_SUCCESS:
+            console.log("reducer: logout success")
+            // TODO: redirect
+            window.location.href = "http://localhost:3000"
+            // TODO: localstarageを消せ！
+            return state
+        case LOGOUT_FAILURE:
+            console.log("reducer: logout failure")
             return state
         default:
             return state
@@ -77,7 +86,24 @@ function member(state={}, action) {
     switch(action.type) {
         case FETCH_MEMBER_SUCCESS:
             return Object.assign({}, action.payload.data)
-        case UPDATE_MEMBER_REQUEST:
+        case UPDATE_MEMBER_SUCCESS:
+            console.log("reducer: update success")
+            return Object.assign({}, action.payload.data)
+        default:
+            return state
+    }
+}
+
+// 複数人で同時にやったらstateが起き変わったりしない？
+function account(state={}, action) {
+    switch(action.type) {
+        case FETCH_ACCOUNT_SUCCESS:
+            return Object.assign({}, action.payload.data)
+        case FETCH_ACCOUNT_FAILURE:
+            // TODO: redirect
+            return state
+        case UPDATE_ACCOUNT_SUCCESS:
+            console.log("reducer: update success")
             return Object.assign({}, action.payload.data)
         default:
             return state
@@ -121,7 +147,8 @@ const rootReducer = combineReducers({
     jobs,
     equipments,
     lectures,
-    login,
+    logged,
+    account,
 })
 
 export default rootReducer

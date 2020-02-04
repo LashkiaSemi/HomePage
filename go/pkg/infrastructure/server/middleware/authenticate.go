@@ -15,13 +15,14 @@ import (
 // Authorized sessionから認証を行う
 func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		sessList := domain.GetSessionList()
+		// sessList := domain.GetSessionList()
 		// sessionListが空っぽの時。サーバを再起動した時とか
-		if len(sessList) == 0 {
-			logger.Warn("sessionList is empty.")
-			response.HTTPError(w, domain.InternalServerError(errors.New("sessionList is empty. please re-login")))
-			return
-		}
+		// ここにエラーがあると、再起動した、未ログインのとき500になってしまう
+		// if len(sessList) == 0 {
+		// 	logger.Warn("sessionList is empty.")
+		// 	response.HTTPError(w, domain.InternalServerError(errors.New("sessionList is empty. please re-login")))
+		// 	return
+		// }
 
 		ctx := r.Context()
 		if ctx == nil {
@@ -51,6 +52,14 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// sessionを確認
+		sessList := domain.GetSessionList()
+		if sessList[userID] == nil {
+			// sessionはブラウザに存在しているが、サーバ側のリストがなくなっちゃった場合
+			logger.Warn("session is not exist. please relogin")
+			response.HTTPError(w, domain.BadRequest(errors.New("session is not exist. please re login")))
+			return
+		}
+
 		if sessList[userID].SessionID != sess.Values["sessionID"].(string) {
 			logger.Warn("wrong sessionID")
 			response.HTTPError(w, domain.Unauthorized(errors.New("wrong sessionID")))

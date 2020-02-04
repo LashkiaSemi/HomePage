@@ -67,7 +67,7 @@ type GetAccountResponse struct {
 	Role       string `json:"role"`
 	Department string `json:"department"`
 	Grade      int    `json:"grade"`
-	Comment    string `json:"comments"`
+	Comment    string `json:"comment"`
 }
 
 func (ac *accountController) CreateAccount(req *UpdateAccountRequest) (res GetAccountResponse, err error) {

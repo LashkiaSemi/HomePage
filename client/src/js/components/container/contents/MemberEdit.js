@@ -1,37 +1,49 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { updateMemberRequest, fetchMemberRequest } from '../../../actions/action'
+import { fetchAccountRequest, updateAccountRequest } from '../../../actions/action'
 
 const mapStateToProps = (state) => {
     return {
         isLoading: state.isLoading,
-        member: state.member
+        member: state.account
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchRequest: (id) => dispatch(fetchMemberRequest({id: id})),
-        dispatchRequest: (id, form) => dispatch(updateMemberRequest({id: id, body: form}))
+        fetchRequest: () => dispatch(fetchAccountRequest()),
+        dispatchRequest: (form) => dispatch(updateAccountRequest({body: form}))
     }
 }
 
 class ConnectedMemberEdit extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            name: "",
-            studentID: "",
-            grade: 2,
-            department: "",
-            comment: "",
-        }
+
+
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.initFromValue = this.initFromValue.bind(this)
     }
 
     componentDidMount() {
-        this.props.fetchRequest(this.props.match.params.id)
+        this.props.fetchRequest()
+    }
+
+    componentDidUpdate(){
+        if (!this.state && Object.keys(this.props.member).length) {
+            this.initFromValue()
+        }
+    }
+
+    initFromValue(){
+        this.setState({
+            name: this.props.member.name,
+            studentID: this.props.member.student_id,
+            grade: this.props.member.grade,
+            department: this.props.member.department,
+            comment: this.props.member.comment,
+        })
     }
 
     handleChange(e) {
@@ -46,15 +58,22 @@ class ConnectedMemberEdit extends React.Component {
         const formData = {
             name: this.state.name,
             studentID: this.state.studentID,
-            grade: this.state.grade,
+            grade: parseInt(this.state.grade),
             department: this.state.department,
             comment: this.state.comment
         }
-        this.props.dispatchRequest(this.props.match.params.id, formData)
+        this.props.dispatchRequest(formData)
     }
 
 
     render() {
+        if(!this.state){
+            return (
+                <div className="content">
+                    <label>Now Loading...</label>
+                </div>
+            )
+        }
         return (
             <div className="content">
                 <h1 className="content-title h1-block">アカウント情報編集</h1>
@@ -71,14 +90,14 @@ class ConnectedMemberEdit extends React.Component {
 
                     <div className="form-item">
                         <label className="input-label">学年</label>
-                        <select className="input-select" name="grade">
-                            <option value="B2">学部2年</option>
-                            <option value="B3">学部3年</option>
-                            <option value="B4">学部4年</option>
-                            <option value="M1">修士1年</option>
-                            <option value="M2">修士2年</option>
-                            <option value="D1">修士1年</option>
-                            <option value="D2">修士2年</option>
+                        <select className="input-select" name="grade" value={this.state.grade} onChange={this.handleChange}>
+                            <option value="2">学部2年</option>
+                            <option value="3">学部3年</option>
+                            <option value="4">学部4年</option>
+                            <option value="5">修士1年</option>
+                            <option value="6">修士2年</option>
+                            <option value="7">修士1年</option>
+                            <option value="8">修士2年</option>
                             <option value="0">卒業生</option>
                         </select>
                     </div>

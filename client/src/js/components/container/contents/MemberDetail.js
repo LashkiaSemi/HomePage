@@ -19,7 +19,7 @@ const mapStateToProps = state => {
 class ConnectedMemberDetail extends React.Component {
     componentDidMount(){
         const id = this.props.match.params.id
-        this.props.fetchRequest({id})
+        this.props.fetchRequest(id)
     }
 
     render() {
@@ -33,7 +33,7 @@ class ConnectedMemberDetail extends React.Component {
                             <label className="label-block col-gray">{this.props.member.student_id}</label>
                         </div>
                         <div className="card-item">
-                            <label className="label-block">学年：{this.props.member.grade ? this.props.member.grade + "年" : "卒業生"}</label>
+                            <label className="label-block">学年：{GRADE[this.props.member.grade]}</label>
                         </div>
                         <div className="card-item">
                             <label className="label-block">学部：{this.props.member.department}</label>
@@ -43,7 +43,7 @@ class ConnectedMemberDetail extends React.Component {
                         </div>
                         {/* 本人だった場合 */}
                         <div className="card-item">
-                            <Link to={`/members/${this.props.member.id}/edit`} className="btn btn-success">編集する</Link>
+                            <Link to={`/account/edit`} className="btn btn-success">編集する</Link>
                             <Link to={`/members/${this.props.member.id}/edit_pass`} className="btn btn-info">パスワードの変更</Link>
                         </div>
                     </div>
@@ -57,5 +57,17 @@ const MemberDetail = connect(
     mapStateToProps,
     mapDispatchToProps
 )(ConnectedMemberDetail)
+
+// todo: switchcaseなfunctionでもいいかも
+const GRADE = {
+    2: "学部2年",
+    3: "学部3年",
+    4: "学部4年",
+    5: "修士1年",
+    6: "修士2年",
+    7: "博士1年",
+    8: "博士2年",
+    0: "卒業生"
+}
 
 export default MemberDetail

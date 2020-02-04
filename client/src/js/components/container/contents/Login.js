@@ -3,7 +3,6 @@ import { loginRequest } from '../../../actions/action'
 import { connect } from 'react-redux'
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
         isLoading: state.isLoading,
         login: state.login

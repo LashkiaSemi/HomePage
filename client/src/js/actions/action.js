@@ -4,6 +4,18 @@ export const loginRequest = (payload) => { return { type: Type.LOGIN_REQUEST, pa
 export const loginSuccess = (payload) => { return { type: Type.LOGIN_SUCCESS, payload} }
 export const loginFailure = (payload) => { return { type: Type.LOGIN_FAILURE, payload} }
 
+export const logoutRequest = () => { return {type: Type.LOGOUT_REQUEST} }
+export const logoutSuccess = () => { return {type: Type.LOGOUT_SUCCESS} }
+export const logoutFailure = (payload) => { return {type: Type.LOGOUT_FAILURE, payload} }
+
+export const fetchAccountRequest = () => { return {type: Type.FETCH_ACCOUNT_REQUEST} }
+export const fetchAccountSuccess = (payload) => { return {type: Type.FETCH_ACCOUNT_SUCCESS, payload} }
+export const fetchAccountFailure = (payload) => { return {type: Type.FETCH_ACCOUNT_FAILURE, payload} }
+
+export const updateAccountRequest = (payload) => { return { type: Type.UPDATE_ACCOUNT_REQUEST, payload } }
+export const updateAccountSuccess = (payload) => { return { type: Type.UPDATE_ACCOUNT_SUCCESS, payload } }
+export const updateAccountFailure = (payload) => { return { type: Type.UPDATE_ACCOUNT_FAILURE, payload } }
+
 export const updateMemberRequest = (payload) => { return { type: Type.UPDATE_MEMBER_REQUEST, payload} }
 export const updateMemberSuccess = (payload) => { return { type: Type.UPDATE_MEMBER_SUCCESS, payload} }
 export const updateMemberFailure = (payload) => { return { type: Type.UPDATE_MEMBER_FAILURE, payload} }

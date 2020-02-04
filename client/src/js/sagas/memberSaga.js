@@ -55,5 +55,5 @@ function getMember(id) {
 }
 
 function putMember(id, body) {
-    return Request.put(BASE_URL+"/users/"+id, body)
+    return Request.put(BASE_URL+"/user/"+id, body)
 }

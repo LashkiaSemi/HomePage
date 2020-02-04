@@ -13,16 +13,17 @@ import Lecture from './contents/Lecture'
 import MemberDetail from './contents/MemberDetail'
 import MemberEdit from './contents/MemberEdit'
 import Login from './contents/Login'
+import Logout from './contents/Logout'
 
 class Container extends React.Component {
     render() {
         return (
             <div className="container">
-                <Route exact path="/" render={props => <Home {...props}/>}/>
-                <Route exact path="/members" render={props => <Member {...props}/>} />
+                <Route exact path="/" component={Home}/>
+                <Route exact path="/members" component={Member}/>
                 <Route exact path="/members/:id" component={MemberDetail}/>
-                <Route exact path="/members/:id/edit" component={MemberEdit} />
-                <Route exact path="/jobs" render={props => <Job {...props} />} />
+                <Route exact path="/account/edit" component={MemberEdit} />
+                <Route exact path="/jobs" component={Job}/>
                 <Route exact path="/activities" component={Activity} />
                 <Route exact path="/societies" component={Society} />
                 <Route exact path="/researches" component={Research}/>
@@ -31,6 +32,7 @@ class Container extends React.Component {
                 <Route exact path="/lectures" component={Lecture} />
 
                 <Route exact path="/login" component={Login}/>
+                <Route exact path="/logout" component={Logout}/>
             </div>
         )
     }

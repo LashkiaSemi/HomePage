@@ -7,7 +7,8 @@ import { watchSocieties } from './societySaga'
 import { watchResearches } from './researchSaga'
 import { watchEquipments } from './equipmentSaga'
 import { watchLectures } from './lectureSaga'
-import { watchLogin } from './loginSaga'
+import { watchLogin } from './loggedSaga'
+import { watchAccount } from './accountSaga'
 
 // rootSaga
 // sagaのwatcherをまとめておく
@@ -21,4 +22,5 @@ export default function* rootSaga() {
     yield fork(watchEquipments)
     yield fork(watchLectures)
     yield fork(watchLogin)
+    yield fork(watchAccount)
 }

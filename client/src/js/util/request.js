@@ -2,6 +2,8 @@ import axios from 'axios'
 import { showLoading, hideLoading } from '../actions/action'
 import store from '../store/store'
 
+// TODO: optionのカスタムできた方がいいかも
+
 // apiにgetリクエストを送信
 // stateのisLoadingはここでいじってます
 export async function get(url) {
@@ -20,4 +22,10 @@ export async function put(url, body) {
     const options = { withCredentials: true }
     store.dispatch(showLoading())
     return await axios.put(url, body,options)
+}
+
+export async function httpDelete(url) {
+    const options = { withCredentials: true }
+    store.dispatch(showLoading())
+    return await axios.delete(url, options)
 }
