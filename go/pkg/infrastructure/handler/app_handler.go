@@ -15,6 +15,7 @@ import (
 type AppHandler interface {
 	// account
 	ManageAccount() http.HandlerFunc
+	ManageAccountPassword() http.HandlerFunc
 	Login() http.HandlerFunc
 	Logout() http.HandlerFunc
 
@@ -90,6 +91,19 @@ func (ah *appHandler) ManageAccount() http.HandlerFunc {
 			middleware.Authorized(ah.AccountHandler.Update).ServeHTTP(w, r)
 		case http.MethodDelete:
 			middleware.Authorized(ah.AccountHandler.Delete).ServeHTTP(w, r)
+		default:
+			logger.Warn("method not allowed")
+			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
+}
+
+// password
+func (ah *appHandler) ManageAccountPassword() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodPut:
+			middleware.Authorized(ah.AccountHandler.UpdatePassword).ServeHTTP(w, r)
 		default:
 			logger.Warn("method not allowed")
 			response.HTTPError(w, domain.MethodNotAllowed(errors.New("method not allowed")))

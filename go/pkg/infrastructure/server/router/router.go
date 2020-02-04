@@ -8,6 +8,7 @@ import (
 // SettingRouter urlのハンドリング
 func SettingRouter(s server.Server, h handler.AppHandler) {
 	s.Handle("/account", h.ManageAccount())
+	s.Handle("/account/password", h.ManageAccountPassword())
 	s.Handle("/login", h.Login())
 	s.Handle("/logout", h.Logout())
 

@@ -11,6 +11,7 @@ type AccountRepository interface {
 	FindByStudentID(studentID string) (user domain.User, err error)
 	Store(name, password, role, studentID, department, comment string, grade int, createdAt time.Time) error
 	Update(userID int, name, password, role, studentID, department, comment string, grade int, updatedAt time.Time) error
+	UpdatePassword(userID int, password string, updatedAt time.Time) error
 	Delete(userID int) error
 }
 

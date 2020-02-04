@@ -120,6 +120,14 @@ func (ar *accountRepository) Update(userID int, name, password, role, studentID,
 	})
 }
 
+func (ar *accountRepository) UpdatePassword(userID int, password string, updatedAt time.Time) error {
+	_, err := ar.SQLHandler.Execute(
+		"UPDATE users SET password_digest=?, updated_at=? WHERE id=?",
+		password, updatedAt, userID,
+	)
+	return err
+}
+
 func (ar *accountRepository) Delete(userID int) error {
 	return transact(ar.SQLHandler, func(tx Tx) error {
 		if _, err := tx.Execute("DELETE FROM users WHERE id=?", userID); err != nil {

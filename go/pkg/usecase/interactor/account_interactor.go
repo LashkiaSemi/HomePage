@@ -14,6 +14,7 @@ type AccountInteractor interface {
 	FetchByStudentID(studentID string) (domain.User, error)
 	Add(name, password, role, studentID, department, comment string, grade int) (domain.User, error)
 	Update(userID int, name, password, role, studentID, department, comment string, grade int) (domain.User, error)
+	UpdatePassword(userID int, oldPassword, newPassword string) (domain.User, error)
 	Delete(userID int) error
 
 	// Login ログイン機能
@@ -92,6 +93,38 @@ func (ai *accountInteractor) Update(userID int, name, password, role, studentID,
 	err = ai.AccountRepository.Update(userID, name, hash, role, studentID, department, comment, grade, updatedAt)
 	user, err = ai.AccountRepository.FindByID(userID)
 	return
+}
+
+func (ai *accountInteractor) UpdatePassword(userID int, oldPassword, newPassword string) (domain.User, error) {
+	// 古いパスワードの検証
+	user, err := ai.AccountRepository.FindByID(userID)
+	if err != nil {
+		return user, err
+	}
+
+	// パスワード認証
+	err = ai.AuthHandler.PasswordVerify(user.Password, oldPassword)
+	if err != nil {
+		return user, domain.BadRequest(err)
+	}
+
+	// 新しいパスワードのハッシュ
+	hash, err := ai.PasswordHash(newPassword)
+	if err != nil {
+		logger.Error(err)
+		return user, domain.InternalServerError(err)
+	}
+
+	// updatetimeの取得
+	updatedAt := time.Now()
+
+	// update
+	err = ai.AccountRepository.UpdatePassword(userID, hash, updatedAt)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
 
 func (ai *accountInteractor) Delete(userID int) error {

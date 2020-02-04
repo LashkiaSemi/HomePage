@@ -20,6 +20,7 @@ type AccountHandler interface {
 	Get(w http.ResponseWriter, r *http.Request)
 	Create(w http.ResponseWriter, r *http.Request)
 	Update(w http.ResponseWriter, r *http.Request)
+	UpdatePassword(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
 
 	Login(w http.ResponseWriter, r *http.Request)
@@ -116,6 +117,32 @@ func (ah *accountHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	response.Success(w, res)
 
+}
+
+func (ah *accountHandler) UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	userID := dcontext.GetUserIDFromContext(r.Context())
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		logger.Warn(err)
+		response.HTTPError(w, domain.BadRequest(err))
+		return
+	}
+	var req controller.UpdatePasswordRequest
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		logger.Error(err)
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+
+	res, err := ah.AccountController.UpdatePassword(userID, &req)
+	if err != nil {
+		logger.Error(err)
+		response.HTTPError(w, err)
+		return
+	}
+	response.Success(w, res)
 }
 
 func (ah *accountHandler) Delete(w http.ResponseWriter, r *http.Request) {

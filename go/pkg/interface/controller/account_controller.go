@@ -13,6 +13,7 @@ type AccountController interface {
 	ShowByStudentID(studentID string) (GetAccountResponse, error)
 	Create(req *UpdateAccountRequest) (GetAccountResponse, error)
 	Update(userID int, req *UpdateAccountRequest) (GetAccountResponse, error)
+	UpdatePassword(userID int, req *UpdatePasswordRequest) (GetAccountResponse, error)
 	Delete(userID int) error
 
 	Login(req *LoginRequest) (LoginResponse, domain.Session, error)
@@ -95,6 +96,25 @@ func (ac *accountController) Update(userID int, req *UpdateAccountRequest) (res 
 	}
 
 	return convertAccountToResponse(&user), nil
+}
+
+func (ac *accountController) UpdatePassword(userID int, req *UpdatePasswordRequest) (res GetAccountResponse, err error) {
+	if req.NewPassword == "" {
+		logger.Warn("update password: NewPassword is empty")
+		return res, domain.BadRequest(errors.New("password is empty"))
+	}
+
+	user, err := ac.AccountInteractor.UpdatePassword(userID, req.OldPassword, req.NewPassword)
+	if err != nil {
+		return res, err
+	}
+	return convertAccountToResponse(&user), nil
+}
+
+// UpdatePasswordRequest パスワード更新のリクエスト
+type UpdatePasswordRequest struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
 }
 
 func (ac *accountController) Delete(userID int) error {
