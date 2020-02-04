@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect  } from 'react-redux'
-import { updateAccountRequest } from '../../../actions/action'
+import { updateAccountPasswordRequest } from '../../../actions/action'
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        dispatchRequest: (body) => dispatch(updateAccountRequest({body}))
+        dispatchRequest: (body) => dispatch(updateAccountPasswordRequest({body}))
     }
 }
 
@@ -42,7 +42,7 @@ class ConnectedPasswordEdit extends React.Component {
         // datasetの作成
         const body = {
             old_password: this.state.oldPass,
-            password: this.state.newPass
+            new_password: this.state.newPass
         }
         // stateの初期化
         this.setState({

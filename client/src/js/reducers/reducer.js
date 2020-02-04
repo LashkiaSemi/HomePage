@@ -7,7 +7,7 @@ import {
     FETCH_MEMBER_SUCCESS, FETCH_MEMBER_FAILURE,
     FETCH_RESEARCHES_SUCCESS, FETCH_RESEARCHES_FAILURE,
     FETCH_SOCIETIES_SUCCESS, FETCH_SOCIETIES_FAILURE,
-    SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST, UPDATE_MEMBER_SUCCESS, FETCH_ACCOUNT_SUCCESS, UPDATE_ACCOUNT_SUCCESS, FETCH_ACCOUNT_FAILURE, LOGOUT_SUCCESS, LOGOUT_FAILURE } from '../constants/action-types'
+    SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST, UPDATE_MEMBER_SUCCESS, FETCH_ACCOUNT_SUCCESS, UPDATE_ACCOUNT_SUCCESS, FETCH_ACCOUNT_FAILURE, LOGOUT_SUCCESS, LOGOUT_FAILURE, UPDATE_ACCOUNT_PASSWORD_SUCCESS, UPDATE_ACCOUNT_PASSWORD_FAILURE } from '../constants/action-types'
 import { combineReducers } from 'redux'
 
 import { HOST_URL, STRAGE_KET } from '../constants/config'
@@ -115,6 +115,12 @@ function account(state={}, action) {
         case UPDATE_ACCOUNT_SUCCESS:
             console.log("reducer: update success")
             return Object.assign({}, action.payload.data)
+        case UPDATE_ACCOUNT_PASSWORD_SUCCESS:
+            console.log("reducer: password update success")
+            return state
+        case UPDATE_ACCOUNT_PASSWORD_FAILURE:
+            console.log("reducer: password update fail")
+            return state
         default:
             return state
     }

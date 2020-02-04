@@ -15,6 +15,9 @@ export const fetchAccountFailure = (payload) => { return {type: Type.FETCH_ACCOU
 export const updateAccountRequest = (payload) => { return { type: Type.UPDATE_ACCOUNT_REQUEST, payload } }
 export const updateAccountSuccess = (payload) => { return { type: Type.UPDATE_ACCOUNT_SUCCESS, payload } }
 export const updateAccountFailure = (payload) => { return { type: Type.UPDATE_ACCOUNT_FAILURE, payload } }
+export const updateAccountPasswordRequest = (payload) => { return { type: Type.UPDATE_ACCOUNT_PASSWORD_REQUEST, payload } }
+export const updateAccountPasswordSuccess = (payload) => { return { type: Type.UPDATE_ACCOUNT_PASSWORD_SUCCESS, payload } }
+export const updateAccountPasswordFailure = (payload) => { return { type: Type.UPDATE_ACCOUNT_PASSWORD_FAILURE, payload } }
 
 export const updateMemberRequest = (payload) => { return { type: Type.UPDATE_MEMBER_REQUEST, payload} }
 export const updateMemberSuccess = (payload) => { return { type: Type.UPDATE_MEMBER_SUCCESS, payload} }

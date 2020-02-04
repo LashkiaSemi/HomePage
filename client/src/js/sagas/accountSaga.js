@@ -1,5 +1,5 @@
 import { takeEvery, put, call } from 'redux-saga/effects'
-import { FETCH_ACCOUNT_REQUEST, UPDATE_ACCOUNT_REQUEST } from '../constants/action-types'
+import { FETCH_ACCOUNT_REQUEST, UPDATE_ACCOUNT_REQUEST, UPDATE_ACCOUNT_PASSWORD_REQUEST } from '../constants/action-types'
 import * as Request from '../util/request'
 import { BASE_URL } from '../constants/config'
 import {
@@ -11,6 +11,7 @@ export function* watchAccount() {
     yield takeEvery(FETCH_ACCOUNT_REQUEST, fetchAccount)
     // TODO: ここeveryでいいんか？
     yield takeEvery(UPDATE_ACCOUNT_REQUEST, updateAccount)
+    yield takeEvery(UPDATE_ACCOUNT_PASSWORD_REQUEST, updatePassword)
 }
 
 function* fetchAccount() {
@@ -32,11 +33,24 @@ function* updateAccount(action) {
     }
 }
 
+function* updatePassword(action) {
+    try {
+        const payload = yield call(putPassword, action.payload.body)
+        yield put(updateAccountSuccess(payload))
+    } catch (e) {
+        yield put(updateMemberFailure(e))
+    }
+}
+
 function getAccount() {
     return Request.get(BASE_URL+"/account")
 }
 
 function putAccount(body) {
     return Request.put(BASE_URL+"/account", body)
+}
+
+function putPassword(body) {
+    return Request.put(BASE_URL + "/account/password", body)
 }
 
