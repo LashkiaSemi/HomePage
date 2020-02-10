@@ -5,6 +5,12 @@ const (
 	ClientServerAddr = "http://localhost:3000"
 )
 
+// ディレクトリの場所とか
+const (
+	// file
+	FileDir = "."
+)
+
 // cookieのこと
 const (
 	CookieName   = "_l_semi_homepage_session"

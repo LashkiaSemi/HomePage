@@ -9,8 +9,8 @@ import (
 type LectureInteractor interface {
 	FetchAll() (domain.Lectures, error)
 	FetchByID(lecID int) (domain.Lecture, error)
-	Add(title, file, comment string, userID int) (domain.Lecture, error)
-	Update(lecID int, title, file, comment string, userID int) (domain.Lecture, error)
+	Add(title, file, comment string, userID, isPublic int) (domain.Lecture, error)
+	Update(lecID int, title, file, comment string, userID, isPublic int) (domain.Lecture, error)
 	Delete(lecID int) error
 }
 
@@ -33,18 +33,18 @@ func (li *lectureInteractor) FetchByID(lecID int) (domain.Lecture, error) {
 	return li.LecutureRepository.FindByID(lecID)
 }
 
-func (li *lectureInteractor) Add(title, file, comment string, userID int) (domain.Lecture, error) {
+func (li *lectureInteractor) Add(title, file, comment string, userID, isPublic int) (domain.Lecture, error) {
 	createdAt := time.Now()
-	id, err := li.LecutureRepository.Store(title, file, comment, userID, createdAt)
+	id, err := li.LecutureRepository.Store(title, file, comment, userID, isPublic, createdAt)
 	if err != nil {
 		return domain.Lecture{}, err
 	}
 	return li.LecutureRepository.FindByID(id)
 }
 
-func (li *lectureInteractor) Update(lecID int, title, file, comment string, userID int) (domain.Lecture, error) {
+func (li *lectureInteractor) Update(lecID int, title, file, comment string, userID, isPublic int) (domain.Lecture, error) {
 	updatedAt := time.Now()
-	err := li.LecutureRepository.Update(lecID, title, file, comment, userID, updatedAt)
+	err := li.LecutureRepository.Update(lecID, title, file, comment, userID, isPublic, updatedAt)
 	if err != nil {
 		return domain.Lecture{}, err
 	}

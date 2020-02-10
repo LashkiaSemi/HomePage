@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"homepage/conf"
 	"homepage/pkg/domain"
 	"homepage/pkg/domain/logger"
 	"homepage/pkg/infrastructure/dcontext"
@@ -10,7 +11,6 @@ import (
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
 	"homepage/pkg/usecase/interactor"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -64,22 +64,35 @@ func (lh *lectureHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		logger.Warn(err)
-		response.HTTPError(w, domain.BadRequest(err))
-		return
-	}
+	// read form data
 	var req controller.UpdateLectureRequest
-	err = json.Unmarshal(body, &req)
+	body := []byte(r.FormValue("body"))
+	err := json.Unmarshal(body, &req)
 	if err != nil {
 		logger.Error(err)
 		response.HTTPError(w, domain.InternalServerError(err))
 		return
 	}
+	file, reader, err := r.FormFile("file")
+	if err != nil {
+		logger.Error("lecture handler: ", err)
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+	defer file.Close()
+	req.File = reader.Filename
 
 	userID := dcontext.GetUserIDFromContext(r.Context())
 
+	// file save
+	err = saveFile(file, conf.FileDir+"/lectures/", req.File)
+	if err != nil {
+		logger.Error("lecture handler: ", err)
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+
+	// save db
 	res, err := lh.LectureController.Create(userID, &req)
 	if err != nil {
 		response.HTTPError(w, err)
@@ -96,21 +109,33 @@ func (lh *lectureHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		logger.Warn(err)
-		response.HTTPError(w, domain.BadRequest(err))
-		return
-	}
+	// read data
 	var req controller.UpdateLectureRequest
+	body := []byte(r.FormValue("body"))
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		logger.Error(err)
 		response.HTTPError(w, domain.InternalServerError(err))
 		return
 	}
+	file, reader, err := r.FormFile("file")
+	if err != nil {
+		logger.Error("lecture handler: ", err)
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+	defer file.Close()
+	req.File = reader.Filename
 
 	userID := dcontext.GetUserIDFromContext(r.Context())
+
+	// file save
+	err = saveFile(file, conf.FileDir+"/lectures/", req.File)
+	if err != nil {
+		logger.Error("lecture handler: ", err)
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
 
 	res, err := lh.LectureController.Update(lecID, userID, &req)
 	if err != nil {
@@ -123,7 +148,7 @@ func (lh *lectureHandler) Update(w http.ResponseWriter, r *http.Request) {
 func (lh *lectureHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	lecID, err := getIntParameter(r.URL.Path, "/lectures/", "")
 	if err != nil {
-		logger.Warn("update lecture handler: can not get lectureID from path")
+		logger.Warn("delete lecture handler: can not get lectureID from path")
 		response.HTTPError(w, domain.BadRequest(errors.New("cant get param from path")))
 		return
 	}

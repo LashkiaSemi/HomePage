@@ -45,7 +45,11 @@ func (lc *lectureController) ShowByID(lecID int) (res GetLectureResponse, err er
 }
 
 func (lc *lectureController) Create(userID int, req *UpdateLectureRequest) (res GetLectureResponse, err error) {
-	lec, err := lc.LectureInteractor.Add(req.Title, req.File, req.Comment, userID)
+	isPublic := 1
+	if !req.IsPublic {
+		isPublic = 1
+	}
+	lec, err := lc.LectureInteractor.Add(req.Title, req.File, req.Comment, userID, isPublic)
 	if err != nil {
 		return
 	}
@@ -54,7 +58,11 @@ func (lc *lectureController) Create(userID int, req *UpdateLectureRequest) (res 
 }
 
 func (lc *lectureController) Update(lecID, userID int, req *UpdateLectureRequest) (res GetLectureResponse, err error) {
-	lec, err := lc.LectureInteractor.Update(lecID, req.Title, req.File, req.Comment, userID)
+	isPublic := 1
+	if !req.IsPublic {
+		isPublic = 0
+	}
+	lec, err := lc.LectureInteractor.Update(lecID, req.Title, req.File, req.Comment, userID, isPublic)
 	if err != nil {
 		return
 	}
@@ -72,26 +80,31 @@ type GetLecturesResponse struct {
 
 // GetLectureResponse 一件
 type GetLectureResponse struct {
-	ID      int             `json:"id"`
-	Title   string          `json:"title"`
-	File    string          `json:"file"`
-	Comment string          `json:"comment"`
-	User    GetUserResponse `json:"user"`
+	ID        int             `json:"id"`
+	Title     string          `json:"title"`
+	File      string          `json:"file"`
+	Comment   string          `json:"comment"`
+	CreatedAt string          `json:"created_at"`
+	UpdatedAt string          `json:"updated_at"`
+	User      GetUserResponse `json:"user"`
 }
 
 // UpdateLectureRequest 新規、更新リクエスト
 type UpdateLectureRequest struct {
-	Title   string `json:"title"`
-	File    string `json:"file"`
-	Comment string `json:"comment"`
+	Title    string `json:"title"`
+	File     string `json:"file"`
+	Comment  string `json:"comment"`
+	IsPublic bool   `json:"is_public"`
 }
 
 func convertLectureToResponse(lec *domain.Lecture) GetLectureResponse {
 	return GetLectureResponse{
-		ID:      lec.ID,
-		Title:   lec.Title,
-		File:    lec.File,
-		Comment: lec.Comment,
-		User:    convertUserToResponse(&lec.User),
+		ID:        lec.ID,
+		Title:     lec.Title,
+		File:      lec.File,
+		Comment:   lec.Comment,
+		CreatedAt: lec.CreatedAt,
+		UpdatedAt: lec.UpdatedAt,
+		User:      convertUserToResponse(&lec.User),
 	}
 }

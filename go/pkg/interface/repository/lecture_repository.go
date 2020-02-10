@@ -65,10 +65,10 @@ func (lr *lectureRepository) FindByID(lecID int) (lec domain.Lecture, err error)
 	return
 }
 
-func (lr *lectureRepository) Store(title, file, comment string, userID int, createdAt time.Time) (int, error) {
+func (lr *lectureRepository) Store(title, file, comment string, userID, isPublic int, createdAt time.Time) (int, error) {
 	result, err := lr.SQLHandler.Execute(
-		"INSERT INTO lectures(title, file, comments, user_id, created_at, updated_at) VALUES (?,?,?,?,?,?)",
-		title, file, comment, userID, createdAt, createdAt,
+		"INSERT INTO lectures(title, file, comments, user_id, activation, created_at, updated_at) VALUES (?,?,?,?,?,?,?)",
+		title, file, comment, userID, isPublic, createdAt, createdAt,
 	)
 	if err != nil {
 		return 0, err
@@ -77,13 +77,14 @@ func (lr *lectureRepository) Store(title, file, comment string, userID int, crea
 	return int(id), nil
 }
 
-func (lr *lectureRepository) Update(lecID int, title, file, comment string, userID int, updatedAt time.Time) error {
+func (lr *lectureRepository) Update(lecID int, title, file, comment string, userID, isPublic int, updatedAt time.Time) error {
 	query, args, _ := makeUpdateQuery(
 		"lectures",
 		map[string]interface{}{
 			"title":      title,
 			"file":       file,
 			"comments":   comment,
+			"activation": isPublic,
 			"user_id":    userID,
 			"updated_at": updatedAt,
 		},

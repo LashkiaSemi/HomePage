@@ -73,8 +73,8 @@ type EquipmentRepository interface {
 type LectureRepository interface {
 	FindAll() (domain.Lectures, error)
 	FindByID(lecID int) (domain.Lecture, error)
-	Store(title, file, comment string, userID int, createdAt time.Time) (int, error)
-	Update(lecID int, title, file, comment string, userID int, updatedAt time.Time) error
+	Store(title, file, comment string, userID, isPublic int, createdAt time.Time) (int, error)
+	Update(lecID int, title, file, comment string, userID, isPublic int, updatedAt time.Time) error
 	Delete(lecID int) error
 }
 
