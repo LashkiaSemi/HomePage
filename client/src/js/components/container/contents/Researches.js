@@ -23,10 +23,15 @@ class ConnectedResearch extends React.Component {
     render() {
         return (
             <div className="content">
-                <h1 className="content-title h1-block">卒業研究</h1>
                 {
-                    // TODO: loading
-                    <ResearchTable researches={this.props.researches} />
+                    this.props.isLoading
+                    ? <p>now loading...</p>
+                    : <>
+                        <h1 className="content-title h1-block">卒業研究</h1>
+                        {
+                            <ResearchTable researches={this.props.researches} />
+                        }
+                        </>
                 }
             </div>
         )
@@ -62,7 +67,7 @@ const ResearchRow = (props) => {
             <td>{props.research.title}</td>
             <td>{props.research.author}</td>
             <td>{props.research.comment}</td>
-            <td>{props.research.publish}</td>
+            <td>{props.research.created_at}</td>
             {/* TODO: download script */}
             <td><button className="btn btn-primary">Download</button></td>
         </tr>

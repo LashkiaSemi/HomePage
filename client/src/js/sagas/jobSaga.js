@@ -1,6 +1,6 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
 import { FETCH_JOBS_REQUEST } from '../constants/action-types'
-import { BASE_URL } from '../constants/config'
+import { API_URL } from '../constants/config'
 import * as Request from '../util/request'
 import { fetchJobsSuccess, fetchJobsFailure } from '../actions/action'
 
@@ -20,5 +20,5 @@ function* fetchJobs() {
 }
 
 function getJobs() {
-    return Request.get(BASE_URL + "/jobs")
+    return Request.get(API_URL + "/jobs")
 }

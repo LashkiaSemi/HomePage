@@ -1,6 +1,6 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
 import { FETCH_RESEARCHES_REQUEST } from '../constants/action-types'
-import { BASE_URL } from '../constants/config'
+import { API_URL } from '../constants/config'
 import * as Request from '../util/request'
 import { fetchResearchesFailure, fetchResearchesSuccess } from '../actions/action'
 
@@ -18,5 +18,5 @@ function* fetchResearches() {
 }
 
 function getResearches() {
-    return Request.get(BASE_URL + "/researches")
+    return Request.get(API_URL + "/researches")
 }

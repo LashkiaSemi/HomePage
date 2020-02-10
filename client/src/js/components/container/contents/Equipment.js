@@ -39,7 +39,7 @@ const EquipmentTable = (props) => {
                     <th>数量</th>
                     <th>備考</th>
                     <th>タグ</th>
-                    <th>ひづけ？</th>
+                    {/* <th>購入日</th> */}
                 </tr>
             </thead>
             <tbody>
@@ -60,7 +60,7 @@ const EquipmentRow = (props) => {
             <td>{props.equipment.stock}</td>
             <td>{props.equipment.note}</td>
             <td>{props.equipment.tag.name}</td>
-            <td>{props.equipment.date}</td>
+            {/* <td>{props.equipment.}</td> */}
         </tr>
     )
 }

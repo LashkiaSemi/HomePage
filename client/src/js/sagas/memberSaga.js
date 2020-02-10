@@ -1,7 +1,7 @@
 import { takeEvery, put, call } from 'redux-saga/effects'
 import { UPDATE_MEMBER_REQUEST, FETCH_MEMBERS_REQUEST, FETCH_MEMBER_REQUEST } from '../constants/action-types'
 import * as Request from '../util/request'
-import { BASE_URL } from '../constants/config'
+import { API_URL } from '../constants/config'
 import { updateMemberFailure, updateMemberSuccess, 
     fetchMembersSuccess, fetchMembersFailure, 
     fetchMemberSuccess, fetchMemberFailure
@@ -22,7 +22,7 @@ function* fetchMembers() {
 }
 
 function getMembers() {
-    return Request.get(BASE_URL+"/users")
+    return Request.get(API_URL+"/users")
 }
 
 // member
@@ -51,9 +51,9 @@ function* updateMember(action) {
 }
 
 function getMember(id) {
-    return Request.get(BASE_URL+"/users/"+id)
+    return Request.get(API_URL+"/users/"+id)
 }
 
 function putMember(id, body) {
-    return Request.put(BASE_URL+"/user/"+id, body)
+    return Request.put(API_URL+"/user/"+id, body)
 }

@@ -1,6 +1,6 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
 import { FETCH_SOCIETIES, LOADED_SOCIETIES, API_ERROR, FETCH_SOCIETIES_REQUEST } from '../constants/action-types'
-import { BASE_URL } from '../constants/config'
+import { API_URL } from '../constants/config'
 import * as Request from '../util/request'
 import { fetchSocietiesSuccess, fetchSocietiesFailure } from '../actions/action'
 
@@ -18,5 +18,5 @@ function* fetchSocieties() {
 }
 
 function getSocieties() {
-    return Request.get(BASE_URL + "/societies")
+    return Request.get(API_URL + "/societies")
 }

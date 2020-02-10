@@ -23,10 +23,16 @@ class ConnectedSociey extends React.Component {
     render(){
         return (
             <div className="content">
-                <h1 className="content-title h1-block">学会発表</h1>
                 {
-                    // TODO: loading
-                    <SocietyTable societies={this.props.societies} />
+                    this.props.isLoading
+                    ? <p>now loading...</p>
+                    : <>
+                        <h1 className="content-title h1-block">学会発表</h1>
+                        {
+                            // TODO: loading
+                            <SocietyTable societies={this.props.societies} />
+                        }
+                    </>
                 }
             </div>
         )

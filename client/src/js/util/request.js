@@ -3,8 +3,7 @@ import { showLoading, hideLoading } from '../actions/action'
 import store from '../store/store'
 
 // TODO: optionのカスタムできた方がいいかも
-// TODO: deleteが予約後の関係でhttpDeleteになったので、
-// 他もそれに倣った方がいいかも
+// TODO: deleteが予約後の関係でhttpDeleteになったので、他もそれに倣った方がいいかも
 
 // apiにgetリクエストを送信
 // stateのisLoadingはここでいじってます
@@ -15,8 +14,7 @@ export async function get(url) {
 }
 
 // urlに向けてpostリクエスト
-export async function post(url, body) {
-    const options = {withCredentials: true}
+export async function post(url, body, options) {
     store.dispatch(showLoading())
     return await axios.post(url, body, options).finally(() => store.dispatch(hideLoading()))
 }

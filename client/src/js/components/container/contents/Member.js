@@ -17,17 +17,26 @@ const mapStateToProps = state => {
 }
 
 class ConnectedMember extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+
     componentDidMount(){
         this.props.fetchRequest()
     }
 
     render() {
-        // TODO: isLoading
         return (
             <div className="content">
-                <h1 className="content-title h1-block">メンバー</h1>
-                <MemberGrade members={this.props.members}/>
-                <MemberGraduate members={this.props.members}/>
+                {
+                    this.props.isLoading
+                    ? <p>now loading...</p>
+                    : <>
+                        <h1 className="content-title h1-block">メンバー</h1>
+                        <MemberGrade members={this.props.members} />
+                        <MemberGraduate members={this.props.members} />
+                    </>
+                }
             </div>
         )
     }

@@ -1,7 +1,7 @@
 import { takeEvery, put, call } from 'redux-saga/effects'
 import { FETCH_ACCOUNT_REQUEST, UPDATE_ACCOUNT_REQUEST, UPDATE_ACCOUNT_PASSWORD_REQUEST } from '../constants/action-types'
 import * as Request from '../util/request'
-import { BASE_URL } from '../constants/config'
+import { API_URL } from '../constants/config'
 import {
     fetchAccountSuccess, fetchAccountFailure,
     updateMemberFailure, updateAccountSuccess
@@ -17,7 +17,6 @@ export function* watchAccount() {
 function* fetchAccount() {
     try {
         const payload = yield call(getAccount)
-        console.log(payload)
         yield put(fetchAccountSuccess(payload))
     } catch (e) {
         yield put(fetchAccountFailure(e))
@@ -43,14 +42,14 @@ function* updatePassword(action) {
 }
 
 function getAccount() {
-    return Request.get(BASE_URL+"/account")
+    return Request.get(API_URL+"/account")
 }
 
 function putAccount(body) {
-    return Request.put(BASE_URL+"/account", body)
+    return Request.put(API_URL+"/account", body)
 }
 
 function putPassword(body) {
-    return Request.put(BASE_URL + "/account/password", body)
+    return Request.put(API_URL + "/account/password", body)
 }
 

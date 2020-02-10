@@ -1,6 +1,7 @@
 import React from 'react'
-import { connect  } from 'react-redux'
+import { connect } from 'react-redux'
 import { updateAccountPasswordRequest } from '../../../actions/action'
+import ErrorList from '../../common/ErrorList'
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -16,6 +17,7 @@ class ConnectedPasswordEdit extends React.Component {
             oldPass: '',
             newPass: '',
             confirmPass: '',
+            errors: []
         }
 
         this.handleChange = this.handleChange.bind(this)
@@ -32,10 +34,28 @@ class ConnectedPasswordEdit extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault()
+        var errors = []
+        // 空値がある場合は警告
+        if(this.state.oldPass === "" || this.state.newPass === "" || this.state.confirmPass === "") {
+            // TODO: error list display
+            errors = errors.concat({
+                id: 'empty',
+                content: '空値があります'
+            })
+        }
         // confirmあたりの検証
         if(this.state.newPass !== this.state.confirmPass) {
-            // TODO: 警告！
-            console.log("確認が不一致")
+            // 警告！
+            errors = errors.concat({
+                id: 'notMach',
+                content: '新規パスワードが一致していません'
+            })
+        }
+        // errorがあればreturn
+        if(errors.length > 0) {
+            this.setState({
+                errors
+            })
             return
         }
 
@@ -60,6 +80,12 @@ class ConnectedPasswordEdit extends React.Component {
             <div className="content">
                 <h1 className="content-title h1-block">パスワードの再設定</h1>
                 <form className="form" onSubmit={this.handleSubmit}>
+                    {
+                        this.state.errors.length
+                        ? <ErrorList errors={this.state.errors} />
+                        : <></>
+                    }
+
                     <div className="form-item">
                         <label className="input-label">元のパスワード</label>
                         <input type="password" name="oldPass" className="input-text" value={this.state.oldPass} onChange={this.handleChange} />
@@ -80,6 +106,7 @@ class ConnectedPasswordEdit extends React.Component {
         )
     }
 }
+
 
 const PasswordEdit = connect(
     null,

@@ -10,9 +10,6 @@ $success-hover: #218838;
 $info: #17a2b8;
 $info-hover: #138496;
 $info-light: #d1ecf1;
-$danger: #dc3545;
-$danger-hover: #8b2323;
-$danger-light: #ffb2b2;
 
 // font-color
 $nav-link-color: rgba(255, 255, 255, 0.7);
@@ -25,7 +22,7 @@ $border-main: #ddd;
 $border-dark-main: #ccc;
 
 // table
-$table-cell-padding: .5rem 1rem;
+$table-cell-padding: .2rem .8rem;
 
 // css wrap
 html {
@@ -71,38 +68,10 @@ body {
     &-10{
         margin-bottom: 10px;
     }
-    &-20 {
-        margin-bottom: 20px;
-    }
     &-30 {
         margin-bottom: 30px;
     }
 }
-
-.ml{
-    &-10{
-        margin-left: 10px;
-    }
-    &-20 {
-        margin-left: 20px;
-    }
-    &-30 {
-        margin-left: 30px;
-    }
-}
-
-.mr{
-    &-10{
-        margin-right: 10px;
-    }
-    &-20 {
-        margin-right: 20px;
-    }
-    &-30 {
-        margin-right: 30px;
-    }
-}
-
 
 .col {
     &-black {
@@ -117,12 +86,31 @@ body {
     text-align: center;
 }
 
+// breadcrumb
+.breadcrumb {
+    display: block;
+    background-color: $light-gray;
+    border-radius: 5px;
+    padding: .2rem .8rem;
+    a {
+        padding: .5rem;
+        color: $accent;
+        text-decoration: none;
+        &:hover{
+            color: $primary-hover;
+        }
+    }
+}
+
 // table
 .table-basic {
     border: $border-width solid $border-dark-main;
     border-spacing: 0px;
     box-sizing: border-box;
     width: 100%;
+    caption {
+        text-align: left;
+    }
     thead {
         background-color: $light-gray;
         th {
@@ -152,13 +140,21 @@ body {
     }
 }
 
-.table-stripe {
-    border: $border-width solid $border-dark-main;
-    border-right: none;
-    border-left: none;
-    border-spacing: 0px;
-    box-sizing: border-box;
-    width: 100%;
+.table {
+    &-stripe{
+        border: $border-width solid $border-dark-main;
+        border-right: none;
+        border-left: none;
+        border-spacing: 0px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+    caption {
+        text-align: left;
+        font-size: 1.0rem;
+        font-weight: 600;
+        margin-bottom: .2rem;
+    }
     thead {
         background-color: $light-gray;
         th {
@@ -228,16 +224,6 @@ body {
             border-color: $info-hover;
         }
     }
-    &-danger {
-        color: #fff;
-        background-color: $danger;
-        border-color: $danger;
-        &:hover{
-            background-color: $danger-hover;
-            border-color: $danger-hover;
-        }
-    }
-
 }
 
 .alert {
@@ -343,21 +329,6 @@ body {
     }
 }
 
-.error-list {
-    // display: none;
-    color: $danger-hover;
-    background-color: $danger-light;
-    border: 1px solid $danger;
-    border-radius: 5px;
-    padding: .2rem 1rem;
-    ul {
-        margin-block-start: 0em;
-        margin-block-end: 0em;
-        list-style: none;
-        padding-inline-start: 0px;
-    }
-}
-
 .flex-block {
     display: flex;
     justify-content: space-between;
@@ -457,16 +428,6 @@ body {
             }
         }
     }
-}
-
-.jumbotron {
-    color: $base;
-    font-size: 1.8em;
-    display: flex;
-    background-color: $accent;
-    justify-content: center;
-    align-content: center;
-    padding: 5rem;
 }
 
 .footer {

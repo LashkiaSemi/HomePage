@@ -1,6 +1,6 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
 import { FETCH_EQUIPMENTS_REQUEST } from '../constants/action-types'
-import { BASE_URL } from '../constants/config'
+import { API_URL } from '../constants/config'
 import * as Request from '../util/request'
 import { fetchEquipmentsSuccess, fetchEquipmentsFailure } from '../actions/action'
 
@@ -18,5 +18,5 @@ function* fetchEquipments() {
 }
 
 function getEquipments() {
-    return Request.get(BASE_URL + "/equipments")
+    return Request.get(API_URL + "/equipments")
 }

@@ -7,10 +7,10 @@ import {
     FETCH_MEMBER_SUCCESS, FETCH_MEMBER_FAILURE,
     FETCH_RESEARCHES_SUCCESS, FETCH_RESEARCHES_FAILURE,
     FETCH_SOCIETIES_SUCCESS, FETCH_SOCIETIES_FAILURE,
-    SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST, UPDATE_MEMBER_SUCCESS, FETCH_ACCOUNT_SUCCESS, UPDATE_ACCOUNT_SUCCESS, FETCH_ACCOUNT_FAILURE, LOGOUT_SUCCESS, LOGOUT_FAILURE, UPDATE_ACCOUNT_PASSWORD_SUCCESS, UPDATE_ACCOUNT_PASSWORD_FAILURE } from '../constants/action-types'
+    SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST, UPDATE_MEMBER_SUCCESS, FETCH_ACCOUNT_SUCCESS, UPDATE_ACCOUNT_SUCCESS, FETCH_ACCOUNT_FAILURE, LOGOUT_SUCCESS, LOGOUT_FAILURE, UPDATE_ACCOUNT_PASSWORD_SUCCESS, UPDATE_ACCOUNT_PASSWORD_FAILURE, CREATE_LECTURE_FAILURE, CREATE_LECTURE_SUCCESS, FETCH_LECTURE_SUCCESS } from '../constants/action-types'
 import { combineReducers } from 'redux'
 
-import { HOST_URL, STRAGE_KET } from '../constants/config'
+import { CLIENT_URL, STRAGE_KEY } from '../constants/config'
 
 // TODO: reducerの分割した方がよくね？
 
@@ -29,10 +29,9 @@ function isLoading(state=false, action) {
 function logged(state=[], action) {
     switch(action.type) {
         case LOGIN_SUCCESS:
-            //TODO: 納得いかないw
             // localstrageにidをタンク
-            localStorage.setItem(STRAGE_KET, action.payload.data.user_id)
-            window.location.href = HOST_URL
+            localStorage.setItem(STRAGE_KEY, action.payload.data.user_id)
+            window.location.href = CLIENT_URL
             return Object.assign([], state, state.concat({user_id:action.payload.data.user_id}))
         
         case LOGIN_FAILURE:
@@ -42,13 +41,17 @@ function logged(state=[], action) {
         case LOGOUT_SUCCESS:
             console.log("reducer: logout success")
             // localstarageを消せ！
-            localStorage.removeItem(STRAGE_KET)
+            localStorage.removeItem(STRAGE_KEY)
             // TODO: redirect
-            window.location.href = HOST_URL
+            window.location.href = CLIENT_URL
             return state
         
         case LOGOUT_FAILURE:
             console.log("reducer: logout failure")
+            if (localStorage.getItem(STRAGE_KEY)){
+                localStorage.removeItem(STRAGE_KEY)
+            }
+            window.location.href = CLIENT_URL
             return state
         default:
             return state
@@ -148,6 +151,23 @@ function lectures(state=[], action) {
     switch(action.type) {
         case FETCH_LECTURES_SUCCESS:
             return Object.assign([], action.payload.data.lectures)
+        // case FETCH_LECTURE_SUCCESS:
+        //     return Object.assign([], action.payload.data)
+        case CREATE_LECTURE_SUCCESS:
+            console.log("reducer: lecture upload success")
+            // TODO; redirect
+            return state
+        default:
+            return state
+    }
+}
+
+function lecture(state={}, action) {
+    switch (action.type) {
+
+        case FETCH_LECTURE_SUCCESS:
+            return Object.assign({}, action.payload.data)
+
         default:
             return state
     }
@@ -163,6 +183,7 @@ const rootReducer = combineReducers({
     jobs,
     equipments,
     lectures,
+    lecture,
     logged,
     account,
 })

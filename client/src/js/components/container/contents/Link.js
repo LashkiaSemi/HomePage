@@ -46,37 +46,42 @@ const LAB = [
     },
     {
         name: '濱川 研究室',
-        path: 'link',
+        path: 'http://hamakawalab.sist.chukyo-u.ac.jp/',
     },
     {
         name: 'MDLAB（目加田・道満 研究室）',
-        path: 'link',
+        path: 'https://md.sist.chukyo-u.ac.jp/index.html',
     },
     {
         name: '鬼頭 研究室',
-        path: ''
+        path: 'http://kitolab.sist.chukyo-u.ac.jp/'
     },
     {
         name: 'オープンメディアラボ（宮崎・山田・中 研究室）',
-        path: 'link',
+        path: 'https://www.om.sist.chukyo-u.ac.jp/',
     }
 ]
 
 const TECH = [
     {
         name: 'Flutter',
-        comment: 'Dart言語を用いた',
-        path: 'link',
+        comment: 'Dart言語を用いた Android／iOSアプリ開発のフレームワーク',
+        path: 'https://flutter.dev/',
     },
     {
-        name: 'hoho',
-        comment: 'comment',
-        path: 'link',
+        name: 'Docker',
+        comment: '軽量なコンテナ型の仮想環境を提供するオープンソースソフトウェア',
+        path: 'https://www.docker.com/',
     },
     {
-        name: 'hoho',
-        comment: 'comment',
-        path: 'link',
+        name: 'Electron',
+        comment: 'クロスプラットホームなデスクトップアプリを開発できるフレームワーク',
+        path: 'https://www.electronjs.org/',
+    },
+    {
+        name: 'ARCore',
+        comment: 'Googleが提供するARフレームワーク',
+        path: 'https://developers.google.com/ar/',
     },
 ]
 

@@ -2,7 +2,7 @@ import { call, put, takeEvery } from 'redux-saga/effects'
 import * as Request from '../util/request'
 import { loginSuccess, loginFailure, logoutSuccess, logoutFailure } from '../actions/action'
 import { LOGIN_REQUEST, LOGOUT_REQUEST } from '../constants/action-types'
-import { BASE_URL } from '../constants/config'
+import { API_URL } from '../constants/config'
 
 export function* watchLogin() {
     yield takeEvery(LOGIN_REQUEST, handleLogin)
@@ -20,7 +20,7 @@ function* handleLogin(action) {
 }
 
 function loginRequest(student_id, password) {
-    return Request.post(BASE_URL+"/login", {student_id, password})
+    return Request.post(API_URL + "/login", { student_id, password }, {withCredentials: true })
 }
 
 function* handleLogout() {
@@ -33,5 +33,5 @@ function* handleLogout() {
 }
 
 function logoutRequest() {
-    return Request.httpDelete(BASE_URL+"/logout")
+    return Request.httpDelete(API_URL+"/logout")
 }

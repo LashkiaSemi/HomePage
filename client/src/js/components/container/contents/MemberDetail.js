@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { fetchMemberRequest } from '../../../actions/action'
 import { connect } from 'react-redux'
-import { STRAGE_KET } from '../../../constants/config'
+import { STRAGE_KEY } from '../../../constants/config'
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -23,7 +23,7 @@ class ConnectedMemberDetail extends React.Component {
 
         this.state = {
             id: this.props.match.params.id,
-            isEdit: localStorage.getItem(STRAGE_KET) === this.props.match.params.id
+            isEdit: localStorage.getItem(STRAGE_KEY) === this.props.match.params.id
         }
     }
 
@@ -41,7 +41,7 @@ class ConnectedMemberDetail extends React.Component {
                             <label className="label-block col-gray">{this.props.member.student_id}</label>
                         </div>
                         <div className="card-item">
-                            <label className="label-block">学年：{GRADE[this.props.member.grade]}</label>
+                            <label className="label-block">学年：{numToGrade(this.props.member.grade)}</label>
                         </div>
                         <div className="card-item">
                             <label className="label-block">学部：{this.props.member.department}</label>
@@ -70,16 +70,28 @@ const MemberDetail = connect(
     mapDispatchToProps
 )(ConnectedMemberDetail)
 
-// todo: switchcaseなfunctionでもいいかも
-const GRADE = {
-    2: "学部2年",
-    3: "学部3年",
-    4: "学部4年",
-    5: "修士1年",
-    6: "修士2年",
-    7: "博士1年",
-    8: "博士2年",
-    0: "卒業生"
+const numToGrade = (num) => {
+    switch(num) {
+        case 2:
+            return "学部2年"
+        case 3:
+            return "学部3年"
+        case 4:
+            return "学部4年"
+        case 5:
+            return "修士1年"
+        case 6:
+            return "修士2年"
+        case 7:
+            return "博士1年"
+        case 8:
+            return "博士2年"
+        case 0:
+            return "卒業生"
+        default:
+            return ""
+    }
 }
+
 
 export default MemberDetail

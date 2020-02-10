@@ -1,8 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
-// TODO: navigationのリンク
-// TODO: ログイン状態の保存?
+import { STRAGE_KEY } from '../../constants/config'
 
 // Header
 // 頭のナビゲーションバーです
@@ -33,19 +31,25 @@ const Navigation = (props) => (
 // らしきあぜみって書いておく場所
 const Logo = (props) => (
     <div className="logo">
-        {/* TODO: ここLinkにして */}
         <Link to="/">Lashkia研究室</Link>
     </div>
 )
 
 // Menu
-// TODO: ここ、あれ、storeから読めばいいのでは？
 const Menu = (props) => {
+    // localStrageに値がなかったらnullになります
+    const isLogin = localStorage.getItem(STRAGE_KEY)
     return (
         <ul className="menu">
             {
                 MENU.map((menu) => (
-                    <MenuRow key={menu.id} menu={menu} />
+                    isLogin
+                    ? menu.isLogin
+                        ? <MenuRow key={menu.id} menu={menu} />
+                        : <></>
+                    : menu.isNotLogin
+                        ? <MenuRow key={menu.id} menu={menu} />
+                        : <></>
                 ))
             }
         </ul>
@@ -55,7 +59,6 @@ const Menu = (props) => {
 // MenuRow
 // 項目一個
 const MenuRow = (props) => {
-    // TODO: 必要なら、何かしら、分岐のしょりをば
     return (
         <li><Link to={`/${props.menu.id}`}>{props.menu.display}</Link></li>
     )
@@ -66,46 +69,62 @@ const MENU = [
     {
         id: "activities",
         display: "活動記録",
+        isLogin: true,
+        isNotLogin: true,
     },
     {
         id: "societies",
         display: "学会発表",
+        isLogin: true,
+        isNotLogin: true,
     },
     {
         id: "researches",
         display: "卒業研究",
+        isLogin: true,
+        isNotLogin: true,
     },
     {
         id: "jobs",
         display: "就職先",
+        isLogin: true,
+        isNotLogin: true,
     },
     {
         id: "members",
         display: "メンバー",
+        isLogin: true,
+        isNotLogin: true,
     },
     {
         id: "links",
         display: "外部リンク",
+        isLogin: true,
+        isNotLogin: true,
     },
     {
         id: "equipments",
         display: "研究室備品",
-        loginRequired: true,
+        isLogin: true,
+        isNotLogin: false,
     },
     {
         id: "lectures",
         display: "レクチャー",
-        loginRequired: true,
+        isLogin: true,
+        isNotLogin: false,
     },
     {
         id: "login",
         display: "ログイン",
-        loginRequired: false,
+        isLogin: false,
+        isNotLogin: true,
     },
     {
         id: "logout",
         display: "ログアウト",
-        loginRequired: true,
+        isLogin: true,
+        isNotLogin: false,
     },
 ]
 

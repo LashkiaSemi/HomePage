@@ -50,6 +50,12 @@ export const fetchEquipmentsFailure = (payload) => { return { type: Type.FETCH_E
 export const fetchLecturesRequest = () => { return { type: Type.FETCH_LECTURES_REQUEST } }
 export const fetchLecturesSuccess = (payload) => { return { type: Type.FETCH_LECTURES_SUCCESS, payload } }
 export const fetchLecturesFailure = (payload) => { return { type: Type.FETCH_LECTURES_FAILURE, payload } }
+export const fetchLectureRequest = (payload) => { return { type: Type.FETCH_LECTURE_REQUEST, payload } }
+export const fetchLectureSuccess = (payload) => { return { type: Type.FETCH_LECTURE_SUCCESS, payload } }
+export const fetchLectureFailure = (payload) => { return { type: Type.FETCH_LECTURE_FAILURE, payload } }
+export const createLectureRequest = (payload) => { return { type: Type.CREATE_LECTURE_REQUEST, payload } }
+export const createLectureSuccess = (payload) => { return { type: Type.CREATE_LECTURE_SUCCESS, payload } }
+export const createLectureFailure = (payload) => { return { type: Type.CREATE_LECTURE_FAILURE, payload } }
 
 export const fetchJobsRequest = () => { return { type: Type.FETCH_JOBS_REQUEST } }
 export const fetchJobsSuccess = (payload) => { return { type: Type.FETCH_JOBS_SUCCESS, payload } }
