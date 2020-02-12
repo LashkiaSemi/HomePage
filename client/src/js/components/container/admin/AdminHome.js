@@ -1,5 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+
+import BreadCrumb from './Breadcrumb'
 
 const mapStateToProps = (state) => {
     return {
@@ -13,21 +16,20 @@ class ConnectedAdminHome extends React.Component {
     }
 
     render() {
-        // console.log(Object.keys(this.props.states))
         return (
             <div className="content">
-                <table className="table table-stripe">
-                    <caption>データ管理</caption>
-                    <tbody>
+                <BreadCrumb items={[{path: "", label: ""}]}/>
+
+                <div className="list-admin">
+                    <label className="list-admin-title">データ管理</label>
+                    <ul>
                         {
                             TOCS.map(toc => (
-                                <tr>
-                                    <td>{toc.label}</td>
-                                </tr>
+                                <li key={toc.id}><Link to={`/admin/${toc.id}`} className="list-admin-item">{toc.label}</Link></li>
                             ))
                         }
-                    </tbody>
-                </table>
+                    </ul>
+                </div>
             </div>
         )
     }

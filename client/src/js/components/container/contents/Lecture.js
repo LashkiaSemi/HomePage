@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { fetchLecturesRequest } from '../../../actions/action'
 import { STRAGE_KEY } from '../../../constants/config'
 import { Link } from 'react-router-dom'
-
+import * as Crypto from '../../../util/crypto'
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -29,7 +29,7 @@ class ConnectedLecture extends React.Component {
     componentDidMount() {
         this.props.fetchRequest()
         this.setState({
-            isLogin: localStorage.getItem(STRAGE_KEY)
+            isLogin: Crypto.Decrypt(localStorage.getItem(STRAGE_KEY))
         })
     }
 
@@ -85,7 +85,7 @@ const LectureRow = (props) => {
             <td>
                 <button className="btn btn-primary">Download</button>
                 {
-                    props.isLogin != props.lecture.user.id
+                    props.isLogin.indexOf(props.lecture.user.id) < 0 
                     ? <></>
                     : <>
                         <Link to={`/lectures/${props.lecture.id}/edit`} className="btn btn-info">編集</Link>

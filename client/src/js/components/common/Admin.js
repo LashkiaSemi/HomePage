@@ -4,7 +4,11 @@ import { STRAGE_KEY } from '../../constants/config'
 import * as Crypto from '../../util/crypto'
 
 const Admin = (props) => {
-    const loginInfo = Crypto.Decrypt(localStorage.getItem(STRAGE_KEY))
+    const strageValue = localStorage.getItem(STRAGE_KEY)
+    if (!strageValue) {
+        return <Redirect to="/login" />
+    }
+    const loginInfo = Crypto.Decrypt(strageValue)
     return (
         loginInfo.indexOf("owner") > -1
         ? props.children

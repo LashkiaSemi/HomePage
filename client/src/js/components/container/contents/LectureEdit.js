@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { createLectureRequest, fetchLectureRequest } from '../../../actions/action'
 import ErrorList from '../../common/ErrorList'
 import { STRAGE_KEY } from '../../../constants/config'
+import Auth from '../../common/Auth'
 
 const mapDispatchToProps = (dispatch) => {
     return {

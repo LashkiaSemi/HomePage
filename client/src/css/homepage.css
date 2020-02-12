@@ -88,6 +88,23 @@ body {
   text-align: center;
 }
 
+.breadcrumb {
+  display: block;
+  background-color: #efefef;
+  border-radius: 5px;
+  padding: .2rem .8rem;
+}
+
+.breadcrumb a {
+  padding: .5rem;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: #0069d9;
+}
+
 .table-basic {
   border: 2px solid #ccc;
   border-spacing: 0px;
@@ -168,6 +185,52 @@ body {
 
 .items-3 {
   width: 33%;
+}
+
+.table-admin-stripe {
+  border: 2px solid #ccc;
+  border-right: none;
+  border-left: none;
+  border-spacing: 0px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.table-admin caption {
+  text-align: left;
+  font-size: 1.0rem;
+  font-weight: 600;
+  margin-bottom: .2rem;
+}
+
+.table-admin thead {
+  background-color: #efefef;
+}
+
+.table-admin thead th {
+  padding: 0.2rem 0.8rem;
+  text-align: left;
+}
+
+.table-admin thead th:last-child {
+  border-right: none;
+}
+
+.table-admin tbody td {
+  padding: 0.2rem 0.8rem;
+  border-top: 2px solid #ccc;
+}
+
+.table-admin tbody td:last-child {
+  border-right: none;
+}
+
+.table-admin tr {
+  border-bottom: 2px solid #ccc;
+}
+
+.table-admin tr:nth-child(2n) {
+  background-color: #efefef;
 }
 
 .btn {
@@ -333,6 +396,76 @@ body {
 
 .list-stripe-item {
   padding: 0.5rem 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.list-admin {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  margin: 0 .2rem;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+.list-admin:last-child {
+  border: none;
+  margin-bottom: 0rem;
+}
+
+.list-admin a {
+  display: block;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.list-admin a:hover {
+  background-color: #efefef;
+  color: #0069d9;
+}
+
+.list-admin li {
+  border-bottom: 2px solid #ccc;
+}
+
+.list-admin li:last-child {
+  border-bottom: none;
+}
+
+.list-admin-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.list-admin ul {
+  padding-inline-start: 0px;
+  list-style: none;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+}
+
+.list-admin-item {
+  padding: 0.2rem 0.8rem;
+}
+
+.list-admin-stripe {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  margin: 0 .2rem;
+}
+
+.list-admin-stripe:last-child {
+  border-bottom: none;
+}
+
+.list-admin-stripe-title {
+  margin-left: .8rem;
+  margin-bottom: .5rem;
+}
+
+.list-admin-stripe-item {
+  padding: 0.2rem 0.8rem;
   border-bottom: 1px solid #ccc;
 }
 

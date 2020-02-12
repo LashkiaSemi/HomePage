@@ -17,7 +17,10 @@ import Login from './contents/Login'
 import Logout from './contents/Logout'
 import PasswordEdit from './contents/PasswordEdit'
 
+import AdminHome from './admin/AdminHome'
+
 import Auth from '../common/Auth'
+import Admin  from '../common/Admin'
 import Error404 from './contents/Error'
 
 class Container extends React.Component {
@@ -35,21 +38,49 @@ class Container extends React.Component {
                     <Route exact path="/links" component={Link}/>
                     <Route exact path="/login" component={Login}/>
 
-                    <Auth>
-                        <Route exact path="/equipments" component={Equipment} />
-                        <Route exact path="/lectures" component={Lecture} />
-                        <Route exact path="/lectures/new" component={LectureEdit} />
-                        <Route exact path="/lectures/:id/edit" component={LectureEdit} />
-                        <Route exact path="/account/edit" component={MemberEdit} />
-                        <Route exact path="/account/edit_pass" component={PasswordEdit} />
-                        <Route exact path="/logout" component={Logout} />
-                    </Auth>
+                    {/* Auth */}
+                    <AuthRoute exact path="/equipments" component={Equipment} />
+                    <AuthRoute exact path="/lectures" component={Lecture} />
+                    <AuthRoute exact path="/lectures/new" component={LectureEdit}/>
+                    <AuthRoute exact path="/lectures/:id/edit" component={LectureEdit} />
+                    <AuthRoute exact path="/account/edit" component={MemberEdit} />
+                    <AuthRoute exact path="/account/edit_pass" component={PasswordEdit} />
+                    <AuthRoute exact path="/logout" component={Logout} />
+
+                    {/* Admin */}
+                    <AdminRoute exact path="/admin" component={AdminHome}/>
 
                     <Route component={Error404} />
                 </Switch>
             </div>
         )
     }
+}
+
+function AuthRoute({component: Component, ...rest}){
+    return (
+        <Route 
+            {...rest}
+            render={routeProps => (
+                <Auth>
+                    <Component {...routeProps} />
+                </Auth>
+            )}
+        />
+    )
+}
+
+function AdminRoute({component: Component, ...rest}) {
+    return (
+        <Route
+            {...rest}
+            render={routeProps => (
+                <Admin>
+                    <Component {...routeProps} />
+                </Admin>
+            )}
+        />
+    )
 }
 
 export default Container
