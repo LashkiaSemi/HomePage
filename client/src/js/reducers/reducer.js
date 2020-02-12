@@ -12,6 +12,8 @@ import { combineReducers } from 'redux'
 
 import { CLIENT_URL, STRAGE_KEY } from '../constants/config'
 
+import * as Crypto from '../util/crypto'
+
 // TODO: reducerの分割した方がよくね？
 
 function isLoading(state=false, action) {
@@ -25,12 +27,13 @@ function isLoading(state=false, action) {
     }
 }
 
-// TODO: なんとかしろ
 function logged(state=[], action) {
     switch(action.type) {
         case LOGIN_SUCCESS:
-            // localstrageにidをタンク
-            localStorage.setItem(STRAGE_KEY, action.payload.data.user_id)
+            // localstrageに入れる値の暗号化
+            const strageValue = Crypto.Encrypt(action.payload.data.user_id + action.payload.data.role)
+            // localstrageにタンク
+            localStorage.setItem(STRAGE_KEY, strageValue)
             window.location.href = CLIENT_URL
             return Object.assign([], state, state.concat({user_id:action.payload.data.user_id}))
         
@@ -42,12 +45,13 @@ function logged(state=[], action) {
             console.log("reducer: logout success")
             // localstarageを消せ！
             localStorage.removeItem(STRAGE_KEY)
-            // TODO: redirect
+            // memo: redirect
             window.location.href = CLIENT_URL
             return state
         
         case LOGOUT_FAILURE:
             console.log("reducer: logout failure")
+            // TODO: これいる...?
             if (localStorage.getItem(STRAGE_KEY)){
                 localStorage.removeItem(STRAGE_KEY)
             }
