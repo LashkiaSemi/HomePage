@@ -311,6 +311,10 @@ body {
   padding: 0.5rem 1rem;
 }
 
+.list-item li {
+  padding: .2rem 0rem;
+}
+
 .list-stripe {
   box-sizing: border-box;
   display: flex;

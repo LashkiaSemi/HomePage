@@ -336,9 +336,12 @@ body {
 
 // form
 .form {
-    max-width: 70%;
+    max-width: 100%;
     margin-left: auto;
     margin-right: auto;
+    table {
+        width: 100%;
+    }
     &-item {
         margin-bottom: 1.8rem;
     }
@@ -354,18 +357,18 @@ body {
 // input
 .input{
     &-label{
-        font-size: 1.3em;
+        // font-size: 1.3em;
         margin-bottom: .5rem;
         font-weight: normal;
-        display: block;
     }
     &-text {
         font-size: 1em;
-        padding: .3rem .5rem;
+        padding: .1rem .5rem;
         border-radius: 5px;
         border: 1px solid #ccc;
-        display: block;
+        // display: block;
         width: 100%;
+        max-width: 100%;
     }
     &-textarea {
         font-size: 1em;

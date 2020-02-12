@@ -327,9 +327,13 @@ body {
 }
 
 .form {
-  max-width: 70%;
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.form table {
+  width: 100%;
 }
 
 .form-item {
@@ -341,19 +345,17 @@ body {
 }
 
 .input-label {
-  font-size: 1.3em;
   margin-bottom: .5rem;
   font-weight: normal;
-  display: block;
 }
 
 .input-text {
   font-size: 1em;
-  padding: .3rem .5rem;
+  padding: .1rem .5rem;
   border-radius: 5px;
   border: 1px solid #ccc;
-  display: block;
   width: 100%;
+  max-width: 100%;
 }
 
 .input-textarea {

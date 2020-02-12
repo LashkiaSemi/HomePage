@@ -20,7 +20,7 @@ func NewActivityRepository(sh SQLHandler) interactor.ActivityRepository {
 }
 
 func (ar *activityRepository) FindAll() (acts domain.Activities, err error) {
-	rows, err := ar.SQLHandler.Query("SELECT id, date, activity, created_at, updated_at FROM activities")
+	rows, err := ar.SQLHandler.Query("SELECT id, date, activity, created_at, updated_at FROM activities ORDER BY date DESC")
 	if err != nil {
 		logger.Error(err)
 		return acts, err
