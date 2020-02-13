@@ -22,7 +22,8 @@ function* fetchMembers() {
 }
 
 function getMembers() {
-    return Request.get(API_URL+"/users")
+    const options = { withCredentials: true }
+    return Request.httpGet(API_URL+"/users", options)
 }
 
 // member
@@ -51,9 +52,11 @@ function* updateMember(action) {
 }
 
 function getMember(id) {
-    return Request.get(API_URL+"/users/"+id)
+    const options = { withCredentials: true }
+    return Request.httpGet(API_URL+"/users/"+id, options)
 }
 
 function putMember(id, body) {
-    return Request.put(API_URL+"/user/"+id, body)
+    const options = { withCredentials: true }
+    return Request.httpPut(API_URL+"/user/"+id, body, options)
 }

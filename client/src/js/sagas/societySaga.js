@@ -18,5 +18,6 @@ function* fetchSocieties() {
 }
 
 function getSocieties() {
-    return Request.get(API_URL + "/societies")
+    const options = { withCredentials: true }
+    return Request.httpGet(API_URL + "/societies", options)
 }

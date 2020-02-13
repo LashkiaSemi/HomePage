@@ -20,5 +20,6 @@ function* fetchJobs() {
 }
 
 function getJobs() {
-    return Request.get(API_URL + "/jobs")
+    const options = { withCredentials: true }
+    return Request.httpGet(API_URL + "/jobs", options)
 }

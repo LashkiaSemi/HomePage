@@ -7,7 +7,7 @@ import {
     FETCH_MEMBER_SUCCESS, FETCH_MEMBER_FAILURE,
     FETCH_RESEARCHES_SUCCESS, FETCH_RESEARCHES_FAILURE,
     FETCH_SOCIETIES_SUCCESS, FETCH_SOCIETIES_FAILURE,
-    SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST, UPDATE_MEMBER_SUCCESS, FETCH_ACCOUNT_SUCCESS, UPDATE_ACCOUNT_SUCCESS, FETCH_ACCOUNT_FAILURE, LOGOUT_SUCCESS, LOGOUT_FAILURE, UPDATE_ACCOUNT_PASSWORD_SUCCESS, UPDATE_ACCOUNT_PASSWORD_FAILURE, CREATE_LECTURE_FAILURE, CREATE_LECTURE_SUCCESS, FETCH_LECTURE_SUCCESS } from '../constants/action-types'
+    SHOW_LOADING, HIDE_LOADING, LOGIN_SUCCESS, LOGIN_FAILURE, UPDATE_MEMBER_REQUEST, UPDATE_MEMBER_SUCCESS, FETCH_ACCOUNT_SUCCESS, UPDATE_ACCOUNT_SUCCESS, FETCH_ACCOUNT_FAILURE, LOGOUT_SUCCESS, LOGOUT_FAILURE, UPDATE_ACCOUNT_PASSWORD_SUCCESS, UPDATE_ACCOUNT_PASSWORD_FAILURE, CREATE_LECTURE_FAILURE, CREATE_LECTURE_SUCCESS, FETCH_LECTURE_SUCCESS, CREATE_ACTIVITY_SUCCESS, UPDATE_ACTIVITY_SUCCESS, DELETE_ACTIVITY_SUCCESS, UPDATE_LECTURE_SUCCESS, DELETE_LECTURE_SUCCESS } from '../constants/action-types'
 import { combineReducers } from 'redux'
 
 import { CLIENT_URL, STRAGE_KEY } from '../constants/config'
@@ -66,6 +66,15 @@ function activities(state=[], action) {
     switch(action.type) {
         case FETCH_ACTIVITIES_SUCCESS:
             return Object.assign([], action.payload.data.activities)
+        case CREATE_ACTIVITY_SUCCESS:
+            console.log("reducer: create activiry success")
+            return state
+        case UPDATE_ACTIVITY_SUCCESS:
+            console.log("reducer: update activity success")
+            return state
+        case DELETE_ACTIVITY_SUCCESS:
+            console.log("reducer: delete activity success")
+            return state
         default:
             return state
     }
@@ -158,8 +167,16 @@ function lectures(state=[], action) {
         // case FETCH_LECTURE_SUCCESS:
         //     return Object.assign([], action.payload.data)
         case CREATE_LECTURE_SUCCESS:
-            console.log("reducer: lecture upload success")
+            console.log("reducer: lecture create success")
             // TODO; redirect
+            return state
+        case UPDATE_LECTURE_SUCCESS:
+            // TODO: redirect
+            console.log("reducer: lecture update success")
+            return state
+        case DELETE_LECTURE_SUCCESS:
+            // TODO: reload
+            console.log("reducer: lecture delete success")
             return state
         default:
             return state

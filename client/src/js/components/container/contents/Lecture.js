@@ -1,13 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchLecturesRequest } from '../../../actions/action'
+import { fetchLecturesRequest, deleteLectureRequest } from '../../../actions/action'
 import { STRAGE_KEY } from '../../../constants/config'
 import { Link } from 'react-router-dom'
 import * as Crypto from '../../../util/crypto'
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchRequest: () => dispatch(fetchLecturesRequest())
+        fetchRequest: () => dispatch(fetchLecturesRequest()),
+        dispatchDeleteRequest: (id) => dispatch(deleteLectureRequest({id: id}))
     }
 }
 
@@ -22,8 +23,12 @@ class ConnectedLecture extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isLogin: null
+            isLogin: "",
+            displayModal: false, // deleteの確認画面を開くアレ
         }
+
+        this.switchModal = this.switchModal.bind(this)
+        this.handleDelete = this.handleDelete.bind(this)
     }
     
     componentDidMount() {
@@ -31,6 +36,16 @@ class ConnectedLecture extends React.Component {
         this.setState({
             isLogin: Crypto.Decrypt(localStorage.getItem(STRAGE_KEY))
         })
+    }
+
+    switchModal(){
+        this.setState({
+            displayModal: !this.state.displayModal
+        })
+    }
+
+    handleDelete(e) {
+        this.props.dispatchDeleteRequest(e.target.dataset.id)
     }
 
     render() {
@@ -45,7 +60,13 @@ class ConnectedLecture extends React.Component {
                             : <></>
                     }
                 </div>
-                <LectureTable lectures={this.props.lectures} isLogin={this.state.isLogin}/>
+                <LectureTable 
+                    lectures={this.props.lectures} 
+                    isLogin={this.state.isLogin}
+                    handleSwitch={this.switchModal}
+                    handleDelete={this.handleDelete}
+                    displayModal={this.state.displayModal}
+                    />
             </div>
         )
     }
@@ -66,7 +87,13 @@ const LectureTable = (props) => {
             <tbody>
                 {
                     props.lectures.map((lec) => (
-                        <LectureRow key={lec.id} lecture={lec} isLogin={props.isLogin}/>
+                        <LectureRow 
+                            key={lec.id} 
+                            lecture={lec} 
+                            isLogin={props.isLogin}
+                            handleSwitch={props.handleSwitch}
+                            handleDelete={props.handleDelete}
+                            displayModal={props.displayModal}/>
                     ))
                 }
             </tbody>
@@ -89,12 +116,41 @@ const LectureRow = (props) => {
                     ? <></>
                     : <>
                         <Link to={`/lectures/${props.lecture.id}/edit`} className="btn btn-info">編集</Link>
-                        <button className="btn btn-danger">削除</button>
+                        <button className="btn btn-danger" onClick={props.handleSwitch}>削除</button>
                     </>
                 }
             </td>
-
+            {
+                props.displayModal
+                    ? <DeleteModal
+                        handleSwitch={props.handleSwitch}
+                        handleDelete={props.handleDelete}
+                        lecture={props.lecture}/>
+                    : <></>
+            }
         </tr>
+    )
+}
+
+// TODO: commonあたりに移行させてもいいのでは？
+const DeleteModal = (props) => {
+    return (
+        <div className="modal">
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <div className="modal-title">
+                        <label>削除確認</label>
+                    </div>
+                    <div className="modal-body">
+                        <p><b>{props.lecture.title}</b> を削除します。よろしいですか。</p>
+                        <div>
+                            <button className="btn btn-danger" data-id={props.lecture.id} onClick={props.handleDelete}>削除</button>
+                            <button className="btn btn-info" onClick={props.handleSwitch}>戻る</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }
 

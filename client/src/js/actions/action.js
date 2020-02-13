@@ -31,9 +31,19 @@ export const fetchMemberRequest = (payload) => { return { type: Type.FETCH_MEMBE
 export const fetchMemberSuccess = (payload) => { return { type: Type.FETCH_MEMBER_SUCCESS, payload } }
 export const fetchMemberFailure = (payload) => { return { type: Type.FETCH_MEMBER_FAILURE, payload } }
 
+// activity
 export const fetchActivitiesRequest = () => { return { type: Type.FETCH_ACTIVITIES_REQUEST } }
 export const fetchActivitiesSuccess = (payload) => { return { type: Type.FETCH_ACTIVITIES_SUCCESS, payload } }
 export const fetchActivitiesFailure = (payload) => { return { type: Type.FETCH_ACTIVITIES_FAILURE, payload } }
+export const createActivityRequest = (payload) => { return { type: Type.CREATE_ACTIVITY_REQUEST, payload } }
+export const createActivitySuccess = (payload) => { return { type: Type.CREATE_ACTIVITY_SUCCESS, payload } }
+export const createActivityFailure = (payload) => { return { type: Type.CREATE_ACTIVITY_FAILURE, payload } }
+export const updateActivityRequest = (payload) => { return { type: Type.UPDATE_ACTIVITY_REQUEST, payload } }
+export const updateActivitySuccess = (payload) => { return { type: Type.UPDATE_ACTIVITY_SUCCESS, payload } }
+export const updateActivityFailure = (payload) => { return { type: Type.UPDATE_ACTIVITY_FAILURE, payload } }
+export const deleteActivityRequest = (payload) => { return { type: Type.DELETE_ACTIVITY_REQUEST, payload } }
+export const deleteActivitySuccess = (payload) => { return { type: Type.DELETE_ACTIVITY_SUCCESS, payload } }
+export const deleteActivityFailure = (payload) => { return { type: Type.DELETE_ACTIVITY_FAILURE, payload } }
 
 export const fetchSocietiesRequest = () => { return { type: Type.FETCH_SOCIETIES_REQUEST } }
 export const fetchSocietiesSuccess = (payload) => { return { type: Type.FETCH_SOCIETIES_SUCCESS, payload } }
@@ -47,6 +57,7 @@ export const fetchEquipmentsRequest = () => { return { type: Type.FETCH_EQUIPMEN
 export const fetchEquipmentsSuccess = (payload) => { return { type: Type.FETCH_EQUIPMENTS_SUCCESS, payload } }
 export const fetchEquipmentsFailure = (payload) => { return { type: Type.FETCH_EQUIPMENTS_FAILURE, payload } }
 
+// lecture
 export const fetchLecturesRequest = () => { return { type: Type.FETCH_LECTURES_REQUEST } }
 export const fetchLecturesSuccess = (payload) => { return { type: Type.FETCH_LECTURES_SUCCESS, payload } }
 export const fetchLecturesFailure = (payload) => { return { type: Type.FETCH_LECTURES_FAILURE, payload } }
@@ -56,7 +67,14 @@ export const fetchLectureFailure = (payload) => { return { type: Type.FETCH_LECT
 export const createLectureRequest = (payload) => { return { type: Type.CREATE_LECTURE_REQUEST, payload } }
 export const createLectureSuccess = (payload) => { return { type: Type.CREATE_LECTURE_SUCCESS, payload } }
 export const createLectureFailure = (payload) => { return { type: Type.CREATE_LECTURE_FAILURE, payload } }
+export const updateLectureRequest = (payload) => { return { type: Type.UPDATE_LECTURE_REQUEST, payload } }
+export const updateLectureSuccess = (payload) => { return { type: Type.UPDATE_LECTURE_SUCCESS, payload } }
+export const updateLectureFailure = (payload) => { return { type: Type.UPDATE_LECTURE_FAILURE, payload } }
+export const deleteLectureRequest = (payload) => { return { type: Type.DELETE_LECTURE_REQUEST, payload } }
+export const deleteLectureSuccess = (payload) => { return { type: Type.DELETE_LECTURE_SUCCESS, payload } }
+export const deleteLectureFailure = (payload) => { return { type: Type.DELETE_LECTURE_FAILURE, payload } }
 
+// job
 export const fetchJobsRequest = () => { return { type: Type.FETCH_JOBS_REQUEST } }
 export const fetchJobsSuccess = (payload) => { return { type: Type.FETCH_JOBS_SUCCESS, payload } }
 export const fetchJobsFailure = (payload) => { return { type: Type.FETCH_JOBS_FAILURE, payload } }

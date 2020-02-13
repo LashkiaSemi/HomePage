@@ -18,5 +18,6 @@ function* fetchResearches() {
 }
 
 function getResearches() {
-    return Request.get(API_URL + "/researches")
+    const options = { withCredentials: true }
+    return Request.httpGet(API_URL + "/researches", options)
 }

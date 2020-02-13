@@ -18,7 +18,7 @@ class ConnectedAdminHome extends React.Component {
     render() {
         return (
             <div className="content">
-                <BreadCrumb items={[{path: "", label: ""}]}/>
+                <BreadCrumb items={[{path: "/", label: "管理者サイト"}]}/>
 
                 <div className="list-admin">
                     <label className="list-admin-title">データ管理</label>

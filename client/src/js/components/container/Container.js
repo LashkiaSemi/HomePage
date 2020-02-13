@@ -1,6 +1,8 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
+import { connect } from 'react-redux'
 
+// main content
 import Home from './contents/Home'
 import Job from './contents/Job'
 import Member from './contents/Member'
@@ -17,13 +19,20 @@ import Login from './contents/Login'
 import Logout from './contents/Logout'
 import PasswordEdit from './contents/PasswordEdit'
 
+// admin site
 import AdminHome from './admin/AdminHome'
+import AdminActivityList from './admin/AdminActivityList'
+import AdminActivityEdit from './admin/AdminActivityEdit'
 
 import Auth from '../common/Auth'
 import Admin  from '../common/Admin'
 import Error404 from './contents/Error'
 
-class Container extends React.Component {
+
+class ConnectedContainer extends React.Component {
+    constructor(props) {
+        super(props)
+    }
     render() {
         return (
             <div className="container">
@@ -49,6 +58,9 @@ class Container extends React.Component {
 
                     {/* Admin */}
                     <AdminRoute exact path="/admin" component={AdminHome}/>
+                    <AdminRoute exact path="/admin/activities" component={AdminActivityList} />
+                    <AdminRoute exact path="/admin/activities/new" component={AdminActivityEdit} />
+                    <AdminRoute exact path="/admin/activities/:id/edit" component={AdminActivityEdit} />
 
                     <Route component={Error404} />
                 </Switch>
@@ -82,5 +94,8 @@ function AdminRoute({component: Component, ...rest}) {
         />
     )
 }
+
+const Container = connect(
+)(ConnectedContainer)
 
 export default Container

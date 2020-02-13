@@ -6,9 +6,9 @@ const BreadCrumb = (props) => {
         <div className="breadcrumb mb-30">
             {
                 props.items.map(item=>(
-                    <>
-                        <span>/</span><Link to={`/admin/${item.path}`}>{item.label}</Link>
-                    </>
+                    <span key={item.path}>
+                        <span>/</span><Link to={`/admin${item.path}`}>{item.label}</Link>
+                    </span>
                 ))
             }
         </div>

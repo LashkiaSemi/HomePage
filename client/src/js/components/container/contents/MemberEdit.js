@@ -54,6 +54,8 @@ class ConnectedMemberEdit extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault()
+        // TODO: 空地チェック
+
         const formData = {
             name: this.state.name,
             studentID: this.state.studentID,

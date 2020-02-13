@@ -18,5 +18,6 @@ function* fetchEquipments() {
 }
 
 function getEquipments() {
-    return Request.get(API_URL + "/equipments")
+    const options = { withCredentials: true }
+    return Request.httpGet(API_URL + "/equipments", options)
 }
