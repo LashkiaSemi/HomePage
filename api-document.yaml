@@ -1171,10 +1171,10 @@ components:
         title:
           type: 'string'
         author:
-          $ref: '#/components/schemas/GetUserResponse'
+          type: 'string'
         file:
           type: 'string'
-        comments:
+        comment:
           type: 'string'
         activation:
           type: 'integer'
@@ -1183,11 +1183,11 @@ components:
       properties:
         title:
           type: 'string'
-        author_id:
-          type: 'integer'
+        author:
+          type: 'string'
         file:
           type: 'string'
-        comments:
+        comment:
           type: 'string'
     GetEmploymentResponse:
       type: 'object'

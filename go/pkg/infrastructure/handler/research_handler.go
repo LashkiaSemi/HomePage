@@ -3,13 +3,13 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"homepage/conf"
 	"homepage/pkg/domain"
 	"homepage/pkg/domain/logger"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
 	"homepage/pkg/usecase/interactor"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -63,20 +63,32 @@ func (rh *researchHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rh *researchHandler) Create(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		logger.Warn(err)
-		response.HTTPError(w, domain.BadRequest(err))
-		return
-	}
 	var req controller.UpdateResearchRequest
-	err = json.Unmarshal(body, &req)
+	body := []byte(r.FormValue("body"))
+	err := json.Unmarshal(body, &req)
 	if err != nil {
 		logger.Error(err)
 		response.HTTPError(w, domain.InternalServerError(err))
 		return
 	}
+	file, reader, err := r.FormFile("file")
+	if err != nil {
+		logger.Error("lecture handler: ", err)
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+	defer file.Close()
+	req.File = reader.Filename
 
+	// save file
+	err = saveFile(file, conf.FileDir+"/researches/", req.File)
+	if err != nil {
+		logger.Error("research create handler: ", err)
+		response.HTTPError(w, domain.InternalServerError(err))
+		return
+	}
+
+	// save db
 	res, err := rh.ResearchController.Create(&req)
 	if err != nil {
 		response.HTTPError(w, err)
@@ -93,20 +105,38 @@ func (rh *researchHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		logger.Warn(err)
-		response.HTTPError(w, domain.BadRequest(err))
-		return
-	}
+	// read data
 	var req controller.UpdateResearchRequest
+	body := []byte(r.FormValue("body"))
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		logger.Error(err)
 		response.HTTPError(w, domain.InternalServerError(err))
 		return
 	}
+	file, reader, err := r.FormFile("file")
+	if file != nil {
+		defer file.Close()
+		req.File = reader.Filename
+	}
+	if err != nil {
+		if file != nil {
+			logger.Error("research update handler: ", err)
+			response.HTTPError(w, domain.InternalServerError(err))
+			return
+		}
+	}
 
+	// file save
+	if file != nil {
+		err = saveFile(file, conf.FileDir+"/researches/", req.File)
+		if err != nil {
+			logger.Error("research update handler: ", err)
+			response.HTTPError(w, domain.InternalServerError(err))
+			return
+		}
+	}
+	// save db
 	res, err := rh.ResearchController.Update(resID, &req)
 	if err != nil {
 		response.HTTPError(w, err)

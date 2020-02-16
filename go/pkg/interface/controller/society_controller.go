@@ -49,7 +49,7 @@ type GetSocietiesResponse struct {
 // GetSocietyResponse 学会発表のレスポンス
 type GetSocietyResponse struct {
 	ID      int    `json:"id"`
-	Title   string `json:"string"`
+	Title   string `json:"title"`
 	Author  string `json:"author"`
 	Society string `json:"society"`
 	Award   string `json:"award"`

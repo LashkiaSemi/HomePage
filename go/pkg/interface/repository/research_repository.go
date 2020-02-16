@@ -66,7 +66,7 @@ func (rr *researchRepository) Update(resID int, title, author, file, comment str
 			"title":      title,
 			"author":     author,
 			"file":       file,
-			"comment":    comment,
+			"comments":   comment,
 			"updated_at": updatedAt,
 		},
 		map[string]interface{}{

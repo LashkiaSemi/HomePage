@@ -72,7 +72,7 @@ func (ui *userInteractor) Add(name, password, role, studentID, department, comme
 
 func (ui *userInteractor) Update(userID int, name, password, role, studentID, department, comment string, grade int) (user domain.User, err error) {
 	var hash string
-	if password == "" {
+	if password != "" {
 		hash, err = ui.AuthHandler.PasswordHash(password)
 		if err != nil {
 			logger.Error(err)

@@ -33,21 +33,6 @@ func (rc *researchController) ShowAll() (res GetResearchesResponse, err error) {
 	return
 }
 
-// GetResearchesResponse 複数のデータを返す
-type GetResearchesResponse struct {
-	Researches []GetResearchResponse `json:"researches"`
-}
-
-// GetResearchResponse 卒研のデータ
-type GetResearchResponse struct {
-	ID        int    `json:"id"`
-	Title     string `json:"title"`
-	Author    string `json:"author"`
-	File      string `json:"file"`
-	Comment   string `json:"comment"`
-	CreatedAt string `json:"created_at"`
-}
-
 func (rc *researchController) ShowByID(resID int) (res GetResearchResponse, err error) {
 	data, err := rc.ResearchInteractor.FetchByID(resID)
 	if err != nil {
@@ -63,14 +48,6 @@ func (rc *researchController) Create(req *UpdateResearchRequest) (res GetResearc
 	}
 	return convertResearchToResponse(&data), nil
 
-}
-
-// UpdateResearchRequest 新規、更新時のリクエスト
-type UpdateResearchRequest struct {
-	Title   string `json:"title"`
-	Author  string `json:"author"`
-	File    string `json:"file"`
-	Comment string `json:"comment"`
 }
 
 func (rc *researchController) Update(resID int, req *UpdateResearchRequest) (res GetResearchResponse, err error) {
@@ -95,4 +72,27 @@ func convertResearchToResponse(res *domain.Research) GetResearchResponse {
 		Comment:   res.Comment,
 		CreatedAt: res.CreatedAt,
 	}
+}
+
+// GetResearchResponse 卒研のデータ
+type GetResearchResponse struct {
+	ID        int    `json:"id"`
+	Title     string `json:"title"`
+	Author    string `json:"author"`
+	File      string `json:"file"`
+	Comment   string `json:"comment"`
+	CreatedAt string `json:"created_at"`
+}
+
+// GetResearchesResponse 複数のデータを返す
+type GetResearchesResponse struct {
+	Researches []GetResearchResponse `json:"researches"`
+}
+
+// UpdateResearchRequest 新規、更新時のリクエスト
+type UpdateResearchRequest struct {
+	Title   string `json:"title"`
+	Author  string `json:"author"`
+	File    string `json:"file"`
+	Comment string `json:"comment"`
 }
