@@ -1,6 +1,7 @@
 import React from 'react'
 import { findItemByID } from '../../../util/findItem'
 import ErrorList from '../../common/ErrorList'
+import { checkIsEmpty, parseStringToBool } from '../../../util/validation'
 
 class AdminEdit extends React.Component {
     constructor(props) {
@@ -45,7 +46,6 @@ class AdminEdit extends React.Component {
                 // if(typeof item[field] === 'object') {
                     // TODO: tagでfetchされる。tag_idに値を入れなくちゃいけない時
                     //       めっちゃハードだからどうしようこれ
-                    // console.log(field)
                     values[field+"_id"] = item[field].id
                     return
                 }
@@ -70,13 +70,41 @@ class AdminEdit extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault()
-        // TODO: 空地チェック？
+        // 空値チェック
+        // 親でfield定義の時に、required: trueをやってるとチェックしてくれる
+        const errors = []
+        this.props.fields.filter(field => field.required)
+            .map(field => {
+                var value
+                if(field.type === "file") {
+                    value = this.props.fileInput.current.files[0]
+                } else {
+                    value = this.state.values[field.name]
+                }
+                if(checkIsEmpty(value)) {
+                    errors.push({ id: field.name+"Empty", content: field.label+"は必須です" })
+                }
+            })
+        if (errors.length > 0) {
+            this.setState({ errors })
+            return
+        }
 
         const body = generateBody(this.props.fields, this.state.values)
         // 変換が必要なフィールドを引っ掛ける
-        this.props.fields.filter(field => field.requestType === "int")
-            .map(field => { body[field.name] = parseInt(body[field.name]) })
-        
+        // TODO: ここgenerateBodyでやればよくね？と思ってしまった
+        this.props.fields.filter(field => field.requestType === "int" || field.requestType === "bool")
+            .map(field => { 
+                switch(field.requestType) {
+                    case "int":
+                        body[field.name] = parseInt(body[field.name]) 
+                        return
+                    case "bool":
+                        body[field.name] = parseStringToBool(body[field.name])
+                        return
+                }
+            })
+
         // typeがfileのフィールドの探索 
         if (!this.props.fields.filter(field => field.type === "file").length) {
             // file がない場合はそのままリクエスト
@@ -161,7 +189,15 @@ const InputField = (props) => {
                 value={props.value}
                 onChange={props.handleChange}></textarea>)
     }
-    // 依存やべえ
+    if(props.field.type === "checkbox") {
+        inputField = (
+            <input
+                type={props.field.type}
+                className={`input-admin-${props.field.type}`}
+                name={props.field.name}
+                value={props.value}
+                onChange={props.handleChange} />)
+    }
     if (props.field.type === "select") {
         inputField = (
             <select

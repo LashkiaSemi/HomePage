@@ -42,7 +42,11 @@ func (rc *researchController) ShowByID(resID int) (res GetResearchResponse, err 
 }
 
 func (rc *researchController) Create(req *UpdateResearchRequest) (res GetResearchResponse, err error) {
-	data, err := rc.ResearchInteractor.Add(req.Title, req.Author, req.File, req.Comment)
+	isPublic := 1
+	if !req.IsPublic {
+		isPublic = 0
+	}
+	data, err := rc.ResearchInteractor.Add(req.Title, req.Author, req.File, req.Comment, isPublic)
 	if err != nil {
 		return
 	}
@@ -51,8 +55,11 @@ func (rc *researchController) Create(req *UpdateResearchRequest) (res GetResearc
 }
 
 func (rc *researchController) Update(resID int, req *UpdateResearchRequest) (res GetResearchResponse, err error) {
-
-	data, err := rc.ResearchInteractor.Update(resID, req.Title, req.Author, req.File, req.Comment)
+	isPublic := 1
+	if !req.IsPublic {
+		isPublic = 0
+	}
+	data, err := rc.ResearchInteractor.Update(resID, req.Title, req.Author, req.File, req.Comment, isPublic)
 	if err != nil {
 		return
 	}
@@ -91,8 +98,9 @@ type GetResearchesResponse struct {
 
 // UpdateResearchRequest 新規、更新時のリクエスト
 type UpdateResearchRequest struct {
-	Title   string `json:"title"`
-	Author  string `json:"author"`
-	File    string `json:"file"`
-	Comment string `json:"comment"`
+	Title    string `json:"title"`
+	Author   string `json:"author"`
+	File     string `json:"file"`
+	Comment  string `json:"comment"`
+	IsPublic bool   `json:"is_public"`
 }

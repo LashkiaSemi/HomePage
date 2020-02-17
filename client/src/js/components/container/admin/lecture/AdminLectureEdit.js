@@ -27,13 +27,15 @@ class ConnectedLectureEdit extends React.Component {
             values: {
                 user_id: 0,
                 title: "",
-                comment: ""
+                comment: "",
+                is_public: true,
             },
             fields: [
-                { label: "タイトル", type: "text", name: "title" },
+                { label: "タイトル", type: "text", name: "title", required: true },
                 { label: "コメント", type: "textarea", name: "comment" },
-                { label: "ファイル", type: "file", name: "file" }
-
+                { label: "ファイル", type: "file", name: "file" },
+                { label: "公開 / 非公開", type: "checkbox", name: "is_public", requestType: "bool" },
+                // { label: "ファイル", type: "file", name: "file", required: true }
             ],
             isInitialized: false,
         }
@@ -55,7 +57,7 @@ class ConnectedLectureEdit extends React.Component {
             })
 
             this.setState({
-                fields: this.state.fields.concat({ label: "投稿者", type: "select", name: "user_id", requestType: "int", options }),
+                fields: this.state.fields.concat({ label: "投稿者", type: "select", name: "user_id", requestType: "int", required: true, options }),
                 isInitialized: true
             })
         }

@@ -30,10 +30,10 @@ class ConnectedSocietyEdit extends React.Component {
                 author: "",
             },
             fields: [
-                { label: "タイトル", type: "text", name: "title" },
-                { label: "日付", type: "date", name: "date" },
-                { label: "著者", type: "text", name: "author" },
-                { label: "発表学会", type: "text", name: "society" },
+                { label: "タイトル", type: "text", name: "title", required: true },
+                { label: "日付", type: "date", name: "date", required: true },
+                { label: "著者", type: "text", name: "author", required: true },
+                { label: "発表学会", type: "text", name: "society", required: true },
                 { label: "受賞", type: "text", name: "award" }
             ]
         }

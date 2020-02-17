@@ -27,7 +27,7 @@ class ConnectedJobEdit extends React.Component {
                 job: ""
             },
             fields: [
-                { label: "企業名", type: "text", name: "company" },
+                { label: "企業名", type: "text", name: "company", required: true },
                 { label: "職種", type: "text", name: "job" },
             ],
         }

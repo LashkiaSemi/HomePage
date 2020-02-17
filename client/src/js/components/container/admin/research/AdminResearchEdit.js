@@ -7,7 +7,6 @@ import { fetchResearchesRequest, createResearchRequest, updateResearchRequest, f
 const mapStateToProps = (state) => {
     return {
         researches: state.researches,
-        members: state.members
     }
 }
 
@@ -28,34 +27,18 @@ class ConnectedResearchEdit extends React.Component {
                 title: "",
                 author: "",
                 comment: "",
+                is_public: true,
             },
             fields: [
-                { label: "タイトル", type: "text", name: "title" },
-                { label: "著者", type: "text", name: "author" },
+                { label: "タイトル", type: "text", name: "title", required: true },
+                { label: "著者", type: "text", name: "author", required: true },
                 { label: "コメント", type: "textarea", name: "comment" },
                 { label: "ファイル", type: "file", name: "file" },
+                { label: "公開 / 非公開", type: "checkbox", name: "is_public", requestType: "bool" }
             ],
-            isInitOptions: false
         }
         this.fileInput = React.createRef()
     }
-
-    // componentDidMount() {
-    //     this.props.fetchMembersRequest()
-    // }
-
-    // componentDidUpdate() {
-    //     // selectのoptionを作る
-    //     if(this.state.isInitOptions) {
-    //         return
-    //     }
-    //     if(this.props.members.length) {
-    //         this.setState({
-    //             fields: this.state.fields.concat({ label: "著者", type: "select", name: "author_id", options: this.props.members }),
-    //             isInitOptions: true,
-    //         })
-    //     }
-    // }
 
     render() {
         return (

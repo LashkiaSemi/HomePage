@@ -46,8 +46,8 @@ type SocietyRepository interface {
 type ResearchRepository interface {
 	FindAll() (domain.Researches, error)
 	FindByID(resID int) (domain.Research, error)
-	Store(title, author, file, comment string, createdAt time.Time) (int, error)
-	Update(resID int, title, author, file, comment string, updatedAt time.Time) error
+	Store(title, author, file, comment string, createdAt time.Time, isPublic int) (int, error)
+	Update(resID int, title, author, file, comment string, updatedAt time.Time, isPublic int) error
 	Delete(resID int) error
 }
 

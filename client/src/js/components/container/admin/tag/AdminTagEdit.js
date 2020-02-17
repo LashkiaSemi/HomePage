@@ -26,7 +26,7 @@ class ConnectedTagEdit extends React.Component {
                 name: ""
             },
             fields: [
-                { label: "タグ名", type: "text", name: "name" },
+                { label: "タグ名", type: "text", name: "name", required: true },
             ],
         }
     }

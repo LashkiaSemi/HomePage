@@ -32,12 +32,12 @@ class ConnectedMemberEdit extends React.Component {
                 comment: ""
             },
             fields: [
-                { label: "名前", type: "text", name: "name" },
-                { label: "学籍番号", type: "text", name: "student_id" },
-                { label: "パスワード", type: "password", name: "password" },
+                { label: "名前", type: "text", name: "name", required: true },
+                { label: "学籍番号", type: "text", name: "student_id", required: true },
+                { label: "パスワード", type: "password", name: "password", required: true },
                 { label: "権限", type: "select", name: "role", options: [{ label: "owner", value: "owner" }, { label: "admin", value: "admin" }, { label: "member", value: "member" },] }, // TODO: options
                 { label: "学科", type: "text", name: "department" },
-                { label: "学年", type: "select", name: "grade", requestType: "int", options: GRADE_OPTION },
+                { label: "学年", type: "select", name: "grade", requestType: "int", required: true, options: GRADE_OPTION },
                 { label: "コメント", type: "textarea", name: "comment" },
             ],
         }

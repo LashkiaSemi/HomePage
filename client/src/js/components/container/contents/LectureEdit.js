@@ -90,9 +90,7 @@ class ConnectedLectureEdit extends React.Component {
         }
 
         if(errors.length > 0) {
-            this.setState({
-                errors
-            })
+            this.setState({ errors })
             return
         }
 
@@ -112,7 +110,6 @@ class ConnectedLectureEdit extends React.Component {
         } else {
             this.props.dispatchUpdateRequest(this.state.id, formData)
         }
-        // TODO: stateの初期化？
     }
 
     render(){

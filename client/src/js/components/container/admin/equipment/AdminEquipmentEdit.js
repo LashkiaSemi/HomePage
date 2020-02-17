@@ -31,7 +31,7 @@ class ConnectedEquipmentEdit extends React.Component {
                 tag_id: 0
             },
             fields: [
-                { label: "備品名", type: "text", name: "name" },
+                { label: "備品名", type: "text", name: "name", required: true },
                 { label: "数量", type: "number", name: "stock", requestType: "int" },
                 { label: "備考", type: "text", name: "note" },
             ],
@@ -50,11 +50,11 @@ class ConnectedEquipmentEdit extends React.Component {
         if (Object.keys(this.props.tags).length > 0) {
             var options = []
             this.props.tags.map(tag => {
-                options.push({ label: tag.name, value: parseInt(tag.id)})
+                options.push({ label: tag.name, value: tag.id})
             })
 
             this.setState({
-                fields: this.state.fields.concat({ label: "タグ", type: "select", name: "tag_id", requestType: "int", options },),
+                fields: this.state.fields.concat({ label: "タグ", type: "select", name: "tag_id", requestType: "int", required: true, options },),
                 isInitialized: true
             })
         }

@@ -10,8 +10,8 @@ import (
 type ResearchInteractor interface {
 	FetchAll() (domain.Researches, error)
 	FetchByID(resID int) (domain.Research, error)
-	Add(title, author, file, comment string) (domain.Research, error)
-	Update(resID int, title, author, file, comment string) (domain.Research, error)
+	Add(title, author, file, comment string, isPublic int) (domain.Research, error)
+	Update(resID int, title, author, file, comment string, isPublic int) (domain.Research, error)
 	Delete(resID int) error
 }
 
@@ -34,9 +34,9 @@ func (ri *researchInteractor) FetchByID(resID int) (domain.Research, error) {
 	return ri.ResearchRepository.FindByID(resID)
 }
 
-func (ri *researchInteractor) Add(title, author, file, comment string) (res domain.Research, err error) {
+func (ri *researchInteractor) Add(title, author, file, comment string, isPublic int) (res domain.Research, err error) {
 	createdAt := time.Now()
-	id, err := ri.ResearchRepository.Store(title, author, file, comment, createdAt)
+	id, err := ri.ResearchRepository.Store(title, author, file, comment, createdAt, isPublic)
 	if err != nil {
 		return
 	}
@@ -49,9 +49,9 @@ func (ri *researchInteractor) Add(title, author, file, comment string) (res doma
 	return
 }
 
-func (ri *researchInteractor) Update(resID int, title, author, file, comment string) (res domain.Research, err error) {
+func (ri *researchInteractor) Update(resID int, title, author, file, comment string, isPublic int) (res domain.Research, err error) {
 	updatedAt := time.Now()
-	err = ri.ResearchRepository.Update(resID, title, author, file, comment, updatedAt)
+	err = ri.ResearchRepository.Update(resID, title, author, file, comment, updatedAt, isPublic)
 	if err != nil {
 		return
 	}
