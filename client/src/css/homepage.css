@@ -88,6 +88,10 @@ body {
   text-align: center;
 }
 
+.al-right {
+  text-align: right;
+}
+
 .breadcrumb {
   display: block;
   background-color: #efefef;
@@ -617,6 +621,24 @@ body {
   max-width: 100%;
 }
 
+.input-admin-password {
+  font-size: 1em;
+  padding: .1rem .5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 100%;
+}
+
+.input-admin-number {
+  font-size: 1em;
+  padding: .1rem .5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 100%;
+}
+
 .input-admin-textarea {
   font-size: 1em;
   padding: .3rem .5rem;
@@ -630,9 +652,8 @@ body {
 
 .input-admin-select {
   font-size: 1em;
-  padding: .3rem .5rem;
+  padding: .1rem .5rem;
   display: inline-block;
-  height: 2rem;
   width: 100%;
   background-color: #fff;
   border: 1px solid #ccc;

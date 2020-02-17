@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { createLectureRequest, fetchLectureRequest, updateLectureRequest } from '../../../actions/action'
 import ErrorList from '../../common/ErrorList'
 import { STRAGE_KEY } from '../../../constants/config'
+import * as Crypto from '../../../util/crypto'
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -99,7 +100,7 @@ class ConnectedLectureEdit extends React.Component {
             title: this.state.title,
             comment: this.state.comment,
             is_public: this.state.isPublic,
-            user_id: localStorage.getItem(STRAGE_KEY)
+            user_id: parseInt(Crypto.Decrypt(localStorage.getItem(STRAGE_KEY)))
         }
 
         const formData = new FormData()

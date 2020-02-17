@@ -21,8 +21,22 @@ import PasswordEdit from './contents/PasswordEdit'
 
 // admin site
 import AdminHome from './admin/AdminHome'
-import AdminActivityList from './admin/AdminActivityList'
-import AdminActivityEdit from './admin/AdminActivityEdit'
+import AdminActivityList from './admin/activity/AdminActivityList'
+import AdminActivityEdit from './admin/activity/AdminActivityEdit'
+import AdminSocietyList from './admin/society/AdminSocietyList'
+import AdminSocietyEdit from './admin/society/AdminSocietyEdit'
+import AdminResearchList from './admin/research/AdminResearchList'
+import AdminResearchEdit from './admin/research/AdminResearchEdit'
+import AdminMemberList from './admin/member/AdminMemberList'
+import AdminMemberEdit from './admin/member/AdminMemberEdit'
+import AdminJobList from './admin/job/AdminJobList'
+import AdminJobEdit from './admin/job/AdminJobEdit'
+import AdminEquipmentList from './admin/equipment/AdminEquipmentList'
+import AdminEquipmentEdit from './admin/equipment/AdminEquipmentEdit'
+import AdminLectureList from './admin/lecture/AdminLectureList'
+import AdminLectureEdit from './admin/lecture/AdminLectureEdit'
+import AdminTagList from './admin/tag/AdminTagList'
+import AdminTagEdit from './admin/tag/AdminTagEdit'
 
 import Auth from '../common/Auth'
 import Admin  from '../common/Admin'
@@ -61,6 +75,27 @@ class ConnectedContainer extends React.Component {
                     <AdminRoute exact path="/admin/activities" component={AdminActivityList} />
                     <AdminRoute exact path="/admin/activities/new" component={AdminActivityEdit} />
                     <AdminRoute exact path="/admin/activities/:id/edit" component={AdminActivityEdit} />
+                    <AdminRoute exact path="/admin/societies" component={AdminSocietyList} />
+                    <AdminRoute exact path="/admin/societies/new" component={AdminSocietyEdit} />
+                    <AdminRoute exact path="/admin/societies/:id/edit" component={AdminSocietyEdit} />
+                    <AdminRoute exact path="/admin/researches" component={AdminResearchList} />
+                    <AdminRoute exact path="/admin/researches/new" component={AdminResearchEdit} />
+                    <AdminRoute exact path="/admin/researches/:id/edit" component={AdminResearchEdit} />
+                    <AdminRoute exact path="/admin/members" component={AdminMemberList} />
+                    <AdminRoute exact path="/admin/members/new" component={AdminMemberEdit} />
+                    <AdminRoute exact path="/admin/members/:id/edit" component={AdminMemberEdit} />
+                    <AdminRoute exact path="/admin/jobs" component={AdminJobList} />
+                    <AdminRoute exact path="/admin/jobs/new" component={AdminJobEdit} />
+                    <AdminRoute exact path="/admin/jobs/:id/edit" component={AdminJobEdit} />
+                    <AdminRoute exact path="/admin/equipments" component={AdminEquipmentList} />
+                    <AdminRoute exact path="/admin/equipments/new" component={AdminEquipmentEdit} />
+                    <AdminRoute exact path="/admin/equipments/:id/edit" component={AdminEquipmentEdit} />
+                    <AdminRoute exact path="/admin/lectures" component={AdminLectureList} />
+                    <AdminRoute exact path="/admin/lectures/new" component={AdminLectureEdit} />
+                    <AdminRoute exact path="/admin/lectures/:id/edit" component={AdminLectureEdit} />
+                    <AdminRoute exact path="/admin/tags" component={AdminTagList} />
+                    <AdminRoute exact path="/admin/tags/new" component={AdminTagEdit} />
+                    <AdminRoute exact path="/admin/tags/:id/edit" component={AdminTagEdit} />
 
                     <Route component={Error404} />
                 </Switch>

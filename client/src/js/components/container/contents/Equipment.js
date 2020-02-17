@@ -24,12 +24,10 @@ class ConnectedEquipment extends React.Component {
 
     render() {
         return (
-            // <Auth>
-                <div className="content">
-                    <h1 className="content-title h1-block">備品</h1>
-                    <EquipmentTable equipments={this.props.equipments} />
-                </div>
-            // </Auth>
+            <div className="content">
+                <h1 className="content-title h1-block">備品</h1>
+                <EquipmentTable equipments={this.props.equipments} />
+            </div>
         )
     }
 }

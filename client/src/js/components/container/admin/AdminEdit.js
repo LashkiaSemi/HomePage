@@ -41,6 +41,14 @@ class AdminEdit extends React.Component {
             const item = findItemByID(this.props.items, this.state.id)
             const values = this.state.values
             Object.keys(item).map(field => {
+                if(field === 'tag' || field === 'user') {
+                // if(typeof item[field] === 'object') {
+                    // TODO: tagでfetchされる。tag_idに値を入れなくちゃいけない時
+                    //       めっちゃハードだからどうしようこれ
+                    // console.log(field)
+                    values[field+"_id"] = item[field].id
+                    return
+                }
                 if(typeof values[field] === 'undefined') {
                     return
                 }
@@ -65,7 +73,10 @@ class AdminEdit extends React.Component {
         // TODO: 空地チェック？
 
         const body = generateBody(this.props.fields, this.state.values)
-
+        // 変換が必要なフィールドを引っ掛ける
+        this.props.fields.filter(field => field.requestType === "int")
+            .map(field => { body[field.name] = parseInt(body[field.name]) })
+        
         // typeがfileのフィールドの探索 
         if (!this.props.fields.filter(field => field.type === "file").length) {
             // file がない場合はそのままリクエスト
@@ -132,7 +143,7 @@ class AdminEdit extends React.Component {
 // inputフォームを作成するよ
 const InputField = (props) => {
     var inputField
-    if(props.field.type === "text" || props.field.type === "date" || props.field.type === "password") {
+    if(props.field.type === "text" || props.field.type === "date" || props.field.type === "password" || props.field.type === "number") {
         inputField = (
             <input
                 type={props.field.type}

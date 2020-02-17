@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import BreadCrumb from './Breadcrumb'
-import ErrorList from '../../common/ErrorList'
-import { fetchActivitiesRequest, createActivityRequest, updateActivityRequest } from '../../../actions/action'
-import { checkEmptyString } from '../../../util/validation'
-import { findActivityByID } from '../../../util/findItem'
+import BreadCrumb from '../../../common/Breadcrumb'
+import ErrorList from '../../../common/ErrorList'
+import { fetchActivitiesRequest, createActivityRequest, updateActivityRequest } from '../../../../actions/action'
+import { checkEmptyString } from '../../../../util/validation'
+import { findItemByID } from '../../../../util/findItem'
 
 const mapStateToProps = (state) => {
     return {
@@ -53,7 +53,7 @@ class ConnectedActivityEdit extends React.Component {
             return
         }
         if (!this.state.isInitialized && Object.keys(this.props.activities).length) {
-            const item = findActivityByID(this.props.activities, this.state.id)
+            const item = findItemByID(this.props.activities, this.state.id)
             this.setState({
                 activity: item.activity,
                 date: item.date,

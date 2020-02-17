@@ -114,8 +114,13 @@ body {
     }
 }
 
-.al-center {
-    text-align: center;
+.al {
+    &-center{
+        text-align: center;
+    }
+    &-right {
+        text-align: right;
+    }
 }
 
 // breadcrumb
@@ -630,6 +635,24 @@ body {
         width: 100%;
         max-width: 100%;
     }
+    &-password {
+        font-size: 1em;
+        padding: .1rem .5rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        // display: block;
+        width: 100%;
+        max-width: 100%;
+    }
+    &-number {
+        font-size: 1em;
+        padding: .1rem .5rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        // display: block;
+        width: 100%;
+        max-width: 100%;
+    }
     &-textarea {
         font-size: 1em;
         padding: .3rem .5rem;
@@ -642,9 +665,9 @@ body {
     }
     &-select {
         font-size: 1em;
-        padding: .3rem .5rem;
+        padding: .1rem .5rem;
         display: inline-block;
-        height: 2rem;
+        // height: 2rem;
         width: 100%;
         background-color: #fff;
         border: 1px solid $border-dark-main;

@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import BreadCrumb from './Breadcrumb'
+import BreadCrumb from '../../common/Breadcrumb'
 
 const mapStateToProps = (state) => {
     return {
@@ -70,5 +70,9 @@ const TOCS = [
         id: "lectures",
         label: "レクチャー",
     },
+    {
+        id: "tags",
+        label: "タグ"
+    }
     
 ]

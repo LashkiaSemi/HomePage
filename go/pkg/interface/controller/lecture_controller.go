@@ -94,6 +94,7 @@ type UpdateLectureRequest struct {
 	Title    string `json:"title"`
 	File     string `json:"file"`
 	Comment  string `json:"comment"`
+	UserID   int    `json:"user_id"`
 	IsPublic bool   `json:"is_public"`
 }
 

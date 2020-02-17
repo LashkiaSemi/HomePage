@@ -9,13 +9,14 @@ import { watchEquipments } from './equipmentSaga'
 import { watchLectures } from './lectureSaga'
 import { watchLogin } from './loggedSaga'
 import { watchAccount } from './accountSaga'
+import { watchTags } from './tagSaga'
 
 // rootSaga
 // sagaのwatcherをまとめておく
 export default function* rootSaga() {
     yield fork(watchJobs)
     yield fork(watchMembers)
-    yield fork(watchMember)
+    // yield fork(watchMember)
     yield fork(watchActivities)
     yield fork(watchSocieties)
     yield fork(watchResearches)
@@ -23,4 +24,5 @@ export default function* rootSaga() {
     yield fork(watchLectures)
     yield fork(watchLogin)
     yield fork(watchAccount)
+    yield fork(watchTags)
 }

@@ -6,7 +6,6 @@ import (
 	"homepage/conf"
 	"homepage/pkg/domain"
 	"homepage/pkg/domain/logger"
-	"homepage/pkg/infrastructure/dcontext"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
@@ -82,7 +81,7 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 	req.File = reader.Filename
 
-	userID := dcontext.GetUserIDFromContext(r.Context())
+	userID := req.UserID
 
 	// file save
 	err = saveFile(file, conf.FileDir+"/lectures/", req.File)
@@ -131,7 +130,7 @@ func (lh *lectureHandler) Update(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	userID := dcontext.GetUserIDFromContext(r.Context())
+	userID := req.UserID
 
 	// file save
 	if file != nil {

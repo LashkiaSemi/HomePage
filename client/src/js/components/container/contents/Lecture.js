@@ -4,6 +4,8 @@ import { fetchLecturesRequest, deleteLectureRequest } from '../../../actions/act
 import { STRAGE_KEY } from '../../../constants/config'
 import { Link } from 'react-router-dom'
 import * as Crypto from '../../../util/crypto'
+import { findItemByID } from '../../../util/findItem'
+import Modal from '../../common/Modal'
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -25,6 +27,7 @@ class ConnectedLecture extends React.Component {
         this.state = {
             isLogin: "",
             displayModal: false, // deleteの確認画面を開くアレ
+            selectedItemID: 0,
         }
 
         this.switchModal = this.switchModal.bind(this)
@@ -38,14 +41,19 @@ class ConnectedLecture extends React.Component {
         })
     }
 
-    switchModal(){
+    switchModal(e){
         this.setState({
-            displayModal: !this.state.displayModal
+            displayModal: !this.state.displayModal,
+            selectedItemID: e.target.dataset.id
         })
     }
 
     handleDelete(e) {
         this.props.dispatchDeleteRequest(e.target.dataset.id)
+        this.setState({
+            displayModal: false,
+            selectedItemID: 0,
+        })
     }
 
     render() {
@@ -67,6 +75,15 @@ class ConnectedLecture extends React.Component {
                     handleDelete={this.handleDelete}
                     displayModal={this.state.displayModal}
                     />
+                {
+                    this.state.displayModal
+                    ? <DeleteModal
+                        id={this.state.selectedItemID}
+                        lectures={this.props.lectures}
+                        handleSwitch={this.switchModal}
+                        handleDelete={this.handleDelete}/>
+                    : <></>
+                }
             </div>
         )
     }
@@ -109,48 +126,37 @@ const LectureRow = (props) => {
             <td>{props.lecture.comment}</td>
             <td>{props.lecture.updated_at}</td>
             {/* TODO: download script */}
-            <td>
-                <button className="btn btn-primary">Download</button>
+            <td className="al-right">
                 {
-                    props.isLogin.indexOf(props.lecture.user.id) < 0 
+                    props.isLogin.indexOf(props.lecture.user.id) < 0
                     ? <></>
                     : <>
                         <Link to={`/lectures/${props.lecture.id}/edit`} className="btn btn-info">編集</Link>
-                        <button className="btn btn-danger" onClick={props.handleSwitch}>削除</button>
+                        <button className="btn btn-danger" data-id={props.lecture.id} onClick={props.handleSwitch}>削除</button>
                     </>
                 }
+                <button className="btn btn-primary">Download</button>
             </td>
-            {
-                props.displayModal
-                    ? <DeleteModal
-                        handleSwitch={props.handleSwitch}
-                        handleDelete={props.handleDelete}
-                        lecture={props.lecture}/>
-                    : <></>
-            }
         </tr>
     )
 }
 
-// TODO: commonあたりに移行させてもいいのでは？
 const DeleteModal = (props) => {
-    return (
-        <div className="modal">
-            <div className="modal-overlay">
-                <div className="modal-content">
-                    <div className="modal-title">
-                        <label>削除確認</label>
-                    </div>
-                    <div className="modal-body">
-                        <p><b>{props.lecture.title}</b> を削除します。よろしいですか。</p>
-                        <div>
-                            <button className="btn btn-danger" data-id={props.lecture.id} onClick={props.handleDelete}>削除</button>
-                            <button className="btn btn-info" onClick={props.handleSwitch}>戻る</button>
-                        </div>
-                    </div>
-                </div>
+    const lecture = findItemByID(props.lectures, props.id)
+    const modalBody = (
+        <>
+            <p><b>{lecture.title}</b>を削除します。よろしいですか。</p>
+            <div>
+                <button className="btn btn-danger" onClick={props.handleDelete}>削除</button>
+                <button className="btn btn-info" onClick={props.handleSwitch}>キャンセル</button>
             </div>
-        </div>
+        </>
+    )
+    return (
+        <Modal
+            title={"削除確認"}
+            body={modalBody}
+            handleSwitch={props.handleSwitch}/>
     )
 }
 

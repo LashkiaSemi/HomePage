@@ -97,8 +97,8 @@ class ConnectedMemberEdit extends React.Component {
                             <option value="4">学部4年</option>
                             <option value="5">修士1年</option>
                             <option value="6">修士2年</option>
-                            <option value="7">修士1年</option>
-                            <option value="8">修士2年</option>
+                            <option value="7">博士1年</option>
+                            <option value="8">博士2年</option>
                             <option value="0">卒業生</option>
                         </select>
                     </div>
