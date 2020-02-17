@@ -1,13 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchLecturesRequest } from '../../../actions/action'
+import { fetchLecturesRequest, deleteLectureRequest } from '../../../actions/action'
 import { STRAGE_KEY } from '../../../constants/config'
 import { Link } from 'react-router-dom'
-
+import * as Crypto from '../../../util/crypto'
+import { findItemByID } from '../../../util/findItem'
+import Modal from '../../common/Modal'
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchRequest: () => dispatch(fetchLecturesRequest())
+        fetchRequest: () => dispatch(fetchLecturesRequest()),
+        dispatchDeleteRequest: (id) => dispatch(deleteLectureRequest({id: id}))
     }
 }
 
@@ -22,14 +25,34 @@ class ConnectedLecture extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isLogin: null
+            isLogin: "",
+            displayModal: false, // deleteの確認画面を開くアレ
+            selectedItemID: 0,
         }
+
+        this.switchModal = this.switchModal.bind(this)
+        this.handleDelete = this.handleDelete.bind(this)
     }
     
     componentDidMount() {
         this.props.fetchRequest()
         this.setState({
-            isLogin: localStorage.getItem(STRAGE_KEY)
+            isLogin: Crypto.Decrypt(localStorage.getItem(STRAGE_KEY))
+        })
+    }
+
+    switchModal(e){
+        this.setState({
+            displayModal: !this.state.displayModal,
+            selectedItemID: e.target.dataset.id
+        })
+    }
+
+    handleDelete(e) {
+        this.props.dispatchDeleteRequest(e.target.dataset.id)
+        this.setState({
+            displayModal: false,
+            selectedItemID: 0,
         })
     }
 
@@ -45,7 +68,22 @@ class ConnectedLecture extends React.Component {
                             : <></>
                     }
                 </div>
-                <LectureTable lectures={this.props.lectures} isLogin={this.state.isLogin}/>
+                <LectureTable 
+                    lectures={this.props.lectures} 
+                    isLogin={this.state.isLogin}
+                    handleSwitch={this.switchModal}
+                    handleDelete={this.handleDelete}
+                    displayModal={this.state.displayModal}
+                    />
+                {
+                    this.state.displayModal
+                    ? <DeleteModal
+                        id={this.state.selectedItemID}
+                        lectures={this.props.lectures}
+                        handleSwitch={this.switchModal}
+                        handleDelete={this.handleDelete}/>
+                    : <></>
+                }
             </div>
         )
     }
@@ -66,7 +104,13 @@ const LectureTable = (props) => {
             <tbody>
                 {
                     props.lectures.map((lec) => (
-                        <LectureRow key={lec.id} lecture={lec} isLogin={props.isLogin}/>
+                        <LectureRow 
+                            key={lec.id} 
+                            lecture={lec} 
+                            isLogin={props.isLogin}
+                            handleSwitch={props.handleSwitch}
+                            handleDelete={props.handleDelete}
+                            displayModal={props.displayModal}/>
                     ))
                 }
             </tbody>
@@ -82,19 +126,37 @@ const LectureRow = (props) => {
             <td>{props.lecture.comment}</td>
             <td>{props.lecture.updated_at}</td>
             {/* TODO: download script */}
-            <td>
-                <button className="btn btn-primary">Download</button>
+            <td className="al-right">
                 {
-                    props.isLogin != props.lecture.user.id
+                    props.isLogin.indexOf(props.lecture.user.id) < 0
                     ? <></>
                     : <>
                         <Link to={`/lectures/${props.lecture.id}/edit`} className="btn btn-info">編集</Link>
-                        <button className="btn btn-danger">削除</button>
+                        <button className="btn btn-danger" data-id={props.lecture.id} onClick={props.handleSwitch}>削除</button>
                     </>
                 }
+                <button className="btn btn-primary">Download</button>
             </td>
-
         </tr>
+    )
+}
+
+const DeleteModal = (props) => {
+    const lecture = findItemByID(props.lectures, props.id)
+    const modalBody = (
+        <>
+            <p><b>{lecture.title}</b>を削除します。よろしいですか。</p>
+            <div>
+                <button className="btn btn-danger" onClick={props.handleDelete}>削除</button>
+                <button className="btn btn-info" onClick={props.handleSwitch}>キャンセル</button>
+            </div>
+        </>
+    )
+    return (
+        <Modal
+            title={"削除確認"}
+            body={modalBody}
+            handleSwitch={props.handleSwitch}/>
     )
 }
 

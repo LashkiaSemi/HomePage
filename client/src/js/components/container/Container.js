@@ -1,6 +1,8 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
+import { connect } from 'react-redux'
 
+// main content
 import Home from './contents/Home'
 import Job from './contents/Job'
 import Member from './contents/Member'
@@ -17,10 +19,34 @@ import Login from './contents/Login'
 import Logout from './contents/Logout'
 import PasswordEdit from './contents/PasswordEdit'
 
+// admin site
+import AdminHome from './admin/AdminHome'
+import AdminActivityList from './admin/activity/AdminActivityList'
+import AdminActivityEdit from './admin/activity/AdminActivityEdit'
+import AdminSocietyList from './admin/society/AdminSocietyList'
+import AdminSocietyEdit from './admin/society/AdminSocietyEdit'
+import AdminResearchList from './admin/research/AdminResearchList'
+import AdminResearchEdit from './admin/research/AdminResearchEdit'
+import AdminMemberList from './admin/member/AdminMemberList'
+import AdminMemberEdit from './admin/member/AdminMemberEdit'
+import AdminJobList from './admin/job/AdminJobList'
+import AdminJobEdit from './admin/job/AdminJobEdit'
+import AdminEquipmentList from './admin/equipment/AdminEquipmentList'
+import AdminEquipmentEdit from './admin/equipment/AdminEquipmentEdit'
+import AdminLectureList from './admin/lecture/AdminLectureList'
+import AdminLectureEdit from './admin/lecture/AdminLectureEdit'
+import AdminTagList from './admin/tag/AdminTagList'
+import AdminTagEdit from './admin/tag/AdminTagEdit'
+
 import Auth from '../common/Auth'
+import Admin  from '../common/Admin'
 import Error404 from './contents/Error'
 
-class Container extends React.Component {
+
+class ConnectedContainer extends React.Component {
+    constructor(props) {
+        super(props)
+    }
     render() {
         return (
             <div className="container">
@@ -35,15 +61,41 @@ class Container extends React.Component {
                     <Route exact path="/links" component={Link}/>
                     <Route exact path="/login" component={Login}/>
 
-                    <Auth>
-                        <Route exact path="/equipments" component={Equipment} />
-                        <Route exact path="/lectures" component={Lecture} />
-                        <Route exact path="/lectures/new" component={LectureEdit} />
-                        <Route exact path="/lectures/:id/edit" component={LectureEdit} />
-                        <Route exact path="/account/edit" component={MemberEdit} />
-                        <Route exact path="/account/edit_pass" component={PasswordEdit} />
-                        <Route exact path="/logout" component={Logout} />
-                    </Auth>
+                    {/* Auth */}
+                    <AuthRoute exact path="/equipments" component={Equipment} />
+                    <AuthRoute exact path="/lectures" component={Lecture} />
+                    <AuthRoute exact path="/lectures/new" component={LectureEdit}/>
+                    <AuthRoute exact path="/lectures/:id/edit" component={LectureEdit} />
+                    <AuthRoute exact path="/account/edit" component={MemberEdit} />
+                    <AuthRoute exact path="/account/edit_pass" component={PasswordEdit} />
+                    <AuthRoute exact path="/logout" component={Logout} />
+
+                    {/* Admin */}
+                    <AdminRoute exact path="/admin" component={AdminHome}/>
+                    <AdminRoute exact path="/admin/activities" component={AdminActivityList} />
+                    <AdminRoute exact path="/admin/activities/new" component={AdminActivityEdit} />
+                    <AdminRoute exact path="/admin/activities/:id/edit" component={AdminActivityEdit} />
+                    <AdminRoute exact path="/admin/societies" component={AdminSocietyList} />
+                    <AdminRoute exact path="/admin/societies/new" component={AdminSocietyEdit} />
+                    <AdminRoute exact path="/admin/societies/:id/edit" component={AdminSocietyEdit} />
+                    <AdminRoute exact path="/admin/researches" component={AdminResearchList} />
+                    <AdminRoute exact path="/admin/researches/new" component={AdminResearchEdit} />
+                    <AdminRoute exact path="/admin/researches/:id/edit" component={AdminResearchEdit} />
+                    <AdminRoute exact path="/admin/members" component={AdminMemberList} />
+                    <AdminRoute exact path="/admin/members/new" component={AdminMemberEdit} />
+                    <AdminRoute exact path="/admin/members/:id/edit" component={AdminMemberEdit} />
+                    <AdminRoute exact path="/admin/jobs" component={AdminJobList} />
+                    <AdminRoute exact path="/admin/jobs/new" component={AdminJobEdit} />
+                    <AdminRoute exact path="/admin/jobs/:id/edit" component={AdminJobEdit} />
+                    <AdminRoute exact path="/admin/equipments" component={AdminEquipmentList} />
+                    <AdminRoute exact path="/admin/equipments/new" component={AdminEquipmentEdit} />
+                    <AdminRoute exact path="/admin/equipments/:id/edit" component={AdminEquipmentEdit} />
+                    <AdminRoute exact path="/admin/lectures" component={AdminLectureList} />
+                    <AdminRoute exact path="/admin/lectures/new" component={AdminLectureEdit} />
+                    <AdminRoute exact path="/admin/lectures/:id/edit" component={AdminLectureEdit} />
+                    <AdminRoute exact path="/admin/tags" component={AdminTagList} />
+                    <AdminRoute exact path="/admin/tags/new" component={AdminTagEdit} />
+                    <AdminRoute exact path="/admin/tags/:id/edit" component={AdminTagEdit} />
 
                     <Route component={Error404} />
                 </Switch>
@@ -51,5 +103,34 @@ class Container extends React.Component {
         )
     }
 }
+
+function AuthRoute({component: Component, ...rest}){
+    return (
+        <Route 
+            {...rest}
+            render={routeProps => (
+                <Auth>
+                    <Component {...routeProps} />
+                </Auth>
+            )}
+        />
+    )
+}
+
+function AdminRoute({component: Component, ...rest}) {
+    return (
+        <Route
+            {...rest}
+            render={routeProps => (
+                <Admin>
+                    <Component {...routeProps} />
+                </Admin>
+            )}
+        />
+    )
+}
+
+const Container = connect(
+)(ConnectedContainer)
 
 export default Container

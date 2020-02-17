@@ -47,10 +47,10 @@ func (rr *researchRepository) FindByID(resID int) (res domain.Research, err erro
 	return
 }
 
-func (rr *researchRepository) Store(title, author, file, comment string, createdAt time.Time) (int, error) {
+func (rr *researchRepository) Store(title, author, file, comment string, createdAt time.Time, isPublic int) (int, error) {
 	result, err := rr.SQLHandler.Execute(
-		"INSERT INTO researches(title, author, file, comments, created_at, updated_at) VALUES (?,?,?,?,?,?)",
-		title, author, file, comment, createdAt, createdAt,
+		"INSERT INTO researches(title, author, file, comments, created_at, updated_at, activation) VALUES (?,?,?,?,?,?)",
+		title, author, file, comment, createdAt, createdAt, isPublic,
 	)
 	if err != nil {
 		return 0, err
@@ -59,15 +59,16 @@ func (rr *researchRepository) Store(title, author, file, comment string, created
 	return int(id), nil
 }
 
-func (rr *researchRepository) Update(resID int, title, author, file, comment string, updatedAt time.Time) error {
+func (rr *researchRepository) Update(resID int, title, author, file, comment string, updatedAt time.Time, isPublic int) error {
 	query, args, _ := makeUpdateQuery(
 		"researches",
 		map[string]interface{}{
 			"title":      title,
 			"author":     author,
 			"file":       file,
-			"comment":    comment,
+			"comments":   comment,
 			"updated_at": updatedAt,
+			"activation": isPublic,
 		},
 		map[string]interface{}{
 			"id": resID,

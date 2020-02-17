@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { fetchMemberRequest } from '../../../actions/action'
 import { connect } from 'react-redux'
 import { STRAGE_KEY } from '../../../constants/config'
+import * as Crypto from '../../../util/crypto'
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -23,8 +24,9 @@ class ConnectedMemberDetail extends React.Component {
 
         this.state = {
             id: this.props.match.params.id,
-            isEdit: localStorage.getItem(STRAGE_KEY) === this.props.match.params.id
+            isEdit: (Crypto.Decrypt(localStorage.getItem(STRAGE_KEY)).indexOf(this.props.match.params.id) > -1)
         }
+        console.log(this.state.isEdit)
     }
 
     componentDidMount(){

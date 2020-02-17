@@ -42,14 +42,17 @@ function* updatePassword(action) {
 }
 
 function getAccount() {
-    return Request.get(API_URL+"/account")
+    const options = { withCredentials: true }
+    return Request.httpGet(API_URL+"/account", options)
 }
 
 function putAccount(body) {
-    return Request.put(API_URL+"/account", body)
+    const options = { withCredentials: true }
+    return Request.httpPut(API_URL+"/account", body, options)
 }
 
 function putPassword(body) {
-    return Request.put(API_URL + "/account/password", body)
+    const options = { withCredentials: true }
+    return Request.httpPut(API_URL + "/account/password", body, options)
 }
 

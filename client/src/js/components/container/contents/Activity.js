@@ -128,63 +128,6 @@ const NewsRow = (props) => {
     )
 }
 
-const ACTIVITIES = [
-    {
-        id: "2018news",
-        title: "2018年度のニュース",
-        news: [
-            {
-                id: "20182",
-                date: "2018/06/07",
-                content: "ゼミ見学会",
-            },
-            {
-                id: "20181",
-                date: "2018/05/31",
-                content: "質問対策講座",
-            }
-        ]
-    },
-    {
-        id: "2017news",
-        title: "2017年度のニュース",
-        news: [
-            {
-                id: "20171",
-                date: "2017/06/08",
-                content: "ゼミ見学会1",
-            },
-            {
-                id: "20172",
-                date: "2017/06/15",
-                content: "ゼミ見学会2",
-            },
-        ]
-    },
-    {
-        id: "2015news",
-        title: "2015年度のニュース",
-        news: [
-            {
-                id: "20151",
-                date: "2015/04/09",
-                content: "ゼミ見学会1",
-            },
-            {
-                id: "20152",
-                date: "2015/04/09",
-                content: "ゼミ見学会2",
-            },
-            {
-                id: "20153",
-                date: "2015/04/09",
-                content: "ゼミ見学会2",
-            },
-        ]
-    },
-
-]
-
 const Activity = connect(
     mapStateToProps,
     mapDispatchToProps

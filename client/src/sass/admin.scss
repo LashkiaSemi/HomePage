@@ -140,7 +140,7 @@ body {
     }
 }
 
-.table {
+.table-admin {
     &-stripe{
         border: $border-width solid $border-dark-main;
         border-right: none;
@@ -264,7 +264,7 @@ body {
 }
 
 // list
-.list {
+.list-admin {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -311,7 +311,7 @@ body {
     }
 }
 
-.list-stripe {
+.list-admin-stripe {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -335,7 +335,7 @@ body {
 }
 
 // form
-.form {
+.form-admin {
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
@@ -355,7 +355,7 @@ body {
 }
 
 // input
-.input{
+.input-admin{
     &-label{
         // font-size: 1.3em;
         margin-bottom: .5rem;

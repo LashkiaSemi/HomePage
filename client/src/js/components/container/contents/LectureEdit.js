@@ -1,13 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { createLectureRequest, fetchLectureRequest } from '../../../actions/action'
+import { createLectureRequest, fetchLectureRequest, updateLectureRequest } from '../../../actions/action'
 import ErrorList from '../../common/ErrorList'
 import { STRAGE_KEY } from '../../../constants/config'
+import * as Crypto from '../../../util/crypto'
 
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchRequest: (lecID) => dispatch(fetchLectureRequest({id: lecID})),
-        dispatchRequest: form => dispatch(createLectureRequest({body: form}))
+        dispatchCreateRequest: form => dispatch(createLectureRequest({body: form})),
+        dispatchUpdateRequest: (id, form) => dispatch(updateLectureRequest({id: id, body: form})),
     }
 }
 
@@ -27,7 +29,7 @@ class ConnectedLectureEdit extends React.Component {
             title: '',
             comment: '',
             isPublic: true,
-            errors: []
+            errors: [],
         }
 
         this.fileInput = React.createRef()
@@ -54,7 +56,7 @@ class ConnectedLectureEdit extends React.Component {
                 this.setState({
                     title: this.props.lecture.title,
                     comment: this.props.lecture.comment,
-                    init: true
+                    init: true,
                 })
             }
         }
@@ -76,18 +78,19 @@ class ConnectedLectureEdit extends React.Component {
 
     async handleSubmit(e) {
         e.preventDefault()
+        // TODO: 空値チェックはutilに移行
         var errors = []
         if(this.state.title === "") {
             errors.push({id: "titleEmpty", content: "タイトルは必須です"})
         }
-        if (typeof this.fileInput.current.files[0] === 'undefined') {
-            errors.push({ id: "fileEmpty", content: "ファイルは必須です" })
+        if (!this.state.id) {
+            if (typeof this.fileInput.current.files[0] === 'undefined') {
+                errors.push({ id: "fileEmpty", content: "ファイルは必須です" })
+            }
         }
 
         if(errors.length > 0) {
-            this.setState({
-                errors
-            })
+            this.setState({ errors })
             return
         }
 
@@ -95,22 +98,25 @@ class ConnectedLectureEdit extends React.Component {
             title: this.state.title,
             comment: this.state.comment,
             is_public: this.state.isPublic,
-            user_id: localStorage.getItem(STRAGE_KEY)
+            user_id: parseInt(Crypto.Decrypt(localStorage.getItem(STRAGE_KEY)))
         }
 
         const formData = new FormData()
         formData.append("body", JSON.stringify(body))
         formData.append("file", this.fileInput.current.files[0])
 
-        this.props.dispatchRequest(formData)
-
+        if(!this.state.id) {
+            this.props.dispatchCreateRequest(formData)
+        } else {
+            this.props.dispatchUpdateRequest(this.state.id, formData)
+        }
     }
 
     render(){
         return (
             <div className="content">
                 <h1 className="content-title h1-block">レクチャー資料アップロード</h1>
-                <form className="form" enctype="multipart/form-data" onSubmit={this.handleSubmit}>
+                <form className="form" encType="multipart/form-data" onSubmit={this.handleSubmit}>
                     {
                         this.state.errors.length
                             ? <ErrorList errors={this.state.errors} />

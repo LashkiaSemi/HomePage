@@ -6,7 +6,6 @@ import (
 	"homepage/conf"
 	"homepage/pkg/domain"
 	"homepage/pkg/domain/logger"
-	"homepage/pkg/infrastructure/dcontext"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
@@ -82,7 +81,7 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 	req.File = reader.Filename
 
-	userID := dcontext.GetUserIDFromContext(r.Context())
+	userID := req.UserID
 
 	// file save
 	err = saveFile(file, conf.FileDir+"/lectures/", req.File)
@@ -119,22 +118,28 @@ func (lh *lectureHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	file, reader, err := r.FormFile("file")
-	if err != nil {
-		logger.Error("lecture handler: ", err)
-		response.HTTPError(w, domain.InternalServerError(err))
-		return
+	if file != nil {
+		defer file.Close()
+		req.File = reader.Filename
 	}
-	defer file.Close()
-	req.File = reader.Filename
+	if err != nil {
+		if file != nil {
+			logger.Error("lecture handler: ", err)
+			response.HTTPError(w, domain.InternalServerError(err))
+			return
+		}
+	}
 
-	userID := dcontext.GetUserIDFromContext(r.Context())
+	userID := req.UserID
 
 	// file save
-	err = saveFile(file, conf.FileDir+"/lectures/", req.File)
-	if err != nil {
-		logger.Error("lecture handler: ", err)
-		response.HTTPError(w, domain.InternalServerError(err))
-		return
+	if file != nil {
+		err = saveFile(file, conf.FileDir+"/lectures/", req.File)
+		if err != nil {
+			logger.Error("lecture handler: ", err)
+			response.HTTPError(w, domain.InternalServerError(err))
+			return
+		}
 	}
 
 	res, err := lh.LectureController.Update(lecID, userID, &req)

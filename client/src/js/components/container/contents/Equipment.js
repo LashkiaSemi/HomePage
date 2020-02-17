@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { fetchEquipmentsRequest } from '../../../actions/action'
 
+import Auth from '../../common/Auth'
+
 const mapDispatchToProps = dispatch => {
     return {
         fetchRequest: () => dispatch(fetchEquipmentsRequest())
@@ -24,7 +26,7 @@ class ConnectedEquipment extends React.Component {
         return (
             <div className="content">
                 <h1 className="content-title h1-block">備品</h1>
-                <EquipmentTable equipments={this.props.equipments}/>
+                <EquipmentTable equipments={this.props.equipments} />
             </div>
         )
     }

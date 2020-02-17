@@ -28,3 +28,7 @@ vendor/bundle
 
 # Ignore vscode Setting.
 /.vscode
+
+# add
+go/lectures
+go/researches

@@ -120,7 +120,7 @@ body {
   background-color: #efefef;
 }
 
-.table-stripe {
+.table-admin-stripe {
   border: 2px solid #ccc;
   border-right: none;
   border-left: none;
@@ -129,40 +129,40 @@ body {
   width: 100%;
 }
 
-.table caption {
+.table-admin caption {
   text-align: left;
   font-size: 1.0rem;
   font-weight: 600;
   margin-bottom: .2rem;
 }
 
-.table thead {
+.table-admin thead {
   background-color: #efefef;
 }
 
-.table thead th {
+.table-admin thead th {
   padding: 0.2rem 0.8rem;
   text-align: left;
 }
 
-.table thead th:last-child {
+.table-admin thead th:last-child {
   border-right: none;
 }
 
-.table tbody td {
+.table-admin tbody td {
   padding: 0.2rem 0.8rem;
   border-top: 2px solid #ccc;
 }
 
-.table tbody td:last-child {
+.table-admin tbody td:last-child {
   border-right: none;
 }
 
-.table tr {
+.table-admin tr {
   border-bottom: 2px solid #ccc;
 }
 
-.table tr:nth-child(2n) {
+.table-admin tr:nth-child(2n) {
   background-color: #efefef;
 }
 
@@ -251,7 +251,7 @@ body {
   border: none;
 }
 
-.list {
+.list-admin {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -260,63 +260,63 @@ body {
   margin-bottom: 1rem;
 }
 
-.list:last-child {
+.list-admin:last-child {
   border: none;
   margin-bottom: 0rem;
 }
 
-.list a {
+.list-admin a {
   display: block;
   text-decoration: none;
   color: #007bff;
 }
 
-.list a:hover {
+.list-admin a:hover {
   background-color: #efefef;
   color: #0069d9;
 }
 
-.list li {
+.list-admin li {
   border-bottom: 2px solid #ccc;
 }
 
-.list li:last-child {
+.list-admin li:last-child {
   border-bottom: none;
 }
 
-.list-title {
+.list-admin-title {
   margin-left: .8rem;
   margin-bottom: .5rem;
 }
 
-.list ul {
+.list-admin ul {
   padding-inline-start: 0px;
   list-style: none;
   border: 2px solid #ccc;
   border-radius: 5px;
 }
 
-.list-item {
+.list-admin-item {
   padding: 0.2rem 0.8rem;
 }
 
-.list-stripe {
+.list-admin-stripe {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   margin: 0 .2rem;
 }
 
-.list-stripe:last-child {
+.list-admin-stripe:last-child {
   border-bottom: none;
 }
 
-.list-stripe-title {
+.list-admin-stripe-title {
   margin-left: .8rem;
   margin-bottom: .5rem;
 }
 
-.list-stripe-item {
+.list-admin-stripe-item {
   padding: 0.2rem 0.8rem;
   border-bottom: 1px solid #ccc;
 }
@@ -326,17 +326,17 @@ body {
   justify-content: space-between;
 }
 
-.form {
+.form-admin {
   max-width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
 
-.form table {
+.form-admin table {
   width: 100%;
 }
 
-.form-item {
+.form-admin-item {
   margin-bottom: 1.8rem;
 }
 
@@ -344,12 +344,12 @@ body {
   display: block;
 }
 
-.input-label {
+.input-admin-label {
   margin-bottom: .5rem;
   font-weight: normal;
 }
 
-.input-text {
+.input-admin-text {
   font-size: 1em;
   padding: .1rem .5rem;
   border-radius: 5px;
@@ -358,7 +358,7 @@ body {
   max-width: 100%;
 }
 
-.input-textarea {
+.input-admin-textarea {
   font-size: 1em;
   padding: .3rem .5rem;
   border-radius: 5px;
@@ -369,7 +369,7 @@ body {
   resize: vertical;
 }
 
-.input-select {
+.input-admin-select {
   font-size: 1em;
   padding: .3rem .5rem;
   display: inline-block;

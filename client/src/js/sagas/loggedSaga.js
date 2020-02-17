@@ -20,7 +20,7 @@ function* handleLogin(action) {
 }
 
 function loginRequest(student_id, password) {
-    return Request.post(API_URL + "/login", { student_id, password }, {withCredentials: true })
+    return Request.httpPost(API_URL + "/login", { student_id, password }, {withCredentials: true })
 }
 
 function* handleLogout() {

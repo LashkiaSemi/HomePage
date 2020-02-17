@@ -88,6 +88,60 @@ body {
   text-align: center;
 }
 
+.al-right {
+  text-align: right;
+}
+
+.breadcrumb {
+  display: block;
+  background-color: #efefef;
+  border-radius: 5px;
+  padding: .2rem .8rem;
+}
+
+.breadcrumb a {
+  padding: .5rem;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: #0069d9;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  display: block;
+  box-sizing: border-box;
+  padding: 1.5rem 2.5rem;
+  min-width: 40%;
+  max-width: 80%;
+  max-height: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+}
+
 .table-basic {
   border: 2px solid #ccc;
   border-spacing: 0px;
@@ -170,9 +224,67 @@ body {
   width: 33%;
 }
 
+.table-admin-stripe {
+  border: 2px solid #ccc;
+  border-right: none;
+  border-left: none;
+  border-spacing: 0px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.table-admin-caption {
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  font-size: 1.0rem;
+  font-weight: 600;
+  margin-bottom: .2rem;
+}
+
+.table-admin caption {
+  text-align: left;
+  font-size: 1.0rem;
+  font-weight: 600;
+  margin-bottom: .2rem;
+}
+
+.table-admin thead {
+  background-color: #efefef;
+}
+
+.table-admin thead th {
+  padding: 0.2rem 0.8rem;
+  text-align: left;
+}
+
+.table-admin thead th:last-child {
+  border-right: none;
+}
+
+.table-admin tbody td {
+  min-width: 170px;
+  box-sizing: border-box;
+  padding: 0.2rem 0.8rem;
+  border-top: 2px solid #ccc;
+}
+
+.table-admin tbody td:last-child {
+  border-right: none;
+}
+
+.table-admin tr {
+  border-bottom: 2px solid #ccc;
+}
+
+.table-admin tr:nth-child(2n) {
+  background-color: #efefef;
+}
+
 .btn {
   padding: .2rem .5rem;
   font-size: 1em;
+  font-weight: 400;
   border-radius: 5px;
   border: 2px solid transparent;
   outline: none;
@@ -336,6 +448,76 @@ body {
   border-bottom: 1px solid #ccc;
 }
 
+.list-admin {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  margin: 0 .2rem;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+.list-admin:last-child {
+  border: none;
+  margin-bottom: 0rem;
+}
+
+.list-admin a {
+  display: block;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.list-admin a:hover {
+  background-color: #efefef;
+  color: #0069d9;
+}
+
+.list-admin li {
+  border-bottom: 2px solid #ccc;
+}
+
+.list-admin li:last-child {
+  border-bottom: none;
+}
+
+.list-admin-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.list-admin ul {
+  padding-inline-start: 0px;
+  list-style: none;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+}
+
+.list-admin-item {
+  padding: 0.2rem 0.8rem;
+}
+
+.list-admin-stripe {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  margin: 0 .2rem;
+}
+
+.list-admin-stripe:last-child {
+  border-bottom: none;
+}
+
+.list-admin-stripe-title {
+  margin-left: .8rem;
+  margin-bottom: .5rem;
+}
+
+.list-admin-stripe-item {
+  padding: 0.2rem 0.8rem;
+  border-bottom: 1px solid #ccc;
+}
+
 .error-list {
   color: #8b2323;
   background-color: #ffb2b2;
@@ -363,6 +545,24 @@ body {
 }
 
 .form-item {
+  margin-bottom: 1.8rem;
+}
+
+.form-admin {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form-admin table {
+  width: 100%;
+}
+
+.form-admin table td {
+  padding: .4rem 0;
+}
+
+.form-admin-item {
   margin-bottom: 1.8rem;
 }
 
@@ -405,6 +605,68 @@ body {
   width: 100%;
   background-color: #fff;
   border: 1px solid #ccc;
+}
+
+.input-admin-label {
+  margin-bottom: .5rem;
+  font-weight: normal;
+}
+
+.input-admin-text {
+  font-size: 1em;
+  padding: .1rem .5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 100%;
+}
+
+.input-admin-password {
+  font-size: 1em;
+  padding: .1rem .5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 100%;
+}
+
+.input-admin-number {
+  font-size: 1em;
+  padding: .1rem .5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 100%;
+}
+
+.input-admin-textarea {
+  font-size: 1em;
+  padding: .3rem .5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  display: block;
+  width: 100%;
+  height: 5rem;
+  resize: vertical;
+}
+
+.input-admin-select {
+  font-size: 1em;
+  padding: .1rem .5rem;
+  display: inline-block;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.input-admin-date {
+  font-size: 1em;
+  padding: .1rem .5rem;
+  display: inline-block;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .header nav {
