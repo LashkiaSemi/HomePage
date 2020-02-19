@@ -1,8 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { fetchEquipmentsRequest } from '../../../actions/action'
-
-import Auth from '../../common/Auth'
+import { APIErrorList } from '../../common/APIError'
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -13,7 +12,8 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         isLoading: state.isLoading,
-        equipments: state.equipments
+        equipments: state.equipments,
+        apiError: state.apiError
     }
 }
 
@@ -26,6 +26,8 @@ class ConnectedEquipment extends React.Component {
         return (
             <div className="content">
                 <h1 className="content-title h1-block">備品</h1>
+                <APIErrorList 
+                    apiError={this.props.apiError}/>
                 <EquipmentTable equipments={this.props.equipments} />
             </div>
         )
@@ -47,7 +49,7 @@ const EquipmentTable = (props) => {
             <tbody>
                 {
                     props.equipments.map((equ) => (
-                        <EquipmentRow equipment={equ} />
+                        <EquipmentRow key={equ.id} equipment={equ} />
                     ))
                 }
             </tbody>

@@ -56,7 +56,7 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		if sessList[userID] == nil {
 			// sessionはブラウザに存在しているが、サーバ側のリストがなくなっちゃった場合
 			logger.Warn("session is not exist. please relogin")
-			response.HTTPError(w, domain.BadRequest(errors.New("session is not exist. please re login")))
+			response.HTTPError(w, domain.BadRequest(errors.New("Session is not exist.Please relogin")))
 			return
 		}
 

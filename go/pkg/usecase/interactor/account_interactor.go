@@ -1,6 +1,7 @@
 package interactor
 
 import (
+	"errors"
 	"homepage/pkg/domain"
 	"homepage/pkg/domain/logger"
 	"time"
@@ -128,7 +129,6 @@ func (ai *accountInteractor) UpdatePassword(userID int, oldPassword, newPassword
 }
 
 func (ai *accountInteractor) Delete(userID int) error {
-	// TODO: 実装して
 	err := ai.AccountRepository.Delete(userID)
 	return err
 }
@@ -143,7 +143,8 @@ func (ai *accountInteractor) Login(studentID, password string) (sess domain.Sess
 	// パスワード認証
 	err = ai.AuthHandler.PasswordVerify(user.Password, password)
 	if err != nil {
-		return sess, domain.BadRequest(err)
+		logger.Warn("account interactor: Login: ", err)
+		return sess, domain.BadRequest(errors.New("認証に失敗しました"))
 	}
 
 	// sessionの作成

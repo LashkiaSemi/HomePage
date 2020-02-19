@@ -1,11 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { fetchAccountRequest, updateAccountRequest } from '../../../actions/action'
+import { APIErrorList } from '../../common/APIError'
 
 const mapStateToProps = (state) => {
     return {
         isLoading: state.isLoading,
-        member: state.account
+        member: state.account,
+        apiError: state.apiError
     }
 }
 
@@ -71,7 +73,9 @@ class ConnectedMemberEdit extends React.Component {
         if(!this.state){
             return (
                 <div className="content">
-                    <label>Now Loading...</label>
+                    <h1 className="content-title h1-block">アカウント情報編集</h1>
+                    <APIErrorList 
+                        apiError={this.props.apiError}/>
                 </div>
             )
         }

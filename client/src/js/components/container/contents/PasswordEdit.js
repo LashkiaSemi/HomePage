@@ -2,6 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { updateAccountPasswordRequest } from '../../../actions/action'
 import ErrorList from '../../common/ErrorList'
+import { APIErrorList } from '../../common/APIError'
+
+const mapStateToProps = (state) => {
+    return {
+        apiError: state.apiError
+    }
+}
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -79,6 +86,8 @@ class ConnectedPasswordEdit extends React.Component {
         return (
             <div className="content">
                 <h1 className="content-title h1-block">パスワードの再設定</h1>
+                <APIErrorList
+                    apiError={this.props.apiError}/>
                 <form className="form" onSubmit={this.handleSubmit}>
                     {
                         this.state.errors.length
@@ -109,7 +118,7 @@ class ConnectedPasswordEdit extends React.Component {
 
 
 const PasswordEdit = connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(ConnectedPasswordEdit)
 

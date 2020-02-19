@@ -3,11 +3,13 @@ import { connect } from 'react-redux'
 import AdminEdit from '../AdminEdit'
 import BreadCrumb from '../../../common/Breadcrumb'
 import { fetchEquipmentsRequest, createEquipmentRequest, updateEquipmentRequest, fetchTagsRequest } from '../../../../actions/action'
+import { APIErrorList } from '../../../common/APIError'
 
 const mapStateToProps = state => {
     return {
         equipments: state.equipments,
-        tags: state.tags
+        tags: state.tags,
+        apiError: state.apiError
     }
 }
 
@@ -64,6 +66,8 @@ class ConnectedEquipmentEdit extends React.Component {
         return (
             <div className="content">
                 <BreadCrumb items={[{ path: "/", label: "管理者サイト" }, { path: "/equipments", label: "研究室備品" }]} />
+                <APIErrorList
+                    apiError={this.props.apiError}/>
                 {
                     !this.state.isInitialized
                     ? <></>

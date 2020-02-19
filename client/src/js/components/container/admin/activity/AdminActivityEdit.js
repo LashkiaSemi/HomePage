@@ -3,12 +3,12 @@ import { connect } from 'react-redux'
 import AdminEdit from '../AdminEdit'
 import BreadCrumb from '../../../common/Breadcrumb'
 import { fetchActivitiesRequest, createActivityRequest, updateActivityRequest } from '../../../../actions/action'
-import { checkEmptyString } from '../../../../util/validation'
-import { findItemByID } from '../../../../util/findItem'
+import { APIErrorList } from '../../../common/APIError'
 
 const mapStateToProps = (state) => {
     return {
-        activities: state.activities
+        activities: state.activities,
+        apiError: state.apiError,
     }
 }
 
@@ -39,6 +39,8 @@ class ConnectedActivityEdit extends React.Component {
         return (
             <div className="content">
                 <BreadCrumb items={[{ path: "/", label: "管理者サイト" }, { path: "/activities", label: "活動記録" }]} />
+                <APIErrorList
+                    apiError={this.props.apiError}/>
                 <AdminEdit
                     items={this.props.activities}
                     itemID={this.props.match.params.id}

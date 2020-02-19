@@ -1,21 +1,19 @@
 import React from 'react'
 import { fetchActivitiesRequest } from '../../../actions/action'
 import { connect } from 'react-redux'
-
-// tips: 
-// 一応sagaもあるけど、使ってない。ここDB利用するなら
-// 上手いことやってください
-
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchRequest: () => dispatch(fetchActivitiesRequest())
-    }
-}
+import { APIErrorList } from '../../common/APIError'
 
 const mapStateToProps = state => {
     return {
         isLoading: state.isLoading,
-        activities: state.activities
+        activities: state.activities,
+        apiError: state.apiError,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchRequest: () => dispatch(fetchActivitiesRequest())
     }
 }
 
@@ -47,7 +45,7 @@ class ConnectedActivity extends React.Component {
                 year = act.date.substring(0, 4)
                 news = []
             }
-            news.push({ date: act.date.replace(/-/g, "/"), content: act.activity })
+            news.push({ id: act.id, date: act.date.replace(/-/g, "/"), content: act.activity })
         })
         acts.push({ id: year+"news", title: year + "年のニュース", news: news })
 
@@ -62,6 +60,8 @@ class ConnectedActivity extends React.Component {
         return (
             <div className="content">
                 <h1 className="content-title h1-block">活動記録</h1>
+                <APIErrorList 
+                    apiError={this.props.apiError}/>
                 <Toc activities={this.state.activities}/>
                 <ActivityList activities={this.state.activities}/>
             </div>

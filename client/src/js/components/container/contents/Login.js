@@ -1,11 +1,14 @@
 import React from 'react'
 import { loginRequest } from '../../../actions/action'
 import { connect } from 'react-redux'
+import ErrorList from '../../common/ErrorList'
+import { APIErrorList } from '../../common/APIError'
 
 const mapStateToProps = state => {
     return {
         isLoading: state.isLoading,
-        login: state.login
+        login: state.login,
+        apiError: state.apiError,
     }
 }
 
@@ -20,7 +23,15 @@ class ConnectedLogin extends React.Component {
         return (
             <div className="content">
                 <h1 className="content-title h1-block">ログイン</h1>
-                <LoginForm dispatchRequest={this.props.dispatchRequest} />
+                {/* {
+                    Object.keys(this.props.apiError).length > 0
+                    ? <ErrorList
+                        errors={[{ id: 400, content: this.props.apiError.error.data.message },]} />
+                    : <></>
+                } */}
+                <LoginForm
+                    dispatchRequest={this.props.dispatchRequest}
+                    apiError={this.props.apiError} />
             </div>
         )
     }
@@ -31,7 +42,7 @@ class LoginForm extends React.Component {
         super(props)
         this.state = {
             studentID: '',
-            password: ''
+            password: '',
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -58,8 +69,12 @@ class LoginForm extends React.Component {
     }
 
     render() {
+
         return (
             <form className="form">
+                <APIErrorList
+                    apiError={this.props.apiError}/>
+
                 <h3 className="input-label">学籍番号</h3>
                 <input type="text" className="input-text" name="studentID" onChange={this.handleChange} value={this.state.studentID} />
                 <h3 className="input-label">パスワード</h3>

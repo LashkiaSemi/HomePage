@@ -125,12 +125,12 @@ func (ac *accountController) Delete(userID int) error {
 func (ac *accountController) Login(req *LoginRequest) (res LoginResponse, sess domain.Session, err error) {
 	// バリデーションチェック
 	if req.StudentID == "" {
-		logger.Warn("studentID is empty")
-		return res, sess, domain.BadRequest(errors.New("studentID is empty"))
+		logger.Warn("login controller: studentID is empty")
+		return res, sess, domain.BadRequest(errors.New("学籍番号は必須です"))
 	}
 	if req.Password == "" {
-		logger.Warn("password is empty")
-		return res, sess, domain.BadRequest(errors.New("studentID is empty"))
+		logger.Warn("login controller: password is empty")
+		return res, sess, domain.BadRequest(errors.New("パスワードは必須です"))
 	}
 
 	// いんたらくた

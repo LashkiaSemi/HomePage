@@ -3,10 +3,12 @@ import { connect } from 'react-redux'
 import AdminEdit from '../AdminEdit'
 import { fetchSocietiesRequest, createSocietyRequest, updateSocietyRequest } from '../../../../actions/action'
 import BreadCrumb from '../../../common/Breadcrumb'
+import { APIErrorList } from '../../../common/APIError'
 
 const mapStateToProps = (state) => {
     return {
         societies: state.societies,
+        apiError: state.apiError
     }
 }
 
@@ -43,6 +45,8 @@ class ConnectedSocietyEdit extends React.Component {
         return (
             <div className="content">
                 <BreadCrumb items={[{ path: "/", label: "管理者サイト" }, { path: "/societies", label: "学会発表" }]}/>
+                <APIErrorList
+                    apiError={this.props.apiError}/>
                 <AdminEdit
                     items={this.props.societies}
                     itemID={this.props.match.params.id}

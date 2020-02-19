@@ -36,6 +36,7 @@ function* updateActivity(action) {
         const payload = yield call(putActivity, action.payload.id, action.payload.body)
         yield put(updateActivitySuccess(payload))
     } catch(e) {
+        console.log(e)
         yield put(updateActivityFailure(e))
     }
 }

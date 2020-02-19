@@ -759,3 +759,11 @@ body {
   justify-content: space-between;
   margin-bottom: 1rem;
 }
+
+.bb-0 {
+  border-bottom: none;
+}
+
+.bb-1 {
+  border-bottom: 1px solid #ccc;
+}

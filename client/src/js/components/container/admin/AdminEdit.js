@@ -85,8 +85,8 @@ class AdminEdit extends React.Component {
                     errors.push({ id: field.name+"Empty", content: field.label+"は必須です" })
                 }
             })
+        this.setState({ errors })
         if (errors.length > 0) {
-            this.setState({ errors })
             return
         }
 
@@ -137,7 +137,6 @@ class AdminEdit extends React.Component {
                 <></>
             )
         }
-
         return (
             <form className="form-admin" onSubmit={this.handleSubmit}>
                 {

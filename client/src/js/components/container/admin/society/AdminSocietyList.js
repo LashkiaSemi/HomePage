@@ -3,10 +3,12 @@ import { fetchSocietiesRequest, createSocietyRequest, deleteSocietyRequest } fro
 import { connect } from 'react-redux'
 import AdminList from '../AdminList'
 import BreadCrumb from '../../../common/Breadcrumb'
+import { APIErrorList } from '../../../common/APIError'
 
 const mapStateToProps = (state) => {
     return {
         societies: state.societies,
+        apiError: state.apiError
     }
 }
 
@@ -22,6 +24,8 @@ class ConnectedSocietyList extends React.Component {
         return (
             <div className="content">
                 <BreadCrumb items={[{ path: "/", label: "管理者サイト" }, { path: "/societies", label: "学会発表" }]} />
+                <APIErrorList
+                    apiError={this.props.apiError}/>
                 <AdminList
                     items={this.props.societies}
                     caption={"学会発表"}

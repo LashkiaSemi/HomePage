@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { fetchMembersRequest } from '../../../actions/action'
+import { APIErrorList } from '../../common/APIError'
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -12,7 +13,8 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         isLoading: state.isLoading,
-        members: state.members
+        members: state.members,
+        apiError: state.apiError
     }
 }
 
@@ -28,15 +30,11 @@ class ConnectedMember extends React.Component {
     render() {
         return (
             <div className="content">
-                {
-                    this.props.isLoading
-                    ? <p>now loading...</p>
-                    : <>
-                        <h1 className="content-title h1-block">メンバー</h1>
-                        <MemberGrade members={this.props.members} />
-                        <MemberGraduate members={this.props.members} />
-                    </>
-                }
+                <h1 className="content-title h1-block">メンバー</h1>
+                <APIErrorList 
+                    apiError={this.props.apiError}/>
+                <MemberGrade members={this.props.members} />
+                <MemberGraduate members={this.props.members} />
             </div>
         )
     }
@@ -53,7 +51,7 @@ const MemberGrade = (props) => {
         })
     }
     return(
-        <div className="flex-block">
+        <div className="flex-block mb-20 bb-1">
             {
                 members.map((memberList) => (
                     <MemberList key={memberList.grade} members={memberList} />
@@ -65,7 +63,7 @@ const MemberGrade = (props) => {
 
 const MemberList = (props) => {
     return (
-        <div className="list items-3">
+        <div className="list items-3 bb-0">
             {/* TODO: 修士以上が滅んでる */}
             <h3 className="list-title h3">{props.members.grade}年</h3> 
             <ul>

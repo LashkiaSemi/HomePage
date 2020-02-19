@@ -3,10 +3,12 @@ import { connect } from 'react-redux'
 import AdminEdit from '../AdminEdit'
 import BreadCrumb from '../../../common/Breadcrumb'
 import { fetchTagsRequest, createTagRequest, updateTagRequest } from '../../../../actions/action'
+import { APIErrorList } from '../../../common/APIError'
 
 const mapStateToProps = state => {
     return {
-        tags: state.tags
+        tags: state.tags,
+        apiError: state.apiError
     }
 }
 
@@ -35,6 +37,8 @@ class ConnectedTagEdit extends React.Component {
         return (
             <div className="content">
                 <BreadCrumb items={[{ path: "/", label: "管理者サイト" }, { path: "/tags", label: "タグ" }]} />
+                <APIErrorList
+                    apiError={this.props.apiError}/>
                 <AdminEdit
                     items={this.props.tags}
                     itemID={this.props.match.params.id}

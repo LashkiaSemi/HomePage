@@ -31,7 +31,9 @@ func (er *equipmentRepository) FindAll() (equs domain.Equipments, err error) {
 	for rows.Next() {
 		var equ domain.Equipment
 		if err = rows.Scan(&equ.ID, &equ.Name, &equ.Stock, &equ.Note, &equ.CreatedAt, &equ.UpdatedAt, &equ.Tag.ID, &equ.Tag.Name); err != nil {
-			logger.Warn("equipment findAll: skip data")
+			logger.Warn("equipment findAll: skip data. equipment.name=", equ.Name)
+			err = nil
+			equs = append(equs, equ)
 			continue
 		}
 		equs = append(equs, equ)

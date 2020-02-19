@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { fetchResearchesRequest } from '../../../actions/action'
+import { APIErrorList } from '../../common/APIError'
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -11,7 +12,8 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         isLoading: state.isLoading,
-        researches: state.researches
+        researches: state.researches,
+        apiError: state.apiError
     }
 }
 
@@ -28,9 +30,9 @@ class ConnectedResearch extends React.Component {
                     ? <p>now loading...</p>
                     : <>
                         <h1 className="content-title h1-block">卒業研究</h1>
-                        {
+                            <APIErrorList
+                                apiError={this.props.apiError}/>
                             <ResearchTable researches={this.props.researches} />
-                        }
                         </>
                 }
             </div>

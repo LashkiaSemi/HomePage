@@ -3,10 +3,12 @@ import { connect } from 'react-redux'
 import { fetchLecturesRequest, deleteLectureRequest } from '../../../../actions/action'
 import BreadCrumb from '../../../common/Breadcrumb'
 import AdminList from '../AdminList'
+import { APIErrorList } from '../../../common/APIError'
 
 const mapStateToProps = (state) => {
     return {
-        lectures: state.lectures
+        lectures: state.lectures,
+        apiError: state.apiError
     }
 }
 
@@ -22,6 +24,8 @@ class ConnectedLectureList extends React.Component {
         return (
             <div className="content">
                 <BreadCrumb items={[{ path: "/", label: "管理者サイト" }, { path: "/lectures", label: "レクチャー" }]} />
+                <APIErrorList
+                    apiError={this.props.apiError}/>
                 <AdminList
                     items={this.props.lectures}
                     caption={"レクチャー"}

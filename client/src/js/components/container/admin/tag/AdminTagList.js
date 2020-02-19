@@ -3,10 +3,12 @@ import { connect } from 'react-redux'
 import { fetchTagsRequest, deleteTagRequest } from '../../../../actions/action'
 import BreadCrumb from '../../../common/Breadcrumb'
 import AdminList from '../AdminList'
+import { APIErrorList } from '../../../common/APIError'
 
 const mapStateToProps = (state) => {
     return {
-        tags: state.tags
+        tags: state.tags,
+        apiError: state.apiError
     }
 }
 
@@ -22,6 +24,8 @@ class ConnectedTagList extends React.Component {
         return (
             <div className="content">
                 <BreadCrumb items={[{ path: "/", label: "管理者サイト" }, { path: "/tags", label: "タグ" }]} />
+                <APIErrorList
+                    apiError={this.props.apiError}/>
                 <AdminList
                     items={this.props.tags}
                     caption={"タグ"}

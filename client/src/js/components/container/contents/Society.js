@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { fetchSocietiesRequest } from '../../../actions/action'
+import { APIErrorList } from '../../common/APIError'
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -11,7 +12,8 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         isLoading: state.isLoading,
-        societies: state.societies
+        societies: state.societies,
+        apiError: state.apiError
     }
 }
 
@@ -23,17 +25,10 @@ class ConnectedSociey extends React.Component {
     render(){
         return (
             <div className="content">
-                {
-                    this.props.isLoading
-                    ? <p>now loading...</p>
-                    : <>
-                        <h1 className="content-title h1-block">学会発表</h1>
-                        {
-                            // TODO: loading
-                            <SocietyTable societies={this.props.societies} />
-                        }
-                    </>
-                }
+                <h1 className="content-title h1-block">学会発表</h1>
+                <APIErrorList
+                    apiError={this.props.apiError} />
+                <SocietyTable societies={this.props.societies} />
             </div>
         )
     }

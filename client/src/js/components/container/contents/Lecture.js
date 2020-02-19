@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import * as Crypto from '../../../util/crypto'
 import { findItemByID } from '../../../util/findItem'
 import Modal from '../../common/Modal'
+import { APIErrorList } from '../../common/APIError'
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -17,7 +18,8 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         isLoading: state.isLoading,
-        lectures: state.lectures
+        lectures: state.lectures,
+        apiError: state.apiError
     }
 }
 
@@ -60,6 +62,8 @@ class ConnectedLecture extends React.Component {
         return (
             <div className="content">
                 <h1 className="content-title h1-block">レクチャー</h1>
+                <APIErrorList
+                    apiError={this.props.apiError}/>
                 <div className="content-header">
                     <h2 className="h2">レクチャー資料一覧</h2>
                     {

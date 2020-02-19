@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { findItemByID, findCaptionByDataType } from '../../../util/findItem'
 import Modal from '../../common/Modal'
+import { APIErrorList } from '../../common/APIError'
 
 class AdminList extends React.Component {
     constructor(props) {
@@ -36,6 +37,7 @@ class AdminList extends React.Component {
     }
 
     render(){
+        
         return (
             <>
                 <div className="table-admin-caption">

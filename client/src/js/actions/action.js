@@ -144,4 +144,4 @@ export const deleteTagFailure = (payload) => { return { type: Type.DELETE_TAG_FA
 // else
 export const showLoading = () => { return { type: Type.SHOW_LOADING} }
 export const hideLoading = () => { return { type: Type.HIDE_LOADING} }
-export const apiError = (payload) => { return { type: Type.API_ERROR, payload} }
+export const cerateAPIError = (payload) => { return { type: Type.API_ERROR, payload} }

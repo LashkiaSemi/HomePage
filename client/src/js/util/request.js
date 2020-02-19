@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { showLoading, hideLoading } from '../actions/action'
+import { showLoading, hideLoading, apiError } from '../actions/action'
 import store from '../store/store'
 
 // apiにgetリクエストを送信

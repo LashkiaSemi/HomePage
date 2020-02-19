@@ -104,7 +104,6 @@ body {
     }
 }
 
-
 .col {
     &-black {
         color: #000;
@@ -769,3 +768,15 @@ body {
         }
     }
 }
+
+
+
+.bb {
+    &-0 {
+        border-bottom: none;
+    }
+    &-1 {
+        border-bottom: 1px solid $border-dark-main;
+    }
+}
+
