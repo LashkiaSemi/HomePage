@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import AdminEdit from '../AdminEdit'
 import BreadCrumb from '../../../common/Breadcrumb'
-import { fetchLecturesRequest, createLectureRequest, updateLectureRequest, fetchMembersRequest } from '../../../../actions/action'
+import { fetchLecturesRequest, adminCreateLectureRequest, adminUpdateLectureRequest, fetchMembersRequest } from '../../../../actions/action'
 import { APIErrorList } from '../../../common/APIError'
 
 const mapStateToProps = state => {
@@ -17,8 +17,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchRequest: () => dispatch(fetchLecturesRequest()),
         fetchMembersRequest: () => dispatch(fetchMembersRequest()),
-        createRequest: (body) => dispatch(createLectureRequest({ body })),
-        updateRequest: (id, body) => dispatch(updateLectureRequest({ id, body }))
+        createRequest: (body) => dispatch(adminCreateLectureRequest({ body })),
+        updateRequest: (id, body) => dispatch(adminUpdateLectureRequest({ id, body }))
     }
 }
 

@@ -25,21 +25,20 @@ class ConnectedResearch extends React.Component {
     render() {
         return (
             <div className="content">
-                {
-                    this.props.isLoading
-                    ? <p>now loading...</p>
-                    : <>
-                        <h1 className="content-title h1-block">卒業研究</h1>
-                            <APIErrorList
-                                apiError={this.props.apiError}/>
-                            <ResearchTable researches={this.props.researches} />
-                        </>
-                }
+                <h1 className="content-title h1-block">卒業研究</h1>
+                <APIErrorList
+                    apiError={this.props.apiError}/>
+                <ResearchTable researches={this.props.researches} />
             </div>
         )
     }
 }
 
+/*
+ResearchTable 卒研データのテーブル
+props:
+    researches = 卒研のデータセット
+*/
 const ResearchTable = (props) => {
     return (
         <table className="table-stripe">
@@ -63,6 +62,11 @@ const ResearchTable = (props) => {
     )
 }
 
+/*
+ResearchRow 一件
+props:
+    research = 卒研一件
+*/
 const ResearchRow = (props) => {
     return (
         <tr>

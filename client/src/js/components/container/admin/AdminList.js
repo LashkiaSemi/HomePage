@@ -2,8 +2,16 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { findItemByID, findCaptionByDataType } from '../../../util/findItem'
 import Modal from '../../common/Modal'
-import { APIErrorList } from '../../common/APIError'
 
+/*
+AdminList adminページのリストのベース
+props:
+    caption         = 一覧テーブルのタイトル
+    path            = データのID?Linkに使ってる。 activities, societies, etc...
+    items           = データ！id必須
+    fetchRequest()  = データ取得のアクション
+    deleteRequest() = データ削除用のアクション
+*/
 class AdminList extends React.Component {
     constructor(props) {
         super(props)
@@ -78,6 +86,14 @@ class AdminList extends React.Component {
     }
 }
 
+/*
+ListRow データを一件表示する
+props:
+    item           = データ一件。AdminListのitems.mapで回してる
+    path           = データタイプが乗ってるやつ。AdminListのprops.path
+    handleSwitch() = モーダルの切り替え。AdminListのswitchModal
+*/
+
 const ListRow = (props) => {
     const title = findCaptionByDataType(props.path, props.item)
     return (
@@ -91,6 +107,15 @@ const ListRow = (props) => {
     )
 }
 
+/*
+DeleteModal データ削除する時に出てくる確認画面
+props:
+    id             = 削除するデータのid
+    items          = 削除するデータを含んでるデータ群
+    path           = データタイプ。判別に使ってる
+    handleDelete() = delete用のハンドラ。AdminListのrequestDelete
+    handleSwitch() = モーダル表示切り替え用のハンドラ。AdminListのswitchModal
+*/
 const DeleteModal = (props) => {
     const item = findItemByID(props.items, props.id)
     const title = findCaptionByDataType(props.path, item)

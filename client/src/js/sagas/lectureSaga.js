@@ -1,8 +1,23 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
-import { FETCH_LECTURES_REQUEST, CREATE_LECTURE_REQUEST, FETCH_LECTURE_REQUEST, UPDATE_LECTURE_REQUEST, DELETE_LECTURE_REQUEST } from '../constants/action-types'
+import { FETCH_LECTURES_REQUEST, CREATE_LECTURE_REQUEST, FETCH_LECTURE_REQUEST, UPDATE_LECTURE_REQUEST, DELETE_LECTURE_REQUEST, ADMIN_CREATE_LECTURE_REQUEST, ADMIN_UPDATE_LECTURE_REQUEST, ADMIN_DELETE_LECTURE_REQUEST } from '../constants/action-types'
 import { API_URL } from '../constants/config'
 import * as Request from '../util/request'
-import { fetchLecturesSuccess, fetchLecturesFailure, createLectureSuccess, createLectureFailure, fetchLectureFailure, fetchLectureSuccess, updateLectureSuccess, updateLectureFailure, deleteLectureSuccess, deleteLectureFailure } from '../actions/action'
+import { fetchLecturesSuccess, 
+         fetchLecturesFailure, 
+         createLectureSuccess, 
+         createLectureFailure, 
+         fetchLectureFailure, 
+         fetchLectureSuccess, 
+         updateLectureSuccess, 
+         updateLectureFailure, 
+         deleteLectureSuccess, 
+         deleteLectureFailure,
+         adminCreateLectureSuccess,
+         adminCreateLectureFailure,
+         adminUpdateLectureSuccess,
+         adminUpdateLectureFailure,
+         adminDeleteLectureSuccess,
+         adminDeleteLectureFailure } from '../actions/action'
 
 // watcher
 export function* watchLectures() {
@@ -11,6 +26,11 @@ export function* watchLectures() {
     yield takeEvery(CREATE_LECTURE_REQUEST, createLecture)
     yield takeEvery(UPDATE_LECTURE_REQUEST, updateLecture)
     yield takeEvery(DELETE_LECTURE_REQUEST, removeLecture)
+
+    // admin
+    yield takeEvery(ADMIN_CREATE_LECTURE_REQUEST, adminCreateLecture)
+    yield takeEvery(ADMIN_UPDATE_LECTURE_REQUEST, adminUpdateLecture)
+    yield takeEvery(ADMIN_DELETE_LECTURE_REQUEST, adminRemoveLecture)
 }
 
 // worker
@@ -56,6 +76,34 @@ function* removeLecture(action) {
         yield put(deleteLectureSuccess(payload))
     } catch(e) {
         yield put(deleteLectureFailure(e))
+    }
+}
+
+
+function* adminCreateLecture(action) {
+    try {
+        const payload = yield call(postLecture, action.payload.body)
+        yield put(adminCreateLectureSuccess(payload))
+    } catch (e) {
+        yield put(adminCreateLectureFailure(e))
+    }
+}
+
+function* adminUpdateLecture(action) {
+    try {
+        const payload = yield call(putLecture, action.payload.id, action.payload.body)
+        yield put(adminUpdateLectureSuccess(payload))
+    } catch (e) {
+        yield put(adminUpdateLectureFailure(e))
+    }
+}
+
+function* adminRemoveLecture(action) {
+    try {
+        const payload = yield call(deleteLecture, action.payload.id)
+        yield put(adminDeleteLectureSuccess(payload))
+    } catch (e) {
+        yield put(adminDeleteLectureFailure(e))
     }
 }
 

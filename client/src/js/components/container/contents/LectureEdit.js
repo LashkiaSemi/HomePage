@@ -31,7 +31,6 @@ class ConnectedLectureEdit extends React.Component {
             isPublic: true,
             errors: [],
         }
-
         this.fileInput = React.createRef()
 
         this.handleChange = this.handleChange.bind(this)
@@ -78,7 +77,7 @@ class ConnectedLectureEdit extends React.Component {
 
     async handleSubmit(e) {
         e.preventDefault()
-        // TODO: 空値チェックはutilに移行
+        // 空値チェック
         var errors = []
         if(this.state.title === "") {
             errors.push({id: "titleEmpty", content: "タイトルは必須です"})

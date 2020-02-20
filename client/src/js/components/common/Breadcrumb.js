@@ -1,6 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+
+
+/*
+BreadCrumb パンくずリスト
+props:
+    path  = admin以降のurl. ex) /activities
+    label = リストに表示する文字
+*/
 const BreadCrumb = (props) => {
     return (
         <div className="breadcrumb mb-30">

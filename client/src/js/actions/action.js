@@ -113,6 +113,17 @@ export const deleteLectureRequest = (payload) => { return { type: Type.DELETE_LE
 export const deleteLectureSuccess = (payload) => { return { type: Type.DELETE_LECTURE_SUCCESS, payload } }
 export const deleteLectureFailure = (payload) => { return { type: Type.DELETE_LECTURE_FAILURE, payload } }
 
+// admin lecture
+export const adminCreateLectureRequest = (payload) => { return { type: Type.ADMIN_CREATE_LECTURE_REQUEST, payload } }
+export const adminCreateLectureSuccess = (payload) => { return { type: Type.ADMIN_CREATE_LECTURE_SUCCESS, payload } }
+export const adminCreateLectureFailure = (payload) => { return { type: Type.ADMIN_CREATE_LECTURE_FAILURE, payload } }
+export const adminUpdateLectureRequest = (payload) => { return { type: Type.ADMIN_UPDATE_LECTURE_REQUEST, payload } }
+export const adminUpdateLectureSuccess = (payload) => { return { type: Type.ADMIN_UPDATE_LECTURE_SUCCESS, payload } }
+export const adminUpdateLectureFailure = (payload) => { return { type: Type.ADMIN_UPDATE_LECTURE_FAILURE, payload } }
+export const adminDeleteLectureRequest = (payload) => { return { type: Type.ADMIN_DELETE_LECTURE_REQUEST, payload } }
+export const adminDeleteLectureSuccess = (payload) => { return { type: Type.ADMIN_DELETE_LECTURE_SUCCESS, payload } }
+export const adminDeleteLectureFailure = (payload) => { return { type: Type.ADMIN_DELETE_LECTURE_FAILURE, payload } }
+
 // job
 export const fetchJobsRequest = () => { return { type: Type.FETCH_JOBS_REQUEST } }
 export const fetchJobsSuccess = (payload) => { return { type: Type.FETCH_JOBS_SUCCESS, payload } }

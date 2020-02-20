@@ -1,7 +1,6 @@
 import React from 'react'
 import { logoutRequest } from '../../../actions/action'
 import { connect } from 'react-redux'
-import Auth from '../../common/Auth'
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -9,11 +8,11 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
+// ConnectedLogout ログアウト時に一瞬遷移する画面
 class ConnectedLogout extends React.Component {
     componentDidMount(){
         this.props.dispatchRequest()
     }
-
     render() {
         return (
             <div className="content">

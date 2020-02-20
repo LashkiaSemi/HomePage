@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchLecturesRequest, deleteLectureRequest } from '../../../actions/action'
-import { STRAGE_KEY } from '../../../constants/config'
 import { Link } from 'react-router-dom'
+import { STRAGE_KEY } from '../../../constants/config'
 import * as Crypto from '../../../util/crypto'
 import { findItemByID } from '../../../util/findItem'
+import { fetchLecturesRequest, deleteLectureRequest } from '../../../actions/action'
 import Modal from '../../common/Modal'
 import { APIErrorList } from '../../common/APIError'
 
@@ -27,7 +27,7 @@ class ConnectedLecture extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isLogin: "",
+            isLogin: "", // loginしてるならIDが入る。未ログインだとエラー起こすかも...?でもredirectで弾いてるので絶対ログイン状態で入るはず
             displayModal: false, // deleteの確認画面を開くアレ
             selectedItemID: 0,
         }
@@ -39,6 +39,7 @@ class ConnectedLecture extends React.Component {
     componentDidMount() {
         this.props.fetchRequest()
         this.setState({
+            // todo: 未ログインだとDecryptでエラー出すかも。ただこのページログインオンリーなので。
             isLogin: Crypto.Decrypt(localStorage.getItem(STRAGE_KEY))
         })
     }
@@ -76,9 +77,7 @@ class ConnectedLecture extends React.Component {
                     lectures={this.props.lectures} 
                     isLogin={this.state.isLogin}
                     handleSwitch={this.switchModal}
-                    handleDelete={this.handleDelete}
-                    displayModal={this.state.displayModal}
-                    />
+                    handleDelete={this.handleDelete}/>
                 {
                     this.state.displayModal
                     ? <DeleteModal
@@ -93,6 +92,13 @@ class ConnectedLecture extends React.Component {
     }
 }
 
+/*
+LectureTable レクチャーの資料一覧
+props:
+    lectures       = レクチャーのデータセット
+    isLogin        = ログインしているユーザのID
+    handleSwitch() = Connectedで定義してあるswitchModal
+*/
 const LectureTable = (props) => {
     return (
         <table className="table-stripe">
@@ -113,8 +119,7 @@ const LectureTable = (props) => {
                             lecture={lec} 
                             isLogin={props.isLogin}
                             handleSwitch={props.handleSwitch}
-                            handleDelete={props.handleDelete}
-                            displayModal={props.displayModal}/>
+                            handleDelete={props.handleDelete}/>
                     ))
                 }
             </tbody>
@@ -122,6 +127,14 @@ const LectureTable = (props) => {
     )
 }
 
+/*
+LectureRow レクチャー一件
+props:
+    lecture        = レクチャー一件
+    isLogin        = ログインしてるユーザのID
+    handleSwitch() = Connectedで定義してあるswitchModal
+    handleDelete() = Connectedで定義してあるhandleDelete
+*/
 const LectureRow = (props) => {
     return (
         <tr>
@@ -145,13 +158,21 @@ const LectureRow = (props) => {
     )
 }
 
+/*
+DeleteModal 削除確認のモーダル
+props:
+    id             = 削除するデータのID
+    lectures       = レクチャーのデータセット
+    handleDelete() = Connectedで定義してあるhandleDelete
+    handleSwitch() = Connectedで定義してあるswitchModal
+*/
 const DeleteModal = (props) => {
     const lecture = findItemByID(props.lectures, props.id)
     const modalBody = (
         <>
             <p><b>{lecture.title}</b>を削除します。よろしいですか。</p>
             <div>
-                <button className="btn btn-danger" onClick={props.handleDelete}>削除</button>
+                <button className="btn btn-danger" onClick={props.handleDelete} data-id={lecture.id}>削除</button>
                 <button className="btn btn-info" onClick={props.handleSwitch}>キャンセル</button>
             </div>
         </>

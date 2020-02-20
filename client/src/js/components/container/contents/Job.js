@@ -25,29 +25,43 @@ class ConnectedJob extends React.Component {
         return (
             <div className="content">
                 <h1 className="content-title h1-block">就職先</h1>
-
                 <APIErrorList
                     apiError={this.props.apiError}/>
 
                 <div className="content-header">
                     <h2 className="h2">就職先一覧</h2>
                 </div>
-                <div className="list">
-                    <ul>
-                        {
-                            this.props.jobs.map((job) => (
-                                <JobRow key={job.id} job={job} />
-                            ))
-                        }
-                        <li className="list-item">etc...</li>
-                    </ul>
-                </div>
+                <JobList jobs={this.props.jobs}/>
             </div>
         )
     }
 }
 
+/*
+JobList 就職先一覧
+props:
+    jobs = 就職先のデータセット
+*/
+const JobList = (props) => {
+    return (
+        <div className="list">
+            <ul>
+                {
+                    props.jobs.map((job) => (
+                        <JobRow key={job.id} job={job} />
+                    ))
+                }
+                <li className="list-item">etc...</li>
+            </ul>
+        </div>
+    )
+}
 
+/*
+JobRow 就職先一件
+props:
+    job = 就職先一件
+*/
 const JobRow = (props) => {
     return (
         <li className="list-item">{props.job.company} / {props.job.job}</li>

@@ -1,8 +1,9 @@
+// idってプロパティから一つのitemを探す
 export const findItemByID = (items, id) => {
     return items.find(item => item.id == id)
 }
 
-// DONE: admin list のrow のtitle部分を探索するやつ
+// admin siteのリストで、見出しつけるために使ってます。
 // typeにpathというか、データの種類(adminListのpath)を送って、dataにitemを送る、みたいな
 export function findCaptionByDataType(type, data) {
     switch(type) {

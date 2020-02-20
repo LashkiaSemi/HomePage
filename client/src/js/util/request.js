@@ -2,8 +2,9 @@ import axios from 'axios'
 import { showLoading, hideLoading, apiError } from '../actions/action'
 import store from '../store/store'
 
+// stateのisLoadingはここでいじってます。結局isLoadingをあんまり使ってないけどな！
+
 // apiにgetリクエストを送信
-// stateのisLoadingはここでいじってます
 export async function httpGet(url, options) {
     store.dispatch(showLoading())
     return await axios.get(url, options).finally(() => store.dispatch(hideLoading()))

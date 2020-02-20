@@ -3,6 +3,25 @@ import { findItemByID } from '../../../util/findItem'
 import ErrorList from '../../common/ErrorList'
 import { checkIsEmpty, parseStringToBool } from '../../../util/validation'
 
+/*
+AdminEdit adminページのeditのベース
+props:
+    itemID          = 編集の場合はどのデータ編集してるか
+    items           = 元データ
+    fields          = フォームのフィールド
+        [{ label: 表示名, 
+           type: inputType, 
+           name: inputName, 
+           required: boolで空値チェックするか, 
+           requestType: apiコール時に型変換するか, 
+           options: [ label, value ] }] // selectの時のみ。選択肢
+    values          = フォームの入力値
+        [{ [filedName]: value, ...}]
+    fileInput       = fileを受け付ける場合はfileAPI使う
+    fetchRequest()  = データがない時の取得用
+    createRequest() = データ作成のリクエストを飛ばす
+    updateRequest() = データ更新のリクエストを飛ばす
+*/
 class AdminEdit extends React.Component {
     constructor(props) {
         super(props)
@@ -166,8 +185,14 @@ class AdminEdit extends React.Component {
     }
 }
 
-
-// inputフォームを作成するよ
+/*
+InputField inputを一つ生成する
+props:
+    field          = AdminEditのfiledの一つ
+    value          = 入力値の受け
+    fileInput      = AdminEditのfileInput
+    handleChange() = onChangeの。
+*/
 const InputField = (props) => {
     var inputField
     if(props.field.type === "text" || props.field.type === "date" || props.field.type === "password" || props.field.type === "number") {
@@ -230,7 +255,11 @@ const InputField = (props) => {
 }
 
 
-// generateBody fields = [{label, name, type}], values=[{props}]
+/*
+generateBody apiに送れるようにbodyを作成する
+fields = AdminEditのprops.fields
+values = AdminEditのstate.values
+*/
 const generateBody = (fields, values) => {
     const body = {}
     fields.map(field => {

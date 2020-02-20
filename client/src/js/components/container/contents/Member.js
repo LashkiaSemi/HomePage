@@ -40,6 +40,11 @@ class ConnectedMember extends React.Component {
     }
 }
 
+/*
+MemberGrade 在学中の学生のリスト
+props:
+    members = メンバーのデータ
+*/
 const MemberGrade = (props) => {
     const members = []
     // 学年わけ
@@ -61,6 +66,15 @@ const MemberGrade = (props) => {
     )
 }
 
+/*
+MemberList 学年ごとのリスト
+props:
+    members = データセット
+        {
+            grade: 学年
+            members: gradeのゼミ生。配列
+        }
+*/
 const MemberList = (props) => {
     return (
         <div className="list items-3 bb-0">
@@ -77,6 +91,11 @@ const MemberList = (props) => {
     )
 }
 
+/*
+MemberGraduate 卒業生を表示
+props:
+    members = ゼミ生のデータセット
+*/
 const MemberGraduate = (props) => {
     const members = props.members.filter((member) => member.grade === 0)
     return (
@@ -93,6 +112,11 @@ const MemberGraduate = (props) => {
     )
 }
 
+/*
+MemberRow 一件表示する
+props:
+    member = ゼミ生一人分のデータ
+*/
 const MemberRow = (props) => {
     return (
         <li>

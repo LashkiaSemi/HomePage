@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchLecturesRequest, deleteLectureRequest } from '../../../../actions/action'
+import { fetchLecturesRequest, adminDeleteLectureRequest } from '../../../../actions/action'
 import BreadCrumb from '../../../common/Breadcrumb'
 import AdminList from '../AdminList'
 import { APIErrorList } from '../../../common/APIError'
@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchRequest: () => dispatch(fetchLecturesRequest()),
-        deleteRequest: (id) => dispatch(deleteLectureRequest({ id }))
+        deleteRequest: (id) => dispatch(adminDeleteLectureRequest({ id }))
     }
 }
 

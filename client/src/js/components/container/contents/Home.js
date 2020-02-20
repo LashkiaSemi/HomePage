@@ -1,5 +1,17 @@
 import React from 'react'
 
+// Newsで表示する内容
+const NEWS = [
+    {
+        id: 1,
+        date: "2019/06/10",
+        news: "ゼミ見学",
+    },
+]
+
+/*
+Home トップページ。めっちゃ静的
+*/
 class Home extends React.Component {
     render() {
         return (
@@ -12,7 +24,11 @@ class Home extends React.Component {
     }
 }
 
-// Jumbotron
+/*
+Jumbotron
+props:
+    text = ジャンボトロンに表示するwelcome文
+*/
 const Jumbotron = (props) => {
     return (
         <div className="jumbotron">
@@ -21,7 +37,12 @@ const Jumbotron = (props) => {
     )
 }
 
-const News = (props) => {
+/*
+News トップにカードとして表示してる今後の予定
+Newsのデータは一番上のNEWSでいじる...
+memo: ここをDBに移行しても面白いかも?
+*/
+const News = () => {
     return (
         <div className="content">
             <div className="card">
@@ -40,23 +61,26 @@ const News = (props) => {
     )
 }
 
+/*
+NewsRow 今後の予定を一件
+props:
+    news = ニュースを一件
+        {
+            date: 日付
+            news: 内容
+        }
+*/
 const NewsRow = (props) => {
     return (
         <li>{props.news.date}: {props.news.news}</li>
     )
 }
 
-const NEWS = [
-    {
-        id: 1,
-        date: "2019/06/10",
-        news: "ゼミ見学",
-    },
-]
-
-// ゼミについてのコンテンツ
-// ガッチガチのstatic。基本的に買えなくておk
-const AboutLab = (props) => {
+/*
+AboutLab ゼミについてのコンテンツ
+ガッチガチのstatic。基本的に変更いらず
+*/
+const AboutLab = () => {
     return (
         <div className="content">
             <div className="mb-30">

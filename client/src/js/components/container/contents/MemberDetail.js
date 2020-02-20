@@ -67,6 +67,12 @@ class ConnectedMemberDetail extends React.Component {
     }
 }
 
+/*
+MemberCard カードのコンテンツ
+props:
+    mamber = 一人分のデータ
+    isEdit = bool値。編集権限があるか(本人か？っていう)。
+*/
 const MemberCard = (props) => {
     return (
         <div className="card mt-50">
@@ -103,6 +109,7 @@ const MemberDetail = connect(
     mapDispatchToProps
 )(ConnectedMemberDetail)
 
+// numToGrade DBに入ってる学年の値が数字なので...ちゃんと見せる形に変形する
 const numToGrade = (num) => {
     switch(num) {
         case 2:

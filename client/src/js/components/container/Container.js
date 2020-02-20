@@ -38,6 +38,7 @@ import AdminLectureEdit from './admin/lecture/AdminLectureEdit'
 import AdminTagList from './admin/tag/AdminTagList'
 import AdminTagEdit from './admin/tag/AdminTagEdit'
 
+// else
 import Auth from '../common/Auth'
 import Admin  from '../common/Admin'
 import Error404 from './contents/Error'
@@ -51,6 +52,7 @@ class ConnectedContainer extends React.Component {
         return (
             <div className="container">
                 <Switch>
+                    {/* main pages */}
                     <Route exact path="/" component={Home}/>
                     <Route exact path="/members" component={Member}/>
                     <Route exact path="/members/:id" component={MemberDetail}/>

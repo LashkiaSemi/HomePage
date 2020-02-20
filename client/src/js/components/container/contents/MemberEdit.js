@@ -83,6 +83,8 @@ class ConnectedMemberEdit extends React.Component {
             <div className="content">
                 <h1 className="content-title h1-block">アカウント情報編集</h1>
                 <form className="form" onSubmit={this.handleSubmit}>
+                    <APIErrorList
+                        apiError={this.props.apiError} />
                     <div className="form-item">
                         <label className="input-label">名前</label>
                         <input type="text" className="input-text" name="name" value={this.state.name} onChange={this.handleChange} />

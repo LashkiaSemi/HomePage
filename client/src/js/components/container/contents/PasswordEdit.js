@@ -42,9 +42,7 @@ class ConnectedPasswordEdit extends React.Component {
     handleSubmit(e) {
         e.preventDefault()
         var errors = []
-        // 空値がある場合は警告
         if(this.state.oldPass === "" || this.state.newPass === "" || this.state.confirmPass === "") {
-            // TODO: error list display
             errors = errors.concat({
                 id: 'empty',
                 content: '空値があります'

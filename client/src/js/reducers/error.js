@@ -50,6 +50,9 @@ export function apiError(state={}, action) {
         case Type.CREATE_LECTURE_FAILURE:
         case Type.UPDATE_LECTURE_FAILURE:
         case Type.DELETE_LECTURE_FAILURE:
+        case Type.ADMIN_CREATE_LECTURE_FAILURE:
+        case Type.ADMIN_UPDATE_LECTURE_FAILURE:
+        case Type.ADMIN_DELETE_LECTURE_FAILURE:
             return { error: action.payload.response }
 
         case Type.FETCH_ACCOUNT_FAILURE:

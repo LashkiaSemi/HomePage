@@ -34,6 +34,11 @@ class ConnectedSociey extends React.Component {
     }
 }
 
+/*
+SocietyTable 学会発表のテーブル
+props:
+    societies = データセット
+*/
 const SocietyTable = (props) => {
     return (
         <table className="table-basic">
@@ -57,6 +62,11 @@ const SocietyTable = (props) => {
     )
 }
 
+/*
+SocietyRow 一件表示
+props:
+    society = 学会発表のデータ一件
+*/
 const SocietyRow = (props) => {
     return (
         <tr>

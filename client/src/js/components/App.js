@@ -1,13 +1,11 @@
 import React from 'react'
-import { BrowserRouter, Switch } from 'react-router-dom'
-
+import { BrowserRouter } from 'react-router-dom'
 import '../../css/homepage.css'
 import Header from './header/Header'
 import Container from './container/Container'
 import Footer from './footer/Footer'
 
 class App extends React.Component {
-
     render (){
         return (
             <>

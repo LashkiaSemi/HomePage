@@ -1,5 +1,8 @@
 import React from 'react'
 
+/*
+Footer フッター。コピーライト的な部分とお問い合わせ
+*/
 const Footer = (props) => {
     return (
         <div className="footer">

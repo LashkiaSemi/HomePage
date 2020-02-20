@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+// ConnectedError404 これredux使ってないね！！！
+// 404ページの描写
 const ConnectedError404 = () => {
     return(
         <div className="content">

@@ -36,12 +36,24 @@ class ConnectedActivity extends React.Component {
         if (this.props.activities.length < 1) {
             return
         }
+        
+        /*
+        年ごとのデータセットを作る
+        { id: 2019newsって感じで年+news
+            title: 見出し。2019年のニュースって感じになってる
+            news: [{
+            id: activityID
+            date: 日付
+            content: 内容 }]
+        }
+        という感じ
+        */
         const acts = []
         var news = []
         var year = this.props.activities[0].date.substring(0, 4)
         this.props.activities.map(act => {
             if (act.date.substring(0, 4) !== year) {
-                acts.push({ id: year, title: year + "年のニュース", news: news })
+                acts.push({ id: year+"news", title: year + "年のニュース", news: news })
                 year = act.date.substring(0, 4)
                 news = []
             }
@@ -49,11 +61,9 @@ class ConnectedActivity extends React.Component {
         })
         acts.push({ id: year+"news", title: year + "年のニュース", news: news })
 
-        if (this.state.activities.length === 0) {
-            this.setState({
-                activities: acts
-            })
-        }
+        this.setState({
+            activities: acts
+        })
     }
 
     render() {
@@ -69,8 +79,11 @@ class ConnectedActivity extends React.Component {
     }
 }
 
-// Toc
-// 目次部分
+/*
+Toc 目次部分
+props:
+    activities = 親で作ったデータセット
+*/
 const Toc = (props) => {
     return (
         <div className="list">
@@ -85,6 +98,11 @@ const Toc = (props) => {
     )
 }
 
+/*
+TocRow 目次一件
+props:
+    activity = 一年分のデータ
+*/
 const TocRow = (props) => {
     return (
         <li>
@@ -93,8 +111,11 @@ const TocRow = (props) => {
     )
 }
 
-// ActivityList
-// 内容
+/*
+ActivityList 内容部分
+props:
+    activities = 活動記録のデータセット
+*/
 const ActivityList = (props) => {
     return (
         <div className="list-stripe">
@@ -107,6 +128,11 @@ const ActivityList = (props) => {
     )
 }
 
+/*
+ActivityRow 一年の活動内容を表示
+props:
+    activity = 一年分のデータセット { id, title, news[] }ってやつ
+*/
 const ActivityRow = (props) => {
     return (
         <div className="list-item" id={props.activity.id}>
@@ -122,6 +148,11 @@ const ActivityRow = (props) => {
     )
 }
 
+/*
+NewsRow 活動内容を一件表示
+props:
+    news = news[]の一件
+*/
 const NewsRow = (props) => {
     return (
         <li>&lt;{props.news.date}&gt; {props.news.content}</li>

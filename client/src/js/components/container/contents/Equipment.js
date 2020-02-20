@@ -34,6 +34,11 @@ class ConnectedEquipment extends React.Component {
     }
 }
 
+/*
+EquipmentTable 備品表示
+props:
+    equipments = 備品のデータセット
+*/
 const EquipmentTable = (props) => {
     return (
         <table className="table-stripe">
@@ -57,6 +62,11 @@ const EquipmentTable = (props) => {
     )
 }
 
+/*
+EquipmentRow 備品一件
+props:
+    equipment = 備品一件分
+*/
 const EquipmentRow = (props) => {
     return (
         <tr>

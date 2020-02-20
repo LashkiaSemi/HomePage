@@ -1,7 +1,6 @@
 import React from 'react'
 import { loginRequest } from '../../../actions/action'
 import { connect } from 'react-redux'
-import ErrorList from '../../common/ErrorList'
 import { APIErrorList } from '../../common/APIError'
 
 const mapStateToProps = state => {
@@ -23,12 +22,6 @@ class ConnectedLogin extends React.Component {
         return (
             <div className="content">
                 <h1 className="content-title h1-block">ログイン</h1>
-                {/* {
-                    Object.keys(this.props.apiError).length > 0
-                    ? <ErrorList
-                        errors={[{ id: 400, content: this.props.apiError.error.data.message },]} />
-                    : <></>
-                } */}
                 <LoginForm
                     dispatchRequest={this.props.dispatchRequest}
                     apiError={this.props.apiError} />
@@ -37,6 +30,12 @@ class ConnectedLogin extends React.Component {
     }
 }
 
+/*
+LoginFrom ログインするためのフォーム
+props:
+    apiError           = apiで起きたエラー
+    deispatchRequest() = ログインリクエスト
+*/
 class LoginForm extends React.Component {
     constructor(props) {
         super(props)
@@ -69,7 +68,6 @@ class LoginForm extends React.Component {
     }
 
     render() {
-
         return (
             <form className="form">
                 <APIErrorList

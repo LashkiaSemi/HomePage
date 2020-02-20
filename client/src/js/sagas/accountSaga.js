@@ -7,6 +7,7 @@ import {
     updateMemberFailure, updateAccountSuccess
 } from '../actions/action'
 
+// watcher
 export function* watchAccount() {
     yield takeEvery(FETCH_ACCOUNT_REQUEST, fetchAccount)
     // TODO: ここeveryでいいんか？
@@ -14,6 +15,7 @@ export function* watchAccount() {
     yield takeEvery(UPDATE_ACCOUNT_PASSWORD_REQUEST, updatePassword)
 }
 
+// worker
 function* fetchAccount() {
     try {
         const payload = yield call(getAccount)
@@ -41,6 +43,7 @@ function* updatePassword(action) {
     }
 }
 
+// api call
 function getAccount() {
     const options = { withCredentials: true }
     return Request.httpGet(API_URL+"/account", options)
