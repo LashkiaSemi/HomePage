@@ -12,14 +12,11 @@ import (
 )
 
 func main() {
-	// load config
-	servConf := conf.LoadServerConfig()
-
 	// connection db
 	sh := datastore.NewSQLHandler()
 
 	// create server
-	serv := server.NewServer(servConf["host"], servConf["port"])
+	serv := server.NewServer(conf.ServerHost, conf.ServerPort)
 
 	// create app handler
 	au := authentication.NewAuthHandler()

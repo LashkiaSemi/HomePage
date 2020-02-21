@@ -17,16 +17,14 @@ type sqlHandler struct {
 
 // NewSQLHandler データベースハンドラを作成
 func NewSQLHandler() repository.SQLHandler {
-	config := conf.LoadDatabaseConfig()
-
 	conn, err := sql.Open(
-		config["driver"],
-		fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", config["user"], config["password"], config["host"], config["port"], config["db"]),
+		conf.DBDriver,
+		fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", conf.DBUser, conf.DBPassword, conf.DBHost, conf.DBPort, conf.DBName),
 	)
 	if err != nil {
 		logger.Fatal(err)
 	}
-	logger.Info("connection database: ", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", config["user"], config["password"], config["host"], config["port"], config["db"]))
+	logger.Info("connection database: ", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", conf.DBUser, conf.DBPassword, conf.DBHost, conf.DBPort, conf.DBName))
 	return &sqlHandler{DB: conn}
 }
 

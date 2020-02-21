@@ -1,3 +1,5 @@
+SET CHARSET UTF8;
+
 -- define database
 DROP DATABASE `homepage`;
 CREATE DATABASE IF NOT EXISTS `homepage`;

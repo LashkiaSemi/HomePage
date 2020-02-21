@@ -1,3 +1,6 @@
+SET CHARACTER_SET_CLIENT = utf8;
+SET CHARACTER_SET_CONNECTION = utf8;
+
 INSERT INTO `homepage`.`activities`(`date`, `activity`, `created_at`, `updated_at`) VALUES ('2019/05/09', 'ゼミ説明会練習', cast('2020-2-10 00:00:00' as datetime), cast('2020-2-10 00:00:00' as datetime));
 INSERT INTO `homepage`.`activities`(`date`, `activity`, `created_at`, `updated_at`) VALUES ('2019/05/16 15:15', '外部者参加可 SQLレクチャー(池上,今宮)', cast('2020-2-10 00:00:00' as datetime), cast('2020-2-10 00:00:00' as datetime));
 INSERT INTO `homepage`.`activities`(`date`, `activity`, `created_at`, `updated_at`) VALUES ('2019/05/23 15:15', '外部者参加可 Pythonミニ入門(大橋)', cast('2020-2-10 00:00:00' as datetime), cast('2020-2-10 00:00:00' as datetime));

@@ -1,8 +1,27 @@
 package conf
 
+// server config
+const (
+	ServerAddress = "127.0.0.1"
+	ServerHost    = "api"
+	ServerPort    = "8080"
+)
+
+// database config
+const (
+	DBDriver   = "mysql"
+	DBAddress  = "127.0.0.1"
+	DBHost     = "db" // containerの関係で
+	DBPort     = "3306"
+	DBUser     = "worker"
+	DBPassword = "password"
+	DBName     = "homepage"
+)
+
 // client serverの情報
 const (
-	ClientServerAddr = "http://localhost:3000"
+	// ClientServerAddr = "*"
+	ClientServerAddr = "http://web:80"
 )
 
 // ディレクトリの場所とか
@@ -28,25 +47,3 @@ const (
 	// DefaultTagID 備品を登録する時、タグの入力がなかったら、その他に誘導したい...
 	DefaultTagID = 6
 )
-
-// LoadServerConfig サーバの設定をmapで返す
-func LoadServerConfig() map[string]string {
-	return map[string]string{
-		"addr": "127.0.0.1",
-		"host": "localhost",
-		"port": "8080",
-	}
-}
-
-// LoadDatabaseConfig dbの設定をmapで返す
-func LoadDatabaseConfig() map[string]string {
-	return map[string]string{
-		"driver":   "mysql",
-		"addr":     "127.0.0.1",
-		"host":     "localhost",
-		"port":     "3307",
-		"user":     "root",
-		"password": "password",
-		"db":       "homepage",
-	}
-}

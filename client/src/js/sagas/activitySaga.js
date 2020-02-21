@@ -16,6 +16,7 @@ export function* watchActivities() {
 function* fetchActivities() {
     try {
         const payload = yield call(getActivities)
+        console.log(payload)
         yield put(fetchActivitiesSuccess(payload))
     } catch(e) {
         yield put(fetchActivitiesFailure(e))
@@ -36,7 +37,6 @@ function* updateActivity(action) {
         const payload = yield call(putActivity, action.payload.id, action.payload.body)
         yield put(updateActivitySuccess(payload))
     } catch(e) {
-        console.log(e)
         yield put(updateActivityFailure(e))
     }
 }
