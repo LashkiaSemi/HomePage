@@ -42,6 +42,7 @@ import AdminTagEdit from './admin/tag/AdminTagEdit'
 import Auth from '../common/Auth'
 import Admin  from '../common/Admin'
 import Error404 from './contents/Error'
+import Download from './contents/Download'
 
 
 class ConnectedContainer extends React.Component {
@@ -52,6 +53,8 @@ class ConnectedContainer extends React.Component {
         return (
             <div className="container">
                 <Switch>
+                    <Route path="/api" component={Error404} />
+                    <Route exact path="/download" component={Download} />
                     {/* main pages */}
                     <Route exact path="/" component={Home}/>
                     <Route exact path="/members" component={Member}/>
@@ -99,6 +102,7 @@ class ConnectedContainer extends React.Component {
                     <AdminRoute exact path="/admin/tags/new" component={AdminTagEdit} />
                     <AdminRoute exact path="/admin/tags/:id/edit" component={AdminTagEdit} />
 
+    
                     <Route component={Error404} />
                 </Switch>
             </div>

@@ -16,7 +16,6 @@ export function* watchActivities() {
 function* fetchActivities() {
     try {
         const payload = yield call(getActivities)
-        console.log(payload)
         yield put(fetchActivitiesSuccess(payload))
     } catch(e) {
         yield put(fetchActivitiesFailure(e))

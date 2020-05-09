@@ -28,7 +28,7 @@ func (ar *accountRepository) FindByID(userID int) (user domain.User, err error) 
 		WHERE users.id = ?`,
 		userID)
 	if err = row.Scan(&user.ID, &user.Name, &user.Password, &user.Role, &user.StudentID, &user.CreatedAt, &user.UpdatedAt, &user.Department, &user.Grade, &user.Comment); err != nil {
-		if err != ar.SQLHandler.ErrNoRows() {
+		if err == ar.SQLHandler.ErrNoRows() {
 			logger.Warn("accoutn findByID: content not found")
 			return user, domain.NotFound(errors.New("content not found"))
 		}
@@ -47,9 +47,9 @@ func (ar *accountRepository) FindByStudentID(studentID string) (user domain.User
 		WHERE users.student_id = ?`,
 		studentID)
 	if err = row.Scan(&user.ID, &user.Name, &user.Password, &user.Role, &user.StudentID, &user.CreatedAt, &user.UpdatedAt, &user.Department, &user.Grade, &user.Comment); err != nil {
-		if err != ar.SQLHandler.ErrNoRows() {
-			logger.Warn("accoutn findByStudentID: content not found")
-			return user, domain.NotFound(errors.New("content not found"))
+		if err == ar.SQLHandler.ErrNoRows() {
+			logger.Warn("account findByStudentID: content not found. StudentID=", studentID)
+			return user, domain.BadRequest(errors.New("ログイン失敗"))
 		}
 		logger.Error("account findByStudentID: ", err)
 		return user, domain.InternalServerError(err)

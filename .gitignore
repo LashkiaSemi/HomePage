@@ -32,3 +32,4 @@ vendor/bundle
 # add
 go/lectures
 go/researches
+go/logfile.log

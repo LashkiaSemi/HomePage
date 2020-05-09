@@ -1,34 +1,5 @@
 version: '3.7'
 services:
-  db:
-    image: mysql:5.7
-    container_name: semi-homepage-db
-    restart: always
-    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: homepage
-      MYSQL_USER: worker
-      MYSQL_PASSWORD: password
-    volumes:
-      - ./db/init.d:/docker-entrypoint-initdb.d
-    # ports:
-    #   - "3300:3306"
-    expose:
-      - "3306"
-  api:
-    build: ./go
-    container_name: semi-homepage-api
-    restart: always
-    # ports:
-    #   - "8080:8080"
-    expose:
-      - "8080"
-    tty: true
-    volumes:
-      - ./go:/go/src/app
-    depends_on:
-      - db
   web:
     build: ./nginx
     container_name: semi-homepage-web
@@ -42,3 +13,34 @@ services:
     depends_on:
       - db
       - api
+  api:
+    build: ./go
+    container_name: semi-homepage-api
+    restart: always
+    ports:
+      - "8080:8080"
+    # expose:
+    #   - "8080"
+    tty: true
+    volumes:
+      - ./go:/go/src/app
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    image: mysql:5.7
+    container_name: semi-homepage-db
+    restart: always
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: homepage
+      MYSQL_USER: worker
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./db/init.d:/docker-entrypoint-initdb.d
+    ports:
+      - "3300:3306"
+    # expose:
+    #   - "3306"

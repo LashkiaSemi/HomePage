@@ -2,6 +2,7 @@ package main
 
 import (
 	"homepage/conf"
+	"homepage/pkg/domain/logger"
 	"homepage/pkg/infrastructure/authentication"
 	"homepage/pkg/infrastructure/datastore"
 	"homepage/pkg/infrastructure/handler"
@@ -12,6 +13,13 @@ import (
 )
 
 func main() {
+	// setup logfile
+	err := logger.SetUpLogfile(conf.ServerLogfile)
+	if err != nil {
+		logger.Error("fail setup logfile")
+		return
+	}
+
 	// connection db
 	sh := datastore.NewSQLHandler()
 
@@ -28,4 +36,6 @@ func main() {
 	// server start
 	serv.Serve()
 
+	// close logfile
+	logger.CloseLogfile()
 }

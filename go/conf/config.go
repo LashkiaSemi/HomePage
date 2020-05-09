@@ -4,13 +4,21 @@ package conf
 const (
 	ServerAddress = "127.0.0.1"
 	ServerHost    = "api"
-	ServerPort    = "8080"
+	// ServerHost = "localhost"
+	ServerPort = "8080"
+
+	ServerLogfile = "logfile.log"
 )
 
 // database config
 const (
 	DBDriver   = "mysql"
 	DBAddress  = "127.0.0.1"
+	// DBHost     = "localhost"
+	// DBPort     = "3300"
+	// DBUser     = "root"
+	// DBPassword = "password"
+	// DBName     = "homepage"
 	DBHost     = "db" // containerの関係で
 	DBPort     = "3306"
 	DBUser     = "worker"
@@ -22,6 +30,7 @@ const (
 const (
 	// ClientServerAddr = "*"
 	ClientServerAddr = "http://web:80"
+	// ClientServerAddr = "http://0.0.0.0:8000"
 )
 
 // ディレクトリの場所とか
