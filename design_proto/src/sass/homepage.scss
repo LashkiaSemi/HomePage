@@ -1,0 +1,157 @@
+$base-color: #fff;
+$nav-bg-color: #343a40;
+$jumbotron-bg-color: blue;
+
+$logo-color: #fff;
+
+$sub-color: #ccc;
+$primary-color: #007bff;
+$hover-bg-color: #eee;
+
+html {
+    background-color: $base-color;
+}
+
+body {
+    margin: 0;
+}
+
+.nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $nav-bg-color;
+    padding: 10px 20px;
+    .logo {
+        text-decoration: none;
+        color: $logo-color;
+        font-size: 1.2rem;
+        margin: 0 10px;
+    }
+    .nav-list {
+        margin: 0;
+        padding: 0;
+    }
+    .nav-item {
+        display: inline-block;
+        margin-left: 10px;
+    }
+    .nav-link {
+        color: #fff;
+        opacity: .6;
+        text-decoration: none;
+        &.active {
+            opacity: 1;
+        }
+        &:hover {
+            opacity: 1;
+        }
+    }
+} // navigation
+
+.jumbotron {
+    background-color: $jumbotron-bg-color;
+    height: 240px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    label {
+        color: $logo-color;
+        font-size: 1.8rem;
+    }
+}
+
+.container-wrapper {
+    display: flex;
+    justify-content: center;
+    .container {
+        width: 80%;
+        // height: 100px;
+        // background-color: red;
+    }
+}
+
+.content-wrapper {
+    .content {
+        margin-bottom: 20px;
+    }
+    .list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-radius: 5px;
+        border: 1px solid $sub-color;
+        box-sizing: border-box;
+        .list-item {
+            border-bottom: 1px solid $sub-color;
+            // padding: 10px 25px;
+            &:last-child {
+                border: 0;
+            }
+        }
+        .list-link {
+            padding: 10px 25px;
+            box-sizing: border-box;
+            color: $primary-color;
+            text-decoration: none;
+            display: block;
+            &:hover {
+                background-color: $hover-bg-color;
+            }
+        }
+        .no-link {
+            padding: 10px 25px;
+        }
+    }
+    .card {
+        border: 1px solid $sub-color;
+        border-radius: 5px;
+        .card-header {
+            padding: 10px 20px;
+            border-bottom: 1px solid $sub-color;
+        }
+        .card-content {
+            padding: 10px 20px;
+        }
+    }
+    .table {
+        border: 1px solid $sub-color;
+        border-spacing: 0px;
+        border-collapse: collapse;
+        thead {
+            background-color: $hover-bg-color;
+        }
+        tbody {
+            tr:nth-child(2n) {
+                background-color: $hover-bg-color;
+            }
+        }
+        tr {
+            border-bottom: 1px solid $sub-color;
+        }
+        th, td {
+            padding: 10px 20px;
+            display: inline-block;
+        }
+        a {
+            color: $primary-color;
+            text-decoration: none;
+        }
+    }
+}
+
+.footer-wrapper {
+    .footer {
+        display: flex;
+        justify-content: space-between;
+        margin: 0 10px;
+        padding: 8px 30px;
+        border-top: 1px solid $sub-color;
+        font-size: .8rem;
+        color: $sub-color;
+    }
+    a {
+        text-decoration: none;
+        color: $sub-color;
+    }
+}

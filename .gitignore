@@ -35,3 +35,5 @@ go/researches
 go/logfile.log
 
 note.md
+
+node_modules/
