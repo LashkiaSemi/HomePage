@@ -33,3 +33,5 @@ vendor/bundle
 go/lectures
 go/researches
 go/logfile.log
+
+note.md
