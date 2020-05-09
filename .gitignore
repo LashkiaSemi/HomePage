@@ -28,3 +28,9 @@ vendor/bundle
 
 # Ignore vscode Setting.
 /.vscode
+
+# Ignore go+react
+client/
+go/
+go.mod
+go.sum
