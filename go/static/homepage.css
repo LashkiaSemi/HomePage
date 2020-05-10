@@ -1,0 +1,282 @@
+html {
+  background-color: #fff;
+}
+
+body {
+  margin: 0;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-weight: 400;
+  margin: 0;
+}
+
+.h1.underline, .h2.underline, .h3.underline, .h4.underline, .h5.underline, .h6.underline {
+  border-bottom: 1px solid #ccc;
+}
+
+ul li {
+  line-height: 1.8rem;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mb-30 {
+  margin-bottom: 30px;
+}
+
+.mb-40 {
+  margin-bottom: 40px;
+}
+
+.al-center {
+  text-align: center;
+}
+
+.btn {
+  padding: 8px 12px;
+  border: 0;
+  font-size: 1rem;
+  border-radius: 5px;
+}
+
+.btn:hover {
+  opacity: .7;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-secondary {
+  background-color: #888;
+  color: #fff;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+.form > * {
+  margin-bottom: 20px;
+}
+
+.form-text {
+  display: block;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  padding: 5px 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-select {
+  display: block;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  padding: 10px;
+  width: 100%;
+  font-size: 1rem;
+  height: 2rem;
+  box-sizing: border-box;
+}
+
+.form-textarea {
+  display: block;
+  font-size: 1rem;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+  width: 100%;
+  height: 5rem;
+  box-sizing: border-box;
+}
+
+.link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.link:hover {
+  opacity: .7;
+  text-decoration: underline;
+}
+
+.nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #343a40;
+  padding: 10px 20px;
+}
+
+.nav-wrapper .logo {
+  text-decoration: none;
+  color: #fff;
+  font-size: 1.2rem;
+  margin: 0 10px;
+}
+
+.nav-wrapper .nav-list {
+  margin: 0;
+  padding: 0;
+}
+
+.nav-wrapper .nav-item {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.nav-wrapper .nav-link {
+  color: #fff;
+  opacity: .6;
+  text-decoration: none;
+}
+
+.nav-wrapper .nav-link.active {
+  opacity: 1;
+}
+
+.nav-wrapper .nav-link:hover {
+  opacity: 1;
+}
+
+.jumbotron {
+  background-color: blue;
+  height: 240px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.jumbotron label {
+  color: #fff;
+  font-size: 1.8rem;
+}
+
+.container-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.container-wrapper .container {
+  width: 80%;
+}
+
+.content-wrapper {
+  margin-top: 30px;
+}
+
+.content-wrapper .content {
+  margin-bottom: 30px;
+}
+
+.content-wrapper .list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.content-wrapper .list .list-item {
+  border-bottom: 1px solid #ccc;
+}
+
+.content-wrapper .list .list-item:last-child {
+  border: 0;
+}
+
+.content-wrapper .list .list-link {
+  padding: 10px 25px;
+  box-sizing: border-box;
+  color: #007bff;
+  text-decoration: none;
+  display: block;
+}
+
+.content-wrapper .list .list-link:hover {
+  background-color: #eee;
+}
+
+.content-wrapper .list .no-link {
+  padding: 10px 25px;
+}
+
+.content-wrapper .card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.content-wrapper .card .card-header {
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.content-wrapper .card .card-content {
+  padding: 10px 20px;
+}
+
+.content-wrapper .table {
+  border: 1px solid #ccc;
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
+.content-wrapper .table thead {
+  background-color: #eee;
+}
+
+.content-wrapper .table tbody tr:nth-child(2n) {
+  background-color: #eee;
+}
+
+.content-wrapper .table tr {
+  border-bottom: 1px solid #ccc;
+}
+
+.content-wrapper .table th, .content-wrapper .table td {
+  padding: 10px 20px;
+  display: inline-block;
+}
+
+.content-wrapper .table a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.footer-wrapper .footer {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 10px;
+  padding: 8px 30px;
+  border-top: 1px solid #ccc;
+  font-size: .8rem;
+  color: #ccc;
+}
+
+.footer-wrapper a {
+  text-decoration: none;
+  color: #ccc;
+}

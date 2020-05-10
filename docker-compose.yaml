@@ -19,8 +19,6 @@ services:
     restart: always
     ports:
       - "8080:8080"
-    # expose:
-    #   - "8080"
     tty: true
     volumes:
       - ./go:/go/src/app
@@ -39,7 +37,7 @@ services:
       MYSQL_USER: worker
       MYSQL_PASSWORD: password
     volumes:
-      - ./db/init.d:/docker-entrypoint-initdb.d
+      - ./db/init.d/dump.sql:/docker-entrypoint-initdb.d
     ports:
       - "3300:3306"
     # expose:
