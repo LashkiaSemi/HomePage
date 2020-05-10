@@ -19,10 +19,12 @@ body {
 .h1, .h2, .h3, .h4, .h5, .h6 {
     font-weight: 400;
     margin: 0;
-    &.underline {
-        border-bottom: 1px solid $sub-color;
-    }
+    
 }
+.underline {
+    border-bottom: 1px solid $sub-color;
+}
+
 
 ul li {
     line-height: 1.8rem;
@@ -48,10 +50,11 @@ ul li {
 }
 
 .btn {
-    padding: 8px 12px;
+    padding: 0px 12px;
     border: 0;
     font-size: 1rem;
     border-radius: 5px;
+    height: 2rem;
     &:hover {
         opacity: .7;
     }
@@ -75,6 +78,13 @@ ul li {
         background-color: #17a2b8;
         color: #fff;
         
+    }
+}
+
+.disable {
+    opacity: .5;
+    &:hover {
+        opacity: .5;
     }
 }
 
@@ -183,6 +193,11 @@ ul li {
     margin-top: 30px;
     .content {
         margin-bottom: 30px;
+        &-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
     }
     .list {
         margin: 0;
@@ -191,6 +206,9 @@ ul li {
         border-radius: 5px;
         border: 1px solid $sub-color;
         box-sizing: border-box;
+        &-title {
+            margin-bottom: 20px;
+        }
         .list-item {
             border-bottom: 1px solid $sub-color;
             // padding: 10px 25px;
@@ -211,6 +229,10 @@ ul li {
         .no-link {
             padding: 10px 25px;
         }
+        .list-description {
+            color: #000;
+            font-size: .9rem;
+        }
     }
     .card {
         border: 1px solid $sub-color;
@@ -227,6 +249,7 @@ ul li {
         border: 1px solid $sub-color;
         border-spacing: 0px;
         border-collapse: collapse;
+        width: 100%;
         thead {
             background-color: $hover-bg-color;
         }
@@ -240,7 +263,8 @@ ul li {
         }
         th, td {
             padding: 10px 20px;
-            display: inline-block;
+            // display: inline-block;
+            text-align: left;
         }
         a {
             color: $primary-color;
