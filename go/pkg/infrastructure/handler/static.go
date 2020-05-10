@@ -5,11 +5,9 @@ import (
 	"net/http"
 )
 
+// IndexHandler home部分のhandler
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	header := &response.HeaderData{
-		IsLogin:  false,
-		PageType: "",
-	}
+	info := createInfo(r, "")
 	var body interface{}
-	response.Success(w, "index.html", header, &body)
+	response.Success(w, "index.html", info, &body)
 }

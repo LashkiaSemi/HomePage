@@ -1,6 +1,7 @@
 package main
 
 import (
+	"homepage/pkg/infrastructure/handler"
 	"homepage/pkg/infrastructure/server"
 )
 
@@ -10,9 +11,10 @@ func main() {
 	// TODO: connection db
 
 	// TODO: make handler
+	ah := handler.NewAppHandler()
 
 	// make server
-	serv := server.NewServer(port)
+	serv := server.NewServer(port, ah)
 
 	// listen
 	serv.Serve()

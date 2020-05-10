@@ -15,7 +15,7 @@ import (
 // }
 
 // Success テンプレートファイルを指定して描画
-func Success(w http.ResponseWriter, templateFile string, header *HeaderData, body interface{}) {
+func Success(w http.ResponseWriter, templateFile string, info *Info, body interface{}) {
 	t, err := template.ParseFiles(
 		"template/"+templateFile,
 		"template/_footer.html",
@@ -27,11 +27,11 @@ func Success(w http.ResponseWriter, templateFile string, header *HeaderData, bod
 	}
 
 	if err = t.Execute(w, struct {
-		Header *HeaderData
-		Data   interface{}
+		Info *Info
+		Data interface{}
 	}{
-		Header: header,
-		Data:   body,
+		Info: info,
+		Data: body,
 	}); err != nil {
 		// TODO: redirect internal server error
 		log.Printf("failed to execute template: %v", err)
@@ -46,21 +46,21 @@ func UnAuthorized() {
 
 }
 
-func InternalServerError(w http.ResponseWriter, header *HeaderData) {
+func InternalServerError(w http.ResponseWriter, info *Info) {
 	t, _ := template.ParseFiles(
 		"template/error.html",
 		"template/_footer.html",
 		"template/_header.html",
 	)
 	t.Execute(w, struct {
-		Header *HeaderData
+		Info *Info
 	}{
-		Header: header,
+		Info: info,
 	})
 }
 
 // HeaderData ヘッダー描画用のデータ
-type HeaderData struct {
+type Info struct {
 	IsLogin  bool
 	PageType string
 }

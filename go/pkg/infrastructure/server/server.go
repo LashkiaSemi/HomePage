@@ -8,7 +8,8 @@ import (
 )
 
 type server struct {
-	Port string
+	Port    string
+	Handler *handler.AppHandler
 }
 
 // Server ルーティングとか全部やってくれる子
@@ -17,9 +18,10 @@ type Server interface {
 }
 
 // NewServer サーバを作るぞ！
-func NewServer(port string) Server {
+func NewServer(port string, ah *handler.AppHandler) Server {
 	return &server{
-		Port: port,
+		Port:    port,
+		Handler: ah,
 	}
 }
 
@@ -28,7 +30,8 @@ func (s *server) Serve() {
 	http.HandleFunc("/health", healthHandler)
 
 	http.HandleFunc("/", handler.IndexHandler)
-	http.HandleFunc("/login", dummyHandler("login.html"))
+	// http.HandleFunc("/login", dummyHandler("login.html"))
+	http.HandleFunc("/login", s.Handler.AuthHandler.Login)
 	http.HandleFunc("/activities", dummyHandler("activity/index.html"))
 	http.HandleFunc("/societies", dummyHandler("society/index.html"))
 	http.HandleFunc("/researches", dummyHandler("research/index.html"))

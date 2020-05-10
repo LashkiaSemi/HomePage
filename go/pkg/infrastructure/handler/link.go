@@ -5,11 +5,10 @@ import (
 	"net/http"
 )
 
+// LinkHandler リンクページのあれ
+// TODO: DBにいれたら？
 func LinkHandler(w http.ResponseWriter, r *http.Request) {
-	header := &response.HeaderData{
-		IsLogin:  false,
-		PageType: "",
-	}
+	header := createInfo(r, "link")
 
 	labLinks := []*link{
 		&link{
