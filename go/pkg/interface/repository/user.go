@@ -10,6 +10,7 @@ type userRepository struct {
 	SQLHandler
 }
 
+// NewUserRepository リポジトリの作成
 func NewUserRepository(sh SQLHandler) interactor.UserRepository {
 	return &userRepository{
 		SQLHandler: sh,

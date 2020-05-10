@@ -12,6 +12,7 @@ type societyRepository struct {
 	SQLHandler
 }
 
+// NewSocietyRepository リポジトリの作成
 func NewSocietyRepository(sh SQLHandler) interactor.SocietyRepository {
 	return &societyRepository{
 		SQLHandler: sh,

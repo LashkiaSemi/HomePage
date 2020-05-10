@@ -34,7 +34,7 @@ func Authentication(nextFunc http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// cxtにstudentIdを書き込み
-		dcontext.SetStudentID(ctx, authentication.GetStudentIDFromJWT(token))
+		dcontext.SetStudentID(ctx, auth.GetStudentIDFromJWT(token))
 
 		// nextfnc
 		nextFunc(w, r.WithContext(ctx))

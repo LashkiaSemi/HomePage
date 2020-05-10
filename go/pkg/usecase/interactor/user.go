@@ -11,6 +11,7 @@ type userInteractor struct {
 	VerifyHandler
 }
 
+// UserInteractor ユーザのユースケースを実装
 type UserInteractor interface {
 	GetAll() ([]*model.User, error)
 	// AuthenticationByStudentID 学籍番号からログイン機能を使う
@@ -21,6 +22,7 @@ type UserInteractor interface {
 
 }
 
+// NewUserInteractor インタラクタの作成
 func NewUserInteractor(us service.UserService, ur UserRepository, vh VerifyHandler) UserInteractor {
 	return &userInteractor{
 		UserService:    us,

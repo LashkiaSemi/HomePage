@@ -11,10 +11,12 @@ type societyInteractor struct {
 	SocietyRepository
 }
 
+// SocietyInteractor 学会発表のユースケースを実装
 type SocietyInteractor interface {
 	GetAll() ([]*model.Society, error)
 }
 
+// NewSocietyInteractor インタラクタの作成
 func NewSocietyInteractor(ss service.SocietyService, sr SocietyRepository) SocietyInteractor {
 	return &societyInteractor{
 		SocietyService:    ss,
