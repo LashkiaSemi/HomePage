@@ -6,6 +6,7 @@ import (
 
 type AppHandler struct {
 	AuthHandler
+	UserHandler
 	ActivityHandler
 	SocietyHandler
 	JobHandler
@@ -14,6 +15,7 @@ type AppHandler struct {
 func NewAppHandler(sh repository.SQLHandler) *AppHandler {
 	return &AppHandler{
 		AuthHandler:     NewAuthHandler(),
+		UserHandler:     NewUserHandler(sh),
 		ActivityHandler: NewActivityHandler(),
 		SocietyHandler:  NewSocietyHandler(sh),
 		JobHandler:      NewJobHandler(sh),

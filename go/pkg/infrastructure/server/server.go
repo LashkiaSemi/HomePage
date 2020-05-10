@@ -35,7 +35,7 @@ func (s *server) Serve() {
 	http.HandleFunc("/societies", s.Handler.SocietyHandler.GetAll)
 	http.HandleFunc("/researches", dummyHandler("research/index.html"))
 	http.HandleFunc("/jobs", s.Handler.JobHandler.GetAll)
-	http.HandleFunc("/members", dummyHandler("member/index.html"))
+	http.HandleFunc("/members", s.Handler.UserHandler.GetAllGroupByGrade)
 	http.HandleFunc("/links", handler.LinkHandler)
 	http.HandleFunc("/equipments", dummyHandler("equipment/index.html"))
 	http.HandleFunc("/lectures", dummyHandler("lecture/index.html"))

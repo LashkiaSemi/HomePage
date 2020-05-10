@@ -1,4 +1,4 @@
-{{ template "header" }}
+{{ template "header" .Info }}
 <div class="container-wrapper">
     <div class="container">
         <div class="content-wrapper">
@@ -11,30 +11,30 @@
             <div class="content">
                 <div style="display: flex; justify-content: space-around;">
                     <div style="width: 30%;">
-                        <h2 class="h2 list-title">title</h2>
+                        <h2 class="h2 list-title">学部2年</h2>
                         <ul class="list">
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
+                            {{ range index .Data.GradeUsers 2 }}
+                            <!-- TODO: href -->
+                            <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                            {{ end }}
                         </ul>
                     </div>
                     <div style="width: 30%;">
-                        <h2 class="h2 list-title">title</h2>
+                        <h2 class="h2 list-title">学部3年</h2>
                         <ul class="list">
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
+                            {{ range index .Data.GradeUsers 3 }}
+                            <!-- TODO: href -->
+                            <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                            {{ end }}
                         </ul>
                     </div>
                     <div style="width: 30%;">
-                        <h2 class="h2 list-title">title</h2>
+                        <h2 class="h2 list-title">学部4年</h2>
                         <ul class="list">
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
+                            {{ range index .Data.GradeUsers 4 }}
+                            <!-- TODO: href -->
+                            <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                            {{ end }}
                         </ul>
                     </div>
 
@@ -44,33 +44,33 @@
             <div class="content">
                 <div style="display: flex; justify-content: space-around;">
                     <div style="width: 40%;">
-                        <h2 class="h2 list-title">title</h2>
+                        <h2 class="h2 list-title">大学院1年</h2>
                         <ul class="list">
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
-                            <li class="list-item"><a class="list-link">name</a></li>
+                            {{ range index .Data.GradeUsers 5 }}
+                            <!-- TODO: href -->
+                            <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                            {{ end }}
                         </ul>
                     </div>
                     <div style="width: 40%;">
                         <h2 class="h2 list-title">大学院2年</h2>
                         <ul class="list">
-                            <!-- <li class="list-item"><a class="list-link">name</a></li>
-                                <li class="list-item"><a class="list-link">name</a></li>
-                                <li class="list-item"><a class="list-link">name</a></li>
-                                <li class="list-item"><a class="list-link">name</a></li> -->
+                            {{ range index .Data.GradeUsers 6 }}
+                            <!-- TODO: href -->
+                            <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                            {{ end }}
                         </ul>
                     </div>
                 </div>
             </div>
             <!-- END content 院生 -->
             <div class="content">
-                <h2 class="h2 list-title">title</h2>
+                <h2 class="h2 list-title">卒業生</h2>
                 <ul class="list">
-                    <li class="list-item"><a class="list-link">name</a></li>
-                    <li class="list-item"><a class="list-link">name</a></li>
-                    <li class="list-item"><a class="list-link">name</a></li>
-                    <li class="list-item"><a class="list-link">name</a></li>
+                    {{ range index .Data.GradeUsers 0 }}
+                    <!-- TODO: href -->
+                    <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                    {{ end }}
                 </ul>
             </div>
             <!-- END content 卒業生 -->
