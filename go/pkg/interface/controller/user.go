@@ -11,6 +11,7 @@ type userController struct {
 
 type UserController interface {
 	GetAllGroupByGrade() (*UsersGroupByGradeResponse, error)
+	Login(studentID, password string) error
 }
 
 func NewUserContoroller(ui interactor.UserInteractor) UserController {
@@ -31,6 +32,10 @@ func (uc *userController) GetAllGroupByGrade() (*UsersGroupByGradeResponse, erro
 	}
 
 	return &UsersGroupByGradeResponse{GradeUsers: res}, nil
+}
+
+func (uc *userController) Login(studentID, password string) error {
+	return uc.AuthenticationByStudentID(studentID, password)
 }
 
 type UsersResponse struct {

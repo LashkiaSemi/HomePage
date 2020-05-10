@@ -38,3 +38,18 @@ func (ur *userRepository) FindAll() ([]*model.User, error) {
 	}
 	return users, nil
 }
+
+func (ur *userRepository) FindAuthInfoByStudentID(studentID string) (*model.User, error) {
+	row := ur.SQLHandler.QueryRow(`
+		SELECT student_id, password_digest, role 
+		FROM users
+		WHERE student_id = ?`,
+		studentID,
+	)
+	var user model.User
+	if err := row.Scan(&user.StudentID, &user.Password, &user.Role); err != nil {
+		log.Println("userRepository: findAuthInfoByStudentID: ", err)
+		return &user, err
+	}
+	return &user, nil
+}

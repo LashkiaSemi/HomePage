@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"homepage/pkg/infrastructure/authentication"
+	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"net/http"
 )
@@ -9,7 +9,7 @@ import (
 // createInfo 描画時の必須データを作成
 func createInfo(r *http.Request, pageType string) *response.Info {
 	return &response.Info{
-		IsLogin:  authentication.CheckIsLogin(r),
+		IsLogin:  auth.CheckIsLogin(r),
 		PageType: pageType,
 	}
 }

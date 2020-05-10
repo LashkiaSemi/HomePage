@@ -3,14 +3,14 @@ package middleware
 import (
 	"context"
 	"homepage/pkg/configs"
-	"homepage/pkg/infrastructure/authentication"
+	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/dcontext"
 	"log"
 	"net/http"
 )
 
-// Authorized ログイン済みを検証する
-func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
+// Authentication ログイン済みを検証する
+func Authentication(nextFunc http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		ctx := r.Context()
@@ -27,7 +27,7 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		tokenString := cookie.Value
 
 		// jwtの検証
-		token, err := authentication.VerifyToken(tokenString)
+		token, err := auth.VerifyToken(tokenString)
 		if err != nil {
 			log.Println("failed to verify token: ", err)
 			return
