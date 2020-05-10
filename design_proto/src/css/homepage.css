@@ -6,6 +6,39 @@ body {
   margin: 0;
 }
 
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-weight: 400;
+  margin: 0;
+}
+
+.h1.underline, .h2.underline, .h3.underline, .h4.underline, .h5.underline, .h6.underline {
+  border-bottom: 1px solid #ccc;
+}
+
+ul li {
+  line-height: 1.8rem;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mb-30 {
+  margin-bottom: 30px;
+}
+
+.mb-40 {
+  margin-bottom: 40px;
+}
+
+.al-center {
+  text-align: center;
+}
+
 .btn {
   padding: 8px 12px;
   border: 0;
@@ -46,24 +79,29 @@ body {
   margin-bottom: 20px;
 }
 
-.form-input {
+.form-text {
+  display: block;
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 1rem;
   padding: 5px 10px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .form-select {
+  display: block;
   border: 1px solid #ccc;
   background-color: #fff;
   padding: 10px;
   width: 100%;
   font-size: 1rem;
   height: 2rem;
+  box-sizing: border-box;
 }
 
 .form-textarea {
+  display: block;
   font-size: 1rem;
   padding: 10px;
   border: 1px solid #ccc;
@@ -71,6 +109,17 @@ body {
   resize: vertical;
   width: 100%;
   height: 5rem;
+  box-sizing: border-box;
+}
+
+.link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.link:hover {
+  opacity: .7;
+  text-decoration: underline;
 }
 
 .nav-wrapper {
@@ -134,8 +183,12 @@ body {
   width: 80%;
 }
 
+.content-wrapper {
+  margin-top: 30px;
+}
+
 .content-wrapper .content {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .content-wrapper .list {
