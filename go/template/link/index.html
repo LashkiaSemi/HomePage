@@ -10,9 +10,9 @@
             <div class="content underline" style="padding-bottom: 20px;">
                 <h1 class="list-title h1">他研究室へのリンク</h1>
                 <ul class="list">
-                    <li class="list-item"><a href="#" class="list-link">鈴木 研究室</a></li>
-                    <li class="list-item"><a href="#" class="list-link">濱川 研究室</a></li>
-                    <li class="list-item"><a href="#" class="list-link">MDLAB(目加田・道満 研究室)</a></li>
+                    {{ range .Data.LabLinks }}
+                        <li class="list-item"><a target="_blank" href="{{ .URL }}" class="list-link">{{ .Label }}</a></li>
+                    {{ end }}
                 </ul>
                 <span>(研究室のページを持つ研究室のみ掲載)</span>
             </div>
@@ -20,18 +20,12 @@
             <div class="content">
                 <h1 class="list-title h1">面白ソフト・最新技術紹介</h1>
                 <ul class="list">
-                    <li class="list-item"><a href="#" class="list-link">
-                            <div>Flutter</div>
-                            <span class="list-description">Dart言語を用いた Android／iOSアプリ開発のフレームワーク</span>
-                        </a></li>
-                    <li class="list-item"><a href="#" class="list-link">
-                            <div>Flutter</div>
-                            <span class="list-description">Dart言語を用いた Android／iOSアプリ開発のフレームワーク</span>
-                        </a></li>
-                    <li class="list-item"><a href="#" class="list-link">
-                            <div>Flutter</div>
-                            <span class="list-description">Dart言語を用いた Android／iOSアプリ開発のフレームワーク</span>
-                        </a></li>
+                    {{ range .Data.TechLinks }}
+                    <li class="list-item"><a href="{{ .URL }}" target="_blank" class="list-link">
+                        <div>{{ .Label }}</div>
+                        <span class="list-description">{{ .Description }}</span>
+                    </a></li>
+                    {{ end }}
                 </ul>
             </div>
             <!-- END content -->

@@ -2,7 +2,6 @@ package server
 
 import (
 	"homepage/pkg/infrastructure/handler"
-	"homepage/pkg/infrastructure/server/response"
 	"log"
 	"net/http"
 	"text/template"
@@ -35,20 +34,22 @@ func (s *server) Serve() {
 	http.HandleFunc("/researches", dummyHandler("research/index.html"))
 	http.HandleFunc("/jobs", dummyHandler("job/index.html"))
 	http.HandleFunc("/members", dummyHandler("member/index.html"))
-	http.HandleFunc("/links", dummyHandler("link/index.html"))
+	http.HandleFunc("/links", handler.LinkHandler)
 	http.HandleFunc("/equipments", dummyHandler("equipment/index.html"))
 	http.HandleFunc("/lectures", dummyHandler("lecture/index.html"))
 
+	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, nil)
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
-	data := struct {
-		Message string `json:"message"`
-	}{
-		Message: "health",
-	}
-	response.Success(w, &data)
+	// data := struct {
+	// 	Message string `json:"message"`
+	// }{
+	// 	Message: "health",
+	// }
+	// response.Success(w, &data)
+	println("health")
 }
 
 func dummyHandler(file string) http.HandlerFunc {
