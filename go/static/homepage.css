@@ -11,7 +11,7 @@ body {
   margin: 0;
 }
 
-.h1.underline, .h2.underline, .h3.underline, .h4.underline, .h5.underline, .h6.underline {
+.underline {
   border-bottom: 1px solid #ccc;
 }
 
@@ -40,10 +40,11 @@ ul li {
 }
 
 .btn {
-  padding: 8px 12px;
+  padding: 0px 12px;
   border: 0;
   font-size: 1rem;
   border-radius: 5px;
+  height: 2rem;
 }
 
 .btn:hover {
@@ -73,6 +74,14 @@ ul li {
 .btn-info {
   background-color: #17a2b8;
   color: #fff;
+}
+
+.disable {
+  opacity: .5;
+}
+
+.disable:hover {
+  opacity: .5;
 }
 
 .form > * {
@@ -191,6 +200,12 @@ ul li {
   margin-bottom: 30px;
 }
 
+.content-wrapper .content-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
 .content-wrapper .list {
   margin: 0;
   padding: 0;
@@ -198,6 +213,10 @@ ul li {
   border-radius: 5px;
   border: 1px solid #ccc;
   box-sizing: border-box;
+}
+
+.content-wrapper .list-title {
+  margin-bottom: 20px;
 }
 
 .content-wrapper .list .list-item {
@@ -224,6 +243,11 @@ ul li {
   padding: 10px 25px;
 }
 
+.content-wrapper .list .list-description {
+  color: #000;
+  font-size: .9rem;
+}
+
 .content-wrapper .card {
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -242,6 +266,7 @@ ul li {
   border: 1px solid #ccc;
   border-spacing: 0px;
   border-collapse: collapse;
+  width: 100%;
 }
 
 .content-wrapper .table thead {
@@ -258,7 +283,7 @@ ul li {
 
 .content-wrapper .table th, .content-wrapper .table td {
   padding: 10px 20px;
-  display: inline-block;
+  text-align: left;
 }
 
 .content-wrapper .table a {
