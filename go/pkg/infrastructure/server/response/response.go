@@ -6,14 +6,6 @@ import (
 	"text/template"
 )
 
-// func Success(w http.ResponseWriter, res interface{}) {
-// 	data, err := json.Marshal(res)
-// 	if err != nil {
-// 		log.Println("failed to marshal json: %v", err)
-// 	}
-// 	w.Write(data)
-// }
-
 // Success テンプレートファイルを指定して描画
 func Success(w http.ResponseWriter, templateFile string, info *Info, body interface{}) {
 	t, err := template.ParseFiles(
@@ -38,29 +30,54 @@ func Success(w http.ResponseWriter, templateFile string, info *Info, body interf
 	}
 }
 
-func BadRequest() {
-
+// NotFound 404の時のアレとか
+func NotFound(w http.ResponseWriter, info *Info) {
+	t, _ := template.ParseFiles(
+		"template/error.html",
+		"template/_footer.html",
+		"template/_header.html",
+	)
+	err := &ErrorData{
+		Title:   "Not Found",
+		Message: "お探しのページは見つかりませんでした。",
+	}
+	t.Execute(w, struct {
+		Info  *Info
+		Error *ErrorData
+	}{
+		Info:  info,
+		Error: err,
+	})
 }
 
-func UnAuthorized() {
-
-}
-
+// InternalServerError サーバのエラー
 func InternalServerError(w http.ResponseWriter, info *Info) {
 	t, _ := template.ParseFiles(
 		"template/error.html",
 		"template/_footer.html",
 		"template/_header.html",
 	)
+	err := &ErrorData{
+		Title:   "Internal Server Error",
+		Message: "サーバでエラーが発生しました。",
+	}
 	t.Execute(w, struct {
-		Info *Info
+		Info  *Info
+		Error *ErrorData
 	}{
-		Info: info,
+		Info:  info,
+		Error: err,
 	})
 }
 
-// HeaderData ヘッダー描画用のデータ
+// Info ヘッダー描画用のデータ
 type Info struct {
 	IsLogin  bool
 	PageType string
+}
+
+// ErrorData
+type ErrorData struct {
+	Title   string
+	Message string
 }
