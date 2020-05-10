@@ -10,10 +10,9 @@
             </div>
             <div class="content">
                 <ul class="list">
-                    <li class="list-item no-link">job1</li>
-                    <li class="list-item no-link">job1</li>
-                    <li class="list-item no-link">job1</li>
-                    <li class="list-item no-link">job1</li>
+                    {{ range .Data.Jobs }}
+                        <li class="list-item no-link">{{ .Company }} / {{ .Job }}</li>
+                    {{ end }}
                 </ul>
             </div>
             <!-- END content -->

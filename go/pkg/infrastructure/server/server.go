@@ -34,7 +34,7 @@ func (s *server) Serve() {
 	http.HandleFunc("/activities", s.Handler.ActivityHandler.GetActivities)
 	http.HandleFunc("/societies", s.Handler.SocietyHandler.GetAll)
 	http.HandleFunc("/researches", dummyHandler("research/index.html"))
-	http.HandleFunc("/jobs", dummyHandler("job/index.html"))
+	http.HandleFunc("/jobs", s.Handler.JobHandler.GetAll)
 	http.HandleFunc("/members", dummyHandler("member/index.html"))
 	http.HandleFunc("/links", handler.LinkHandler)
 	http.HandleFunc("/equipments", dummyHandler("equipment/index.html"))
