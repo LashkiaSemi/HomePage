@@ -7,20 +7,20 @@ import (
 
 type jobInteractor struct {
 	service.JobService
-	JobRepositroy
+	JobRepository
 }
 
 type JobInteractor interface {
 	GetAll() ([]*model.Job, error)
 }
 
-func NewJobInteractor(js service.JobService, jr JobRepositroy) JobInteractor {
+func NewJobInteractor(js service.JobService, jr JobRepository) JobInteractor {
 	return &jobInteractor{
 		JobService:    js,
-		JobRepositroy: jr,
+		JobRepository: jr,
 	}
 }
 
 func (ji *jobInteractor) GetAll() ([]*model.Job, error) {
-	return ji.JobRepositroy.FindAll()
+	return ji.JobRepository.FindAll()
 }

@@ -4,10 +4,12 @@ import "homepage/pkg/domain/model"
 
 type societyService struct{}
 
+// SocietyService 学会発表のドメインロジックを実装
 type SocietyService interface {
 	Create() *model.Society
 }
 
+// NewSocietyService サービスを作成
 func NewSocietyService() SocietyService {
 	return &societyService{}
 }

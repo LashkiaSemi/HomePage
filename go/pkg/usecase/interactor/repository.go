@@ -8,12 +8,17 @@ type UserRepository interface {
 	FindAuthInfoByStudentID(studentID string) (*model.User, error)
 }
 
-// SOcietyRepository 学会発表のDBアクセスを実現
+// SocietyRepository 学会発表のDBアクセスを実現
 type SocietyRepository interface {
 	FindAll() ([]*model.Society, error)
 }
 
 // JobRepository 就職先のDBアクセスを実現
-type JobRepositroy interface {
+type JobRepository interface {
 	FindAll() ([]*model.Job, error)
+}
+
+// LectureRepository レクチャーのDBアクセスを実現
+type LectureRepository interface {
+	FindAll() ([]*model.Lecture, error)
 }

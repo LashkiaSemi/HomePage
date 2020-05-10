@@ -1,4 +1,4 @@
-{{ template "header" }}
+{{ template "header" .Info }}
 <div class="container-wrapper">
     <div class="container">
         <div class="content-wrapper">
@@ -20,24 +20,23 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{ $isLogin := .Info.IsLogin }}
+                        {{ range .Data.Lectures }}
                         <tr>
-                            <td>title</td>
-                            <td>name</td>
-                            <td>comment</td>
-                            <td>2020/02/02</td>
+                            <td>{{ .Title }}</td>
+                            <td>{{ .Author.Name }}</td>
+                            <td>{{ .Comment }}</td>
+                            <td>{{ .CreatedAt }}</td>
                             <td>
+                                <!-- TODO:a admin -->
                                 <button class="btn btn-primary">download</button>
+                                {{ if $isLogin }}
                                 <button class="btn btn-success">編集</button>
                                 <button class="btn btn-danger">delete</button>
+                                {{ end }}
                             </td>
                         </tr>
-                        <tr>
-                            <td>title</td>
-                            <td>name</td>
-                            <td>comment</td>
-                            <td>2020/02/02</td>
-                            <td><button class="btn btn-primary disable">download</button></td>
-                        </tr>
+                        {{ end }}
                     </tbody>
                 </table>
             </div>

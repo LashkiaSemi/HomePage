@@ -11,7 +11,7 @@ type jobRepository struct {
 }
 
 // NewJobRepository リポジトリの作成
-func NewJobRepository(sh SQLHandler) interactor.JobRepositroy {
+func NewJobRepository(sh SQLHandler) interactor.JobRepository {
 	return &jobRepository{
 		SQLHandler: sh,
 	}

@@ -31,7 +31,6 @@ func (s *server) Serve() {
 
 	http.HandleFunc("/", handler.IndexHandler)
 	http.HandleFunc("/login", s.Handler.UserHandler.Login)
-	// http.HandleFunc("/login", s.Handler.AuthHandler.Login)
 	http.HandleFunc("/activities", s.Handler.ActivityHandler.GetActivities)
 	http.HandleFunc("/societies", s.Handler.SocietyHandler.GetAll)
 	http.HandleFunc("/researches", dummyHandler("research/index.html"))
@@ -39,7 +38,7 @@ func (s *server) Serve() {
 	http.HandleFunc("/members", s.Handler.UserHandler.GetAllGroupByGrade)
 	http.HandleFunc("/links", handler.LinkHandler)
 	http.HandleFunc("/equipments", dummyHandler("equipment/index.html"))
-	http.HandleFunc("/lectures", dummyHandler("lecture/index.html"))
+	http.HandleFunc("/lectures", s.Handler.LectureHandler.GetAll)
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, nil)
