@@ -30,10 +30,9 @@ func (s *server) Serve() {
 	http.HandleFunc("/health", healthHandler)
 
 	http.HandleFunc("/", handler.IndexHandler)
-	// http.HandleFunc("/login", dummyHandler("login.html"))
 	http.HandleFunc("/login", s.Handler.AuthHandler.Login)
-	http.HandleFunc("/activities", dummyHandler("activity/index.html"))
-	http.HandleFunc("/societies", dummyHandler("society/index.html"))
+	http.HandleFunc("/activities", s.Handler.ActivityHandler.GetActivities)
+	http.HandleFunc("/societies", s.Handler.SocietyHandler.GetAll)
 	http.HandleFunc("/researches", dummyHandler("research/index.html"))
 	http.HandleFunc("/jobs", dummyHandler("job/index.html"))
 	http.HandleFunc("/members", dummyHandler("member/index.html"))

@@ -1,11 +1,19 @@
 package handler
 
+import (
+	"homepage/pkg/interface/repository"
+)
+
 type AppHandler struct {
 	AuthHandler
+	ActivityHandler
+	SocietyHandler
 }
 
-func NewAppHandler() *AppHandler {
+func NewAppHandler(sh repository.SQLHandler) *AppHandler {
 	return &AppHandler{
-		AuthHandler: NewAuthHandler(),
+		AuthHandler:     NewAuthHandler(),
+		ActivityHandler: NewActivityHandler(),
+		SocietyHandler:  NewSocietyHandler(sh),
 	}
 }

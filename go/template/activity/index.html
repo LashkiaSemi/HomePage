@@ -1,4 +1,4 @@
-{{ template "header" }}
+{{ template "header" .Info }}
 <div class="container-wrapper">
     <div class="container">
         <div class="content-wrapper">
@@ -21,11 +21,9 @@
             <div class="content underline">
                 <h2 class="h2 list-title">今後の予定</h2>
                 <ul>
-                    <li>news</li>
-                    <li>news</li>
-                    <li>news</li>
-                    <li>news</li>
-                    <li>news</li>
+                    {{ range .Data.Activities }}
+                    <li>&lt;{{ .Date.Format "2006/01/02" }}&gt; {{ .Activity }}</li>
+                    {{ end }}
                 </ul>
 
             </div>

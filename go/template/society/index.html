@@ -1,4 +1,4 @@
-{{ template "header" }}
+{{ template "header" .Info }}
 <div class="container-wrapper">
     <div class="container">
         <div class="content-wrapper">
@@ -8,6 +8,7 @@
                     <h1 class="h1">学会発表</h1>
                 </div>
             </div>
+            
             <div class="content">
                 <table class="table">
                     <thead>
@@ -20,20 +21,15 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{ range .Data.Societies }}
                         <tr>
-                            <td>2020/02/02</td>
-                            <td>name</td>
-                            <td>title</td>
-                            <td>society</td>
-                            <td>shw</td>
+                            <td>{{ .Date }}</td>
+                            <td>{{ .Author }}</td>
+                            <td>{{ .Title }}</td>
+                            <td>{{ .Society }}</td>
+                            <td>{{ .Award }}</td>
                         </tr>
-                        <tr>
-                            <td>2020/02/02</td>
-                            <td>name</td>
-                            <td>title</td>
-                            <td>society</td>
-                            <td>shw</td>
-                        </tr>
+                        {{ end }}
                     </tbody>
                 </table>
             </div>

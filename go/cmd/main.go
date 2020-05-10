@@ -1,6 +1,7 @@
 package main
 
 import (
+	"homepage/pkg/infrastructure/database"
 	"homepage/pkg/infrastructure/handler"
 	"homepage/pkg/infrastructure/server"
 )
@@ -8,10 +9,11 @@ import (
 func main() {
 	port := "8080"
 
-	// TODO: connection db
+	// connection db
+	sh := database.NewSQLHandler()
 
-	// TODO: make handler
-	ah := handler.NewAppHandler()
+	// create handler
+	ah := handler.NewAppHandler(sh)
 
 	// make server
 	serv := server.NewServer(port, ah)
