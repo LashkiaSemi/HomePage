@@ -20,6 +20,7 @@ type userHandler struct {
 type UserHandler interface {
 	GetAllGroupByGrade(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
+	Logout(w http.ResponseWriter, r *http.Request)
 }
 
 // NewUserHandler ハンドラの作成
@@ -85,4 +86,21 @@ func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 	response.Success(w, "login.html", info, body)
+}
+
+func (uh *userHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "logout", auth.GetStudentIDFromCookie(r))
+
+	// cookieの取得
+	cookie, err := r.Cookie(configs.CookieName)
+	if err != nil {
+		log.Println("Cookie: ", err)
+		// TODO: ?こここれでいいのか？
+		response.InternalServerError(w, info)
+		return
+	}
+	cookie.MaxAge = -1
+	http.SetCookie(w, cookie)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+
 }

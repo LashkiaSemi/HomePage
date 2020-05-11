@@ -2,6 +2,7 @@ package server
 
 import (
 	"homepage/pkg/infrastructure/handler"
+	"homepage/pkg/infrastructure/server/middleware"
 	"log"
 	"net/http"
 	"text/template"
@@ -31,27 +32,22 @@ func (s *server) Serve() {
 
 	http.HandleFunc("/", handler.IndexHandler)
 	http.HandleFunc("/login", s.Handler.UserHandler.Login)
+	http.HandleFunc("/logout", middleware.Authorized(s.Handler.UserHandler.Logout))
 	http.HandleFunc("/activities", s.Handler.ActivityHandler.GetActivities)
 	http.HandleFunc("/societies", s.Handler.SocietyHandler.GetAll)
 	http.HandleFunc("/researches", s.Handler.ResearchHandler.GetAll)
 	http.HandleFunc("/jobs", s.Handler.JobHandler.GetAll)
 	http.HandleFunc("/members", s.Handler.UserHandler.GetAllGroupByGrade)
 	http.HandleFunc("/links", handler.LinkHandler)
-	http.HandleFunc("/equipments", s.Handler.EquipmentHandler.GetAll)
-	http.HandleFunc("/lectures", s.Handler.LectureHandler.GetAll)
+	http.HandleFunc("/equipments", middleware.Authorized(s.Handler.EquipmentHandler.GetAll))
+	http.HandleFunc("/lectures", middleware.Authorized(s.Handler.LectureHandler.GetAll))
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, nil)
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
-	// data := struct {
-	// 	Message string `json:"message"`
-	// }{
-	// 	Message: "health",
-	// }
-	// response.Success(w, &data)
-	println("health")
+	log.Println("health")
 }
 
 func dummyHandler(file string) http.HandlerFunc {

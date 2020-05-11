@@ -9,9 +9,10 @@ import (
 	"net/http"
 )
 
-// Authentication ログイン済みを検証する
-func Authentication(nextFunc http.HandlerFunc) http.HandlerFunc {
+// Authorized ログイン済みを検証する
+func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// TODO: nextでredirectできるといいよね
 
 		ctx := r.Context()
 		if ctx == nil {
@@ -22,6 +23,8 @@ func Authentication(nextFunc http.HandlerFunc) http.HandlerFunc {
 		cookie, err := r.Cookie(configs.CookieName)
 		if err != nil {
 			log.Println("Cookie: ", err)
+			// cookieがない時
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 		tokenString := cookie.Value
@@ -30,6 +33,7 @@ func Authentication(nextFunc http.HandlerFunc) http.HandlerFunc {
 		token, err := auth.VerifyToken(tokenString)
 		if err != nil {
 			log.Println("failed to verify token: ", err)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 
