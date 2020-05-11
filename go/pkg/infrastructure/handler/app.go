@@ -9,6 +9,7 @@ type AppHandler struct {
 	UserHandler
 	ActivityHandler
 	SocietyHandler
+	ResearchHandler
 	JobHandler
 	LectureHandler
 }
@@ -19,6 +20,7 @@ func NewAppHandler(sh repository.SQLHandler) *AppHandler {
 		UserHandler:     NewUserHandler(sh),
 		ActivityHandler: NewActivityHandler(),
 		SocietyHandler:  NewSocietyHandler(sh),
+		ResearchHandler: NewResearchHandler(sh),
 		JobHandler:      NewJobHandler(sh),
 		LectureHandler:  NewLectureHandler(sh),
 	}

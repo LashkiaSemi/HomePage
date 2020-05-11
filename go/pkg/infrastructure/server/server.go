@@ -33,7 +33,7 @@ func (s *server) Serve() {
 	http.HandleFunc("/login", s.Handler.UserHandler.Login)
 	http.HandleFunc("/activities", s.Handler.ActivityHandler.GetActivities)
 	http.HandleFunc("/societies", s.Handler.SocietyHandler.GetAll)
-	http.HandleFunc("/researches", dummyHandler("research/index.html"))
+	http.HandleFunc("/researches", s.Handler.ResearchHandler.GetAll)
 	http.HandleFunc("/jobs", s.Handler.JobHandler.GetAll)
 	http.HandleFunc("/members", s.Handler.UserHandler.GetAllGroupByGrade)
 	http.HandleFunc("/links", handler.LinkHandler)

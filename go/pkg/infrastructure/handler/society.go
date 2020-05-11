@@ -7,7 +7,6 @@ import (
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
 	"homepage/pkg/usecase/interactor"
-	"log"
 	"net/http"
 )
 
@@ -39,7 +38,8 @@ func (sh *societyHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	// get data
 	datas, err := sh.SocietyController.GetAll()
 	if err != nil {
-		log.Println(err)
+		response.InternalServerError(w, info)
+		return
 	}
 	res := datas
 	// response

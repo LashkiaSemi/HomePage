@@ -20,20 +20,16 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{ range .Data.Researches }}
                         <tr>
-                            <td>title</td>
-                            <td>name</td>
-                            <td>comment</td>
-                            <td>2020/02/02</td>
+                            <td>{{ .Title }}</td>
+                            <td>{{ .Author }}</td>
+                            <td>{{ .Comment }}</td>
+                            <td>{{ .CreatedAt }}</td>
+                            <!-- TODO: fileがなかった時にdisableにする -->
                             <td><button class="btn btn-primary">download</button></td>
                         </tr>
-                        <tr>
-                            <td>title</td>
-                            <td>name</td>
-                            <td>comment</td>
-                            <td>2020/02/02</td>
-                            <td><button class="btn btn-primary disable">download</button></td>
-                        </tr>
+                        {{ end }}
                     </tbody>
                 </table>
             </div>

@@ -22,3 +22,8 @@ type JobRepository interface {
 type LectureRepository interface {
 	FindAll() ([]*model.Lecture, error)
 }
+
+// ResearchRepository 卒業研究関連のDBアクセスを実現
+type ResearchRepository interface {
+	FindAll() ([]*model.Research, error)
+}
