@@ -7,6 +7,13 @@
                     <h1 class="h1">ユーザ情報編集</h1>
                 </div>
             </div>
+
+            <!-- TODO: errorがしょっぼい -->
+            <div>
+                {{ range .Info.Errors }}
+                <p>{{ . }}</p>
+                {{ end }}
+            </div>
             <div class="content" style="display: flex; justify-content: center;">
                 <form class="form" method="POST" style="width: 100%; max-width: 500px;">
                     <div>

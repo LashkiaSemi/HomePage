@@ -72,7 +72,6 @@ func (uh *userHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 
 func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "user", auth.GetStudentIDFromCookie(r))
-	// userID := mux.Vars(r)["id"]
 	body, err := uh.UserController.GetByStudentID(info.StudentID)
 	if err != nil {
 		response.InternalServerError(w, info)
@@ -91,7 +90,7 @@ func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		}
 		// TODO: バリデーション!
 		if name == "" || studentID == "" {
-			log.Println("空地だめ!")
+			info.Errors = append(info.Errors, "名前、学籍番号は必須")
 			response.Success(w, "member/edit.html", info, body)
 			return
 		}
@@ -162,5 +161,4 @@ func (uh *userHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	cookie.MaxAge = -1
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
-
 }

@@ -74,6 +74,7 @@ func InternalServerError(w http.ResponseWriter, info *Info) {
 type Info struct {
 	PageType  string
 	StudentID string
+	Errors    []string
 }
 
 // ErrorData エラー描画用
