@@ -40,15 +40,31 @@ func (ur *userRepository) FindAll() ([]*model.User, error) {
 	return users, nil
 }
 
+func (ur *userRepository) FindByID(userID string) (*model.User, error) {
+	row := ur.SQLHandler.QueryRow(`
+		SELECT users.id, users.name, users.student_id, intr.department, intr.grade, intr.comments
+		FROM users
+		INNER JOIN introductions as intr
+		ON intr.user_id = users.id
+		WHERE users.id = ?
+	`, userID)
+	var user model.User
+	if err := row.Scan(&user.ID, &user.Name, &user.StudentID, &user.Department, &user.Grade, &user.Comment); err != nil {
+		log.Println("userRepository: FindByID: ", err)
+		return &model.User{}, err
+	}
+	return &user, nil
+}
+
 func (ur *userRepository) FindAuthInfoByStudentID(studentID string) (*model.User, error) {
 	row := ur.SQLHandler.QueryRow(`
-		SELECT student_id, password_digest, role 
+		SELECT id, student_id, password_digest, role 
 		FROM users
 		WHERE student_id = ?`,
 		studentID,
 	)
 	var user model.User
-	if err := row.Scan(&user.StudentID, &user.Password, &user.Role); err != nil {
+	if err := row.Scan(&user.ID, &user.StudentID, &user.Password, &user.Role); err != nil {
 		log.Println("userRepository: findAuthInfoByStudentID: ", err)
 		return &user, err
 	}

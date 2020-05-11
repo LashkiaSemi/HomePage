@@ -14,6 +14,8 @@ type userInteractor struct {
 // UserInteractor ユーザのユースケースを実装
 type UserInteractor interface {
 	GetAll() ([]*model.User, error)
+	GetByID(userID string) (*model.User, error)
+
 	// AuthenticationByStudentID 学籍番号からログイン機能を使う
 	AuthenticationByStudentID(studentID, password string) error
 
@@ -33,6 +35,10 @@ func NewUserInteractor(us service.UserService, ur UserRepository, vh VerifyHandl
 
 func (ui *userInteractor) GetAll() ([]*model.User, error) {
 	return ui.UserRepository.FindAll()
+}
+
+func (ui *userInteractor) GetByID(userID string) (*model.User, error) {
+	return ui.UserRepository.FindByID(userID)
 }
 
 func (ui *userInteractor) AuthenticationByStudentID(studentID, password string) error {

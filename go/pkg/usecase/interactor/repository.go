@@ -5,6 +5,7 @@ import "homepage/pkg/domain/model"
 // UserRepository ユーザのDBアクセスを実現
 type UserRepository interface {
 	FindAll() ([]*model.User, error)
+	FindByID(userID string) (*model.User, error)
 	FindAuthInfoByStudentID(studentID string) (*model.User, error)
 }
 

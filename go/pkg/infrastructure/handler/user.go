@@ -10,6 +10,8 @@ import (
 	"homepage/pkg/usecase/interactor"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type userHandler struct {
@@ -19,6 +21,7 @@ type userHandler struct {
 // UserHandler 入力と出力の受付
 type UserHandler interface {
 	GetAllGroupByGrade(w http.ResponseWriter, r *http.Request)
+	GetByID(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
 }
@@ -46,6 +49,19 @@ func (uh *userHandler) GetAllGroupByGrade(w http.ResponseWriter, r *http.Request
 	}
 
 	response.Success(w, "member/index.html", info, res)
+}
+
+func (uh *userHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "user", auth.GetStudentIDFromCookie(r))
+
+	userID := mux.Vars(r)["id"]
+
+	res, err := uh.UserController.GetByID(userID)
+	if err != nil {
+		response.InternalServerError(w, info)
+		return
+	}
+	response.Success(w, "member/detail.html", info, res)
 }
 
 func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {

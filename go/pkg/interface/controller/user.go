@@ -12,6 +12,7 @@ type userController struct {
 // UserController ユーザの入出力を変換
 type UserController interface {
 	GetAllGroupByGrade() (*UsersGroupByGradeResponse, error)
+	GetByID(userID string) (*UserResponse, error)
 	Login(studentID, password string) error
 }
 
@@ -34,6 +35,14 @@ func (uc *userController) GetAllGroupByGrade() (*UsersGroupByGradeResponse, erro
 	}
 
 	return &UsersGroupByGradeResponse{GradeUsers: res}, nil
+}
+
+func (uc *userController) GetByID(userID string) (*UserResponse, error) {
+	user, err := uc.UserInteractor.GetByID(userID)
+	if err != nil {
+		return &UserResponse{}, err
+	}
+	return convertToUserResponse(user), err
 }
 
 func (uc *userController) Login(studentID, password string) error {

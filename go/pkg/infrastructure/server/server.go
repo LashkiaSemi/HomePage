@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+
+	"github.com/gorilla/mux"
 )
 
 type server struct {
@@ -27,41 +29,60 @@ func NewServer(port string, ah *handler.AppHandler) Server {
 }
 
 func (s *server) Serve() {
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
-	http.HandleFunc("/health", healthHandler)
+	r := mux.NewRouter()
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
+	// r.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
+	r.HandleFunc("/health", healthHandler)
 
-	http.HandleFunc("/", handler.IndexHandler)
-	http.HandleFunc("/login", s.Handler.UserHandler.Login)
-	http.HandleFunc("/logout", middleware.Authorized(s.Handler.UserHandler.Logout))
-	http.HandleFunc("/activities", s.Handler.ActivityHandler.GetActivities)
-	http.HandleFunc("/societies", s.Handler.SocietyHandler.GetAll)
-	http.HandleFunc("/researches", s.Handler.ResearchHandler.GetAll)
-	http.HandleFunc("/jobs", s.Handler.JobHandler.GetAll)
-	http.HandleFunc("/members", s.Handler.UserHandler.GetAllGroupByGrade)
-	http.HandleFunc("/links", handler.LinkHandler)
-	http.HandleFunc("/equipments", middleware.Authorized(s.Handler.EquipmentHandler.GetAll))
-	http.HandleFunc("/lectures", middleware.Authorized(s.Handler.LectureHandler.GetAll))
+	r.HandleFunc("/", handler.IndexHandler)
+	r.HandleFunc("/login", s.Handler.UserHandler.Login)
+	r.HandleFunc("/logout", middleware.Authorized(s.Handler.UserHandler.Logout))
+	r.HandleFunc("/activities", s.Handler.ActivityHandler.GetActivities)
+	r.HandleFunc("/societies", s.Handler.SocietyHandler.GetAll)
+	r.HandleFunc("/researches", s.Handler.ResearchHandler.GetAll)
+	r.HandleFunc("/jobs", s.Handler.JobHandler.GetAll)
+	r.HandleFunc("/members", s.Handler.UserHandler.GetAllGroupByGrade)
+	r.HandleFunc("/links", handler.LinkHandler)
+	r.HandleFunc("/equipments", middleware.Authorized(s.Handler.EquipmentHandler.GetAll))
+	r.HandleFunc("/lectures", middleware.Authorized(s.Handler.LectureHandler.GetAll))
+
+	r.HandleFunc("/lectures/{id}/edit", dummyHandler("lecture/edit.html"))
+	r.HandleFunc("/members/{id}", s.Handler.UserHandler.GetByID)
+	r.HandleFunc("/members/edit", dummyHandler("member/edit.html"))
+	r.HandleFunc("/members/edit_password", dummyHandler("member/edit_password.html"))
 
 	log.Println("server running http://localhost:8080")
-	http.ListenAndServe(":"+s.Port, nil)
+	http.ListenAndServe(":"+s.Port, r)
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("health")
 }
 
-func dummyHandler(file string) http.HandlerFunc {
+func dummyHandler(templateFile string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		t, err := template.ParseFiles(
-			"template/"+file,
+			"template/"+templateFile,
 			"template/_footer.html",
 			"template/_header.html",
 		)
 		if err != nil {
 			log.Printf("failed to parse template: %v", err)
 		}
-		if err = t.Execute(w, struct{}{}); err != nil {
+		if err = t.Execute(w, struct {
+			Info *dummyInfo
+		}{
+			Info: &dummyInfo{
+				StudentID: "dummy",
+				PageType:  "",
+			},
+		}); err != nil {
 			log.Printf("failed to execute template: %v", err)
 		}
 	}
+}
+
+type dummyInfo struct {
+	StudentID string
+	PageType  string
 }

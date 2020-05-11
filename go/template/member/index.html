@@ -14,8 +14,7 @@
                         <h2 class="h2 list-title">学部2年</h2>
                         <ul class="list">
                             {{ range index .Data.GradeUsers 2 }}
-                            <!-- TODO: href -->
-                            <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                            <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
                             {{ end }}
                         </ul>
                     </div>
@@ -23,8 +22,7 @@
                         <h2 class="h2 list-title">学部3年</h2>
                         <ul class="list">
                             {{ range index .Data.GradeUsers 3 }}
-                            <!-- TODO: href -->
-                            <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                            <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
                             {{ end }}
                         </ul>
                     </div>
@@ -32,8 +30,7 @@
                         <h2 class="h2 list-title">学部4年</h2>
                         <ul class="list">
                             {{ range index .Data.GradeUsers 4 }}
-                            <!-- TODO: href -->
-                            <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                            <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
                             {{ end }}
                         </ul>
                     </div>
@@ -47,8 +44,7 @@
                         <h2 class="h2 list-title">大学院1年</h2>
                         <ul class="list">
                             {{ range index .Data.GradeUsers 5 }}
-                            <!-- TODO: href -->
-                            <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                            <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
                             {{ end }}
                         </ul>
                     </div>
@@ -56,8 +52,7 @@
                         <h2 class="h2 list-title">大学院2年</h2>
                         <ul class="list">
                             {{ range index .Data.GradeUsers 6 }}
-                            <!-- TODO: href -->
-                            <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                            <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
                             {{ end }}
                         </ul>
                     </div>
@@ -68,8 +63,7 @@
                 <h2 class="h2 list-title">卒業生</h2>
                 <ul class="list">
                     {{ range index .Data.GradeUsers 0 }}
-                    <!-- TODO: href -->
-                    <li class="list-item"><a class="list-link">{{ .Name }}</a></li>
+                    <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
                     {{ end }}
                 </ul>
             </div>

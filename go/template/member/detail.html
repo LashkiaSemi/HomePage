@@ -1,0 +1,37 @@
+{{ template "header" .Info }}
+<div class="container-wrapper">
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="content" style="display: flex; justify-content: center;">
+                <div class="card" style="max-width: 650px; width: 100%;">
+                    <div class="card-header">
+                        <h2 class="h2">{{ .Data.Name }}</h2>
+                        <h4 class="h4" style="color: #999;">t317013</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="underline">
+                            <p>学年: {{ .Data.Grade }}</p>
+                        </div>
+                        <div class="underline">
+                            <p>学部: {{ .Data.Department }}</p>
+                        </div>
+                        <div>
+                            <p>コメント: {{ .Data.Comment }}</p>
+                        </div>
+                    </div>
+                    {{ if eq .Data.StudentID .Info.StudentID }}
+                    <div class="card-footer">
+                        <button class="btn btn-info">編集</button>
+                        <button class="btn btn-success ml-10">パスワードの変更</button>
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-wrapper -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END contaienr-wrapper -->
+{{ template "footer" }}
