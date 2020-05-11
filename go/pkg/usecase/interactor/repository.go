@@ -7,7 +7,8 @@ import (
 // UserRepository ユーザのDBアクセスを実現
 type UserRepository interface {
 	FindAll() ([]*entity.User, error)
-	FindByID(userID string) (*entity.User, error)
+	FindByID(userID int) (*entity.User, error)
+	FindByStudentID(studentID string) (*entity.User, error)
 	FindAuthInfoByStudentID(studentID string) (*entity.User, error)
 
 	UpdateByID(*entity.User) error

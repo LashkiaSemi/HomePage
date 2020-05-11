@@ -1,12 +1,10 @@
 package interactor
 
 import (
-	"homepage/pkg/domain/service"
 	"homepage/pkg/entity"
 )
 
 type lectureInteractor struct {
-	service.LectureService
 	LectureRepository
 }
 
@@ -16,9 +14,8 @@ type LectureInteractor interface {
 }
 
 // NewLectureInteractor インタラクタの作成
-func NewLectureInteractor(ls service.LectureService, lr LectureRepository) LectureInteractor {
+func NewLectureInteractor(lr LectureRepository) LectureInteractor {
 	return &lectureInteractor{
-		LectureService:    ls,
 		LectureRepository: lr,
 	}
 }

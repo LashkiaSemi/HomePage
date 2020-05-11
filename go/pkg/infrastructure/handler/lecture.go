@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -24,7 +23,6 @@ func NewLectureHandler(sh repository.SQLHandler) LectureHandler {
 	return &lectureHandler{
 		LectureController: controller.NewLectureController(
 			interactor.NewLectureInteractor(
-				service.NewLectureService(),
 				repository.NewLectureRepository(sh),
 			),
 		),

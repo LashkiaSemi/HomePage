@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -24,7 +23,6 @@ func NewEquipmentHandler(sh repository.SQLHandler) EquipmentHandler {
 	return &equipmentHandler{
 		EquipmentController: controller.NewEquipmentController(
 			interactor.NewEquipmentInteractor(
-				service.NewEquipmentService(),
 				repository.NewEquipmentRepository(sh),
 			),
 		),

@@ -40,7 +40,7 @@ func (ur *userRepository) FindAll() ([]*entity.User, error) {
 	return users, nil
 }
 
-func (ur *userRepository) FindByID(userID string) (*entity.User, error) {
+func (ur *userRepository) FindByID(userID int) (*entity.User, error) {
 	row := ur.SQLHandler.QueryRow(`
 		SELECT users.id, users.name, users.student_id, intr.department, intr.grade, intr.comments
 		FROM users
@@ -48,6 +48,22 @@ func (ur *userRepository) FindByID(userID string) (*entity.User, error) {
 		ON intr.user_id = users.id
 		WHERE users.id = ?
 	`, userID)
+	var user entity.User
+	if err := row.Scan(&user.ID, &user.Name, &user.StudentID, &user.Department, &user.Grade, &user.Comment); err != nil {
+		log.Println("userRepository: FindByID: ", err)
+		return &entity.User{}, err
+	}
+	return &user, nil
+}
+
+func (ur *userRepository) FindByStudentID(studentID string) (*entity.User, error) {
+	row := ur.SQLHandler.QueryRow(`
+		SELECT users.id, users.name, users.student_id, intr.department, intr.grade, intr.comments
+		FROM users
+		INNER JOIN introductions as intr
+		ON intr.user_id = users.id
+		WHERE users.student_id = ?
+	`, studentID)
 	var user entity.User
 	if err := row.Scan(&user.ID, &user.Name, &user.StudentID, &user.Department, &user.Grade, &user.Comment); err != nil {
 		log.Println("userRepository: FindByID: ", err)

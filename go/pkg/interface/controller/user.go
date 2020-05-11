@@ -12,8 +12,9 @@ type userController struct {
 // UserController ユーザの入出力を変換
 type UserController interface {
 	GetAllGroupByGrade() (*UsersGroupByGradeResponse, error)
-	GetByID(userID string) (*UserResponse, error)
-	UpdateByID(userID, name, studentID, department, comment string, grade int) (*UserResponse, error)
+	GetByID(userID int) (*UserResponse, error)
+	GetByStudentID(studentID string) (*UserResponse, error)
+	UpdateByID(userID int, name, studentID, department, comment string, grade int) (*UserResponse, error)
 	Login(studentID, password string) error
 }
 
@@ -37,7 +38,7 @@ func (uc *userController) GetAllGroupByGrade() (*UsersGroupByGradeResponse, erro
 	return &UsersGroupByGradeResponse{GradeUsers: res}, nil
 }
 
-func (uc *userController) GetByID(userID string) (*UserResponse, error) {
+func (uc *userController) GetByID(userID int) (*UserResponse, error) {
 	user, err := uc.UserInteractor.GetByID(userID)
 	if err != nil {
 		return &UserResponse{}, err
@@ -45,7 +46,15 @@ func (uc *userController) GetByID(userID string) (*UserResponse, error) {
 	return convertToUserResponse(user), err
 }
 
-func (uc *userController) UpdateByID(userID, name, studentID, department, comment string, grade int) (*UserResponse, error) {
+func (uc *userController) GetByStudentID(studentID string) (*UserResponse, error) {
+	user, err := uc.UserInteractor.GetByStudentID(studentID)
+	if err != nil {
+		return &UserResponse{}, err
+	}
+	return convertToUserResponse(user), err
+}
+
+func (uc *userController) UpdateByID(userID int, name, studentID, department, comment string, grade int) (*UserResponse, error) {
 	user, err := uc.UserInteractor.UpdateByID(userID, name, studentID, department, comment, grade)
 	if err != nil {
 		return &UserResponse{}, err

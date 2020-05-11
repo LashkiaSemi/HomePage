@@ -1,13 +1,11 @@
 package interactor
 
 import (
-	"homepage/pkg/domain/service"
 	"homepage/pkg/entity"
 	"log"
 )
 
 type userInteractor struct {
-	service.UserService
 	UserRepository
 	VerifyHandler
 }
@@ -15,8 +13,9 @@ type userInteractor struct {
 // UserInteractor ユーザのユースケースを実装
 type UserInteractor interface {
 	GetAll() ([]*entity.User, error)
-	GetByID(userID string) (*entity.User, error)
-	UpdateByID(userID, name, studentID, department, comment string, grade int) (*entity.User, error)
+	GetByID(userID int) (*entity.User, error)
+	GetByStudentID(studentID string) (*entity.User, error)
+	UpdateByID(userID int, name, studentID, department, comment string, grade int) (*entity.User, error)
 
 	// AuthenticationByStudentID 学籍番号からログイン機能を使う
 	AuthenticationByStudentID(studentID, password string) error
@@ -27,9 +26,8 @@ type UserInteractor interface {
 }
 
 // NewUserInteractor インタラクタの作成
-func NewUserInteractor(us service.UserService, ur UserRepository, vh VerifyHandler) UserInteractor {
+func NewUserInteractor(ur UserRepository, vh VerifyHandler) UserInteractor {
 	return &userInteractor{
-		UserService:    us,
 		UserRepository: ur,
 		VerifyHandler:  vh,
 	}
@@ -39,11 +37,15 @@ func (ui *userInteractor) GetAll() ([]*entity.User, error) {
 	return ui.UserRepository.FindAll()
 }
 
-func (ui *userInteractor) GetByID(userID string) (*entity.User, error) {
+func (ui *userInteractor) GetByID(userID int) (*entity.User, error) {
 	return ui.UserRepository.FindByID(userID)
 }
 
-func (ui *userInteractor) UpdateByID(userID, name, studentID, department, comment string, grade int) (*entity.User, error) {
+func (ui *userInteractor) GetByStudentID(studentID string) (*entity.User, error) {
+	return ui.UserRepository.FindByStudentID(studentID)
+}
+
+func (ui *userInteractor) UpdateByID(userID int, name, studentID, department, comment string, grade int) (*entity.User, error) {
 	user, err := ui.UserRepository.FindByID(userID)
 	if err != nil {
 		log.Println("userRepository: UpdateByID: ", err)

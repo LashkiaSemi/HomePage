@@ -1,12 +1,10 @@
 package interactor
 
 import (
-	"homepage/pkg/domain/service"
 	"homepage/pkg/entity"
 )
 
 type equipmentInteractor struct {
-	service.EquipmentService
 	EquipmentRepository
 }
 
@@ -16,9 +14,8 @@ type EquipmentInteractor interface {
 }
 
 // NewEquipmentInteractor インタラクタの作成
-func NewEquipmentInteractor(es service.EquipmentService, er EquipmentRepository) EquipmentInteractor {
+func NewEquipmentInteractor(er EquipmentRepository) EquipmentInteractor {
 	return &equipmentInteractor{
-		EquipmentService:    es,
 		EquipmentRepository: er,
 	}
 }

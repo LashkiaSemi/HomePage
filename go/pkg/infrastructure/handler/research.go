@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -24,7 +23,6 @@ func NewResearchHandler(sh repository.SQLHandler) ResearchHandler {
 	return &researchHandler{
 		ResearchController: controller.NewResearchController(
 			interactor.NewResearchInteractor(
-				service.NewResearchService(),
 				repository.NewResearchRepository(sh),
 			),
 		),

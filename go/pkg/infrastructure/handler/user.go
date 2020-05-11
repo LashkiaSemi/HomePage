@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"fmt"
 	"homepage/pkg/configs"
-	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -33,7 +33,6 @@ func NewUserHandler(sh repository.SQLHandler) UserHandler {
 	return &userHandler{
 		UserController: controller.NewUserController(
 			interactor.NewUserInteractor(
-				service.NewUserService(),
 				repository.NewUserRepository(sh),
 				auth.NewVerifyHandler(),
 			),
@@ -56,7 +55,12 @@ func (uh *userHandler) GetAllGroupByGrade(w http.ResponseWriter, r *http.Request
 func (uh *userHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "user", auth.GetStudentIDFromCookie(r))
 
-	userID := mux.Vars(r)["id"]
+	userID, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("userHandler: GetByID: path param parse error: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
 
 	res, err := uh.UserController.GetByID(userID)
 	if err != nil {
@@ -68,10 +72,14 @@ func (uh *userHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 
 func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "user", auth.GetStudentIDFromCookie(r))
-
-	userID := mux.Vars(r)["id"]
+	// userID := mux.Vars(r)["id"]
+	body, err := uh.UserController.GetByStudentID(info.StudentID)
+	if err != nil {
+		response.InternalServerError(w, info)
+		return
+	}
 	if r.Method == "POST" {
-		log.Println("post!!!")
+		log.Println("user update: post")
 		name := r.PostFormValue("name")
 		studentID := r.PostFormValue("studentID")
 		department := r.PostFormValue("department")
@@ -82,17 +90,19 @@ func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 			log.Println("int parse error")
 		}
 		// TODO: バリデーション!
+		if name == "" || studentID == "" {
+			log.Println("空地だめ!")
+			response.Success(w, "member/edit.html", info, body)
+			return
+		}
 
-		user, err := uh.UserController.UpdateByID(userID, name, studentID, department, comment, grade)
+		user, err := uh.UserController.UpdateByID(body.ID, name, studentID, department, comment, grade)
 		if err != nil {
 			response.InternalServerError(w, info)
+			return
 		}
-		log.Println(user)
-		http.Redirect(w, r, "/members/"+userID, http.StatusSeeOther)
-	}
-	body, err := uh.UserController.GetByID(userID)
-	if err != nil {
-		response.InternalServerError(w, info)
+		log.Println("user update: ", user)
+		http.Redirect(w, r, fmt.Sprintf("/members/%d", body.ID), http.StatusSeeOther)
 	}
 	response.Success(w, "member/edit.html", info, body)
 

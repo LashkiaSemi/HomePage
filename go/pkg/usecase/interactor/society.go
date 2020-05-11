@@ -1,13 +1,10 @@
 package interactor
 
 import (
-	"homepage/pkg/domain/service"
 	"homepage/pkg/entity"
-	"log"
 )
 
 type societyInteractor struct {
-	service.SocietyService
 	SocietyRepository
 }
 
@@ -17,15 +14,13 @@ type SocietyInteractor interface {
 }
 
 // NewSocietyInteractor インタラクタの作成
-func NewSocietyInteractor(ss service.SocietyService, sr SocietyRepository) SocietyInteractor {
+func NewSocietyInteractor(sr SocietyRepository) SocietyInteractor {
 	return &societyInteractor{
-		SocietyService:    ss,
 		SocietyRepository: sr,
 	}
 }
 
 func (si *societyInteractor) GetAll() ([]*entity.Society, error) {
-	log.Println(si.SocietyService.Create())
 	datas, err := si.SocietyRepository.FindAll()
 	return datas, err
 

@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"log"
+	"homepage/pkg/configs"
 	"time"
 )
 
@@ -30,7 +30,6 @@ func (u User) Update(name, studentID, department, comment string, grade int) *Us
 	res.Department = department
 	res.Comment = comment
 	res.Grade = grade
-	res.UpdatedAt = time.Now().Format("2006-01-02 15:4:5")
-	log.Println(u, res)
+	res.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
 	return &res
 }

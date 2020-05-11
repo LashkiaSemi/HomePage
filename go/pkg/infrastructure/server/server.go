@@ -48,8 +48,8 @@ func (s *server) Serve() {
 	r.HandleFunc("/lectures", middleware.Authorized(s.Handler.LectureHandler.GetAll))
 
 	r.HandleFunc("/lectures/{id}/edit", dummyHandler("lecture/edit.html"))
-	// TODO: pathのidをけしたい
-	r.HandleFunc("/members/{id}/edit", s.Handler.UserHandler.UpdateByID)
+
+	r.HandleFunc("/members/edit/profile", s.Handler.UserHandler.UpdateByID)
 
 	r.HandleFunc("/members/edit/password", dummyHandler("member/edit_password.html"))
 

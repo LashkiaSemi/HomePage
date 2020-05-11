@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -25,7 +24,6 @@ func NewSocietyHandler(sh repository.SQLHandler) SocietyHandler {
 	return &societyHandler{
 		controller.NewSocietyController(
 			interactor.NewSocietyInteractor(
-				service.NewSocietyService(),
 				repository.NewSocietyRepository(sh),
 			),
 		),

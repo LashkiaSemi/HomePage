@@ -1,12 +1,10 @@
 package interactor
 
 import (
-	"homepage/pkg/domain/service"
 	"homepage/pkg/entity"
 )
 
 type researchInteractor struct {
-	service.ResearchService
 	ResearchRepository
 }
 
@@ -16,9 +14,8 @@ type ResearchInteractor interface {
 }
 
 // NewResearchInteractor インタラクタを作成
-func NewResearchInteractor(rs service.ResearchService, rr ResearchRepository) ResearchInteractor {
+func NewResearchInteractor(rr ResearchRepository) ResearchInteractor {
 	return &researchInteractor{
-		ResearchService:    rs,
 		ResearchRepository: rr,
 	}
 }
