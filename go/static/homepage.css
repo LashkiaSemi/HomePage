@@ -55,6 +55,16 @@ ul li {
   text-align: center;
 }
 
+.notify-bar {
+  padding: 5px 20px;
+}
+
+.notify-bar-danger {
+  color: #841f29;
+  background-color: #f4c2c7;
+  border: 1px solid #e6717c;
+}
+
 .btn {
   padding: 0px 12px;
   border: 0;
