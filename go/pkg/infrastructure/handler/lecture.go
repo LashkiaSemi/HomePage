@@ -6,7 +6,11 @@ import (
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
 	"homepage/pkg/usecase/interactor"
+	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type lectureHandler struct {
@@ -16,6 +20,7 @@ type lectureHandler struct {
 // LectureHandler レクチャーの入出力の受付
 type LectureHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
+	UpdateByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewLectureHandler ハンドラの作成
@@ -37,4 +42,49 @@ func (lh *lectureHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.Success(w, "lecture/index.html", info, res)
+}
+
+func (lh *lectureHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "lecture", auth.GetStudentIDFromCookie(r))
+	lectureID, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("lectureHandler: UpdateByID: failed to parse path parameter")
+		response.InternalServerError(w, info)
+		return
+	}
+	body, err := lh.LectureController.GetByID(lectureID)
+	if err != nil {
+		response.InternalServerError(w, info)
+		return
+	}
+	if body.Author.StudentID != info.StudentID {
+		log.Println("lectureHandler: UpdateByID: dont have permission. requestUser: ", info.StudentID)
+		http.Redirect(w, r, "/lectures", http.StatusSeeOther)
+	}
+
+	if r.Method == "POST" {
+		log.Println("lecture update: post")
+		title := r.PostFormValue("title")
+		comment := r.PostFormValue("comment")
+		var activation int
+		if r.PostFormValue("activation") == "public" {
+			activation = 1
+		} else {
+			activation = 0
+		}
+		if title == "" {
+			info.Errors = append(info.Errors, "タイトルは必須です")
+			response.Success(w, "lecture/edit.html", info, body)
+			return
+		}
+		_, err := lh.LectureController.UpdateByID(lectureID, title, comment, activation)
+		if err != nil {
+			info.Errors = append(info.Errors, "更新失敗")
+			response.Success(w, "lecture/edit.html", info, body)
+			return
+		}
+		http.Redirect(w, r, "/lectures", http.StatusSeeOther)
+
+	}
+	response.Success(w, "lecture/edit.html", info, body)
 }

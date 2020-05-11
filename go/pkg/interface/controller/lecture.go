@@ -12,6 +12,8 @@ type lectureController struct {
 // LectureController レクチャーの入出力をコンバート
 type LectureController interface {
 	GetAll() (*LecturesResponse, error)
+	GetByID(id int) (*LectureResponse, error)
+	UpdateByID(id int, title, comment string, activation int) (*LectureResponse, error)
 }
 
 // NewLectureController コントローラを作成
@@ -31,6 +33,22 @@ func (lc *lectureController) GetAll() (*LecturesResponse, error) {
 		res.Lectures = append(res.Lectures, convertToLectureResponse(lec))
 	}
 	return &res, nil
+}
+
+func (lc *lectureController) GetByID(id int) (*LectureResponse, error) {
+	lec, err := lc.LectureInteractor.GetByID(id)
+	if err != nil {
+		return &LectureResponse{}, err
+	}
+	return convertToLectureResponse(lec), err
+}
+
+func (lc *lectureController) UpdateByID(id int, title, comment string, activation int) (*LectureResponse, error) {
+	lec, err := lc.LectureInteractor.UpdateByID(id, title, comment, activation)
+	if err != nil {
+		return &LectureResponse{}, err
+	}
+	return convertToLectureResponse(lec), nil
 }
 
 // LecturesResponse Lectures

@@ -43,13 +43,12 @@ func (s *server) Serve() {
 	r.HandleFunc("/jobs", s.Handler.JobHandler.GetAll)
 	r.HandleFunc("/members", s.Handler.UserHandler.GetAllGroupByGrade)
 	r.HandleFunc("/members/{id}", s.Handler.UserHandler.GetByID)
-	r.HandleFunc("/members/edit/profile", middleware.Authorized(s.Handler.UserHandler.UpdateByID)) // TODO: middleware
+	r.HandleFunc("/members/edit/profile", middleware.Authorized(s.Handler.UserHandler.UpdateByID))
 	r.HandleFunc("/members/edit/password", middleware.Authorized(s.Handler.UserHandler.UpdatePasswordByStudentID))
 	r.HandleFunc("/links", handler.LinkHandler)
 	r.HandleFunc("/equipments", middleware.Authorized(s.Handler.EquipmentHandler.GetAll))
 	r.HandleFunc("/lectures", middleware.Authorized(s.Handler.LectureHandler.GetAll))
-
-	r.HandleFunc("/lectures/{id}/edit", dummyHandler("lecture/edit.html"))
+	r.HandleFunc("/lectures/{id}/edit", middleware.Authorized(s.Handler.LectureHandler.UpdateByID))
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)

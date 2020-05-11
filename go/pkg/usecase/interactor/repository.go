@@ -28,6 +28,9 @@ type JobRepository interface {
 // LectureRepository レクチャーのDBアクセスを実現
 type LectureRepository interface {
 	FindAll() ([]*entity.Lecture, error)
+	FindByID(id int) (*entity.Lecture, error)
+
+	UpdateByID(*entity.Lecture) error
 }
 
 // ResearchRepository 卒業研究関連のDBアクセスを実現

@@ -30,7 +30,7 @@
                             <td>
                                 <button class="btn btn-primary">download</button>
                                 {{ if eq $studentID .Author.StudentID }}
-                                <button class="btn btn-success">編集</button>
+                                <a href="/lectures/{{ .ID }}/edit"><button class="btn btn-success">編集</button></a>
                                 <button class="btn btn-danger">delete</button>
                                 {{ end }}
                             </td>

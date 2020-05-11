@@ -11,3 +11,11 @@ type Lecture struct {
 	CreatedAt  string
 	UpdatedAt  string
 }
+
+func (l Lecture) Update(title, comment string, activation int) *Lecture {
+	res := l
+	res.Title = title
+	res.Comment = comment
+	res.Activation = activation
+	return &res
+}
