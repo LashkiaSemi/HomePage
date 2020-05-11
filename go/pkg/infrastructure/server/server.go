@@ -42,14 +42,16 @@ func (s *server) Serve() {
 	r.HandleFunc("/researches", s.Handler.ResearchHandler.GetAll)
 	r.HandleFunc("/jobs", s.Handler.JobHandler.GetAll)
 	r.HandleFunc("/members", s.Handler.UserHandler.GetAllGroupByGrade)
+	r.HandleFunc("/members/{id}", s.Handler.UserHandler.GetByID)
 	r.HandleFunc("/links", handler.LinkHandler)
 	r.HandleFunc("/equipments", middleware.Authorized(s.Handler.EquipmentHandler.GetAll))
 	r.HandleFunc("/lectures", middleware.Authorized(s.Handler.LectureHandler.GetAll))
 
 	r.HandleFunc("/lectures/{id}/edit", dummyHandler("lecture/edit.html"))
-	r.HandleFunc("/members/{id}", s.Handler.UserHandler.GetByID)
-	r.HandleFunc("/members/edit", dummyHandler("member/edit.html"))
-	r.HandleFunc("/members/edit_password", dummyHandler("member/edit_password.html"))
+	// TODO: pathのidをけしたい
+	r.HandleFunc("/members/{id}/edit", s.Handler.UserHandler.UpdateByID)
+
+	r.HandleFunc("/members/edit/password", dummyHandler("member/edit_password.html"))
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)

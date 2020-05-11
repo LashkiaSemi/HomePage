@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"homepage/pkg/domain/model"
+	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
 )
@@ -17,7 +17,7 @@ func NewResearchRepository(sh SQLHandler) interactor.ResearchRepository {
 	}
 }
 
-func (rr *researchRepository) FindAll() ([]*model.Research, error) {
+func (rr *researchRepository) FindAll() ([]*entity.Research, error) {
 	rows, err := rr.SQLHandler.Query(`
 		SELECT id, title, author, file, comments,  activation, created_at
 		FROM researches
@@ -25,11 +25,11 @@ func (rr *researchRepository) FindAll() ([]*model.Research, error) {
 	`)
 	if err != nil {
 		log.Println("researchRepository: FindAll: ", err)
-		return []*model.Research{}, err
+		return []*entity.Research{}, err
 	}
-	var res []*model.Research
+	var res []*entity.Research
 	for rows.Next() {
-		var data model.Research
+		var data entity.Research
 		if err = rows.Scan(&data.ID, &data.Title, &data.Author, &data.File, &data.Comment, &data.Activation, &data.CreatedAt); err != nil {
 			log.Println("researchRepository: FindAll: ", err)
 			continue

@@ -1,4 +1,4 @@
-package model
+package entity
 
 // Job 就職先
 type Job struct {

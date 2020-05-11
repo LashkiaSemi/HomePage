@@ -1,23 +1,22 @@
 package controller
 
-import "homepage/pkg/domain/model"
+import "homepage/pkg/entity"
 
 // TagsResponse タグのレスポンス
 type TagsResponse struct {
-
 }
 
 // TagResponse タグのレスポンス
 type TagResponse struct {
-	ID int
-	Name string
+	ID        int
+	Name      string
 	CreatedAt string
 }
 
-func convertToTagResponse(tag *model.Tag) *TagResponse {
+func convertToTagResponse(tag *entity.Tag) *TagResponse {
 	return &TagResponse{
-		ID: tag.ID,
-		Name: tag.Name,
+		ID:        tag.ID,
+		Name:      tag.Name,
 		CreatedAt: tag.CreatedAt,
 	}
 }

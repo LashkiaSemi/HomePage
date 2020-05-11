@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"homepage/pkg/domain/model"
+	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 )
 
@@ -49,7 +49,7 @@ type LectureResponse struct {
 	CreatedAt  string
 }
 
-func convertToLectureResponse(lec *model.Lecture) *LectureResponse {
+func convertToLectureResponse(lec *entity.Lecture) *LectureResponse {
 	return &LectureResponse{
 		ID:         lec.ID,
 		Author:     convertToUserResponse(lec.Author),

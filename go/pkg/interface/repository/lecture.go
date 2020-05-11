@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"homepage/pkg/domain/model"
+	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
 )
@@ -17,7 +17,7 @@ func NewLectureRepository(sh SQLHandler) interactor.LectureRepository {
 	}
 }
 
-func (lr *lectureRepository) FindAll() ([]*model.Lecture, error) {
+func (lr *lectureRepository) FindAll() ([]*entity.Lecture, error) {
 	rows, err := lr.SQLHandler.Query(`
 		SELECT l.id, l.title, l.file, l.comments, l.activation, l.created_at, users.name, users.student_id
 		FROM lectures as l
@@ -26,12 +26,12 @@ func (lr *lectureRepository) FindAll() ([]*model.Lecture, error) {
 	`)
 	if err != nil {
 		log.Println("lectureRepository: FindAll: ", err)
-		return []*model.Lecture{}, err
+		return []*entity.Lecture{}, err
 	}
-	lectures := []*model.Lecture{}
+	lectures := []*entity.Lecture{}
 	for rows.Next() {
-		var lecture model.Lecture
-		var user model.User
+		var lecture entity.Lecture
+		var user entity.User
 		if err = rows.Scan(&lecture.ID, &lecture.Title, &lecture.File, &lecture.Comment, &lecture.Activation, &lecture.CreatedAt, &user.Name, &user.StudentID); err != nil {
 			log.Println("lectureRepository: FindAll: ", err)
 			continue

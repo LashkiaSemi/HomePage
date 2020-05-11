@@ -3,7 +3,7 @@ package repository
 import (
 	// TODO: domainに依存
 
-	"homepage/pkg/domain/model"
+	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
 )
@@ -19,7 +19,7 @@ func NewSocietyRepository(sh SQLHandler) interactor.SocietyRepository {
 	}
 }
 
-func (sr *societyRepository) FindAll() ([]*model.Society, error) {
+func (sr *societyRepository) FindAll() ([]*entity.Society, error) {
 	rows, err := sr.SQLHandler.Query(`
 		SELECT title, author, society, award, date
 		FROM societies
@@ -28,12 +28,12 @@ func (sr *societyRepository) FindAll() ([]*model.Society, error) {
 	if err != nil {
 		if err != sr.SQLHandler.ErrNoRows() {
 			log.Println("sql error: ", err)
-			return []*model.Society{}, err
+			return []*entity.Society{}, err
 		}
 	}
-	var datas []*model.Society
+	var datas []*entity.Society
 	for rows.Next() {
-		var data model.Society
+		var data entity.Society
 		if err = rows.Scan(&data.Title, &data.Author, &data.Society, &data.Award, &data.Date); err != nil {
 			log.Println(err)
 			continue

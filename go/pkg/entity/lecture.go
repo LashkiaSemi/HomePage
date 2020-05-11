@@ -1,4 +1,4 @@
-package model
+package entity
 
 // Lecture レクチャーのモデル
 type Lecture struct {

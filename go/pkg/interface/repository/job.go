@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"homepage/pkg/domain/model"
+	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
 )
@@ -17,18 +17,18 @@ func NewJobRepository(sh SQLHandler) interactor.JobRepository {
 	}
 }
 
-func (jr *jobRepository) FindAll() ([]*model.Job, error) {
+func (jr *jobRepository) FindAll() ([]*entity.Job, error) {
 	rows, err := jr.SQLHandler.Query(`
 		SELECT company, job
 		FROM jobs
 	`)
 	if err != nil {
 		log.Println("job: FindAll: ", err)
-		return []*model.Job{}, err
+		return []*entity.Job{}, err
 	}
-	var jobs []*model.Job
+	var jobs []*entity.Job
 	for rows.Next() {
-		var job model.Job
+		var job entity.Job
 		if err = rows.Scan(&job.Company, &job.Job); err != nil {
 			log.Println("job: FindAll: ", err)
 			continue

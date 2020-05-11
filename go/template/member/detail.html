@@ -6,7 +6,7 @@
                 <div class="card" style="max-width: 650px; width: 100%;">
                     <div class="card-header">
                         <h2 class="h2">{{ .Data.Name }}</h2>
-                        <h4 class="h4" style="color: #999;">t317013</h4>
+                        <h4 class="h4" style="color: #999;">{{ .Data.StudentID }}</h4>
                     </div>
                     <div class="card-content">
                         <div class="underline">
@@ -21,8 +21,9 @@
                     </div>
                     {{ if eq .Data.StudentID .Info.StudentID }}
                     <div class="card-footer">
-                        <button class="btn btn-info">編集</button>
-                        <button class="btn btn-success ml-10">パスワードの変更</button>
+                        <!-- TODO: path -->
+                        <a href="#"><button class="btn btn-info">編集</button></a>
+                        <a href="#"><button class="btn btn-success ml-10">パスワードの変更</button></a>
                     </div>
                     {{ end }}
                 </div>

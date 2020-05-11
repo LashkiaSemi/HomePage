@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"homepage/pkg/domain/model"
+	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 )
 
@@ -49,7 +49,7 @@ type ResearchResponse struct {
 	CreatedAt  string
 }
 
-func convertToResearchResponse(data *model.Research) *ResearchResponse {
+func convertToResearchResponse(data *entity.Research) *ResearchResponse {
 	return &ResearchResponse{
 		ID:         data.ID,
 		Title:      data.Title,

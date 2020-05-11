@@ -3,7 +3,7 @@ package controller
 import (
 	// TODO: domainに...
 
-	"homepage/pkg/domain/model"
+	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
 )
@@ -53,7 +53,7 @@ type SocietyResponse struct {
 	Date    string
 }
 
-func convertToSocietyResponse(soc *model.Society) *SocietyResponse {
+func convertToSocietyResponse(soc *entity.Society) *SocietyResponse {
 	return &SocietyResponse{
 		Title:   soc.Title,
 		Author:  soc.Author,

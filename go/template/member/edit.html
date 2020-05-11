@@ -8,25 +8,26 @@
                 </div>
             </div>
             <div class="content" style="display: flex; justify-content: center;">
-                <form class="form" style="width: 100%; max-width: 500px;">
+                <form class="form" method="POST" style="width: 100%; max-width: 500px;">
                     <div>
                         <label>名前</label>
-                        <input type="text" name="name" class="form-text">
+                        <input type="text" name="name" class="form-text" value="{{ .Data.Name }}">
                     </div>
                     <div>
                         <label>学籍番号</label>
-                        <input type="text" name="studentID" class="form-text">
+                        <input type="text" name="studentID" class="form-text" value="{{ .Data.StudentID }}">
                     </div>
                     <div>
                         <label>学部</label>
-                        <input type="text" name="department" class="form-text">
+                        <input type="text" name="department" class="form-text" value="{{ .Data.Department }}">
                     </div>
                     <div>
                         <label>コメント</label>
-                        <textarea name="comment" class="form-textarea"></textarea>
+                        <textarea name="comment" class="form-textarea">{{ .Data.Comment }}</textarea>
                     </div>
                     <div>
                         <label>学年</label>
+                        <!-- TODO: 初期値 -->
                         <select class="form-select" name="grade">
                             <option value="2">学部2年</option>
                             <option value="3">学部3年</option>

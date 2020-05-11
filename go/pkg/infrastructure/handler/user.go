@@ -10,6 +10,7 @@ import (
 	"homepage/pkg/usecase/interactor"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -22,6 +23,7 @@ type userHandler struct {
 type UserHandler interface {
 	GetAllGroupByGrade(w http.ResponseWriter, r *http.Request)
 	GetByID(w http.ResponseWriter, r *http.Request)
+	UpdateByID(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
 }
@@ -62,6 +64,38 @@ func (uh *userHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.Success(w, "member/detail.html", info, res)
+}
+
+func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "user", auth.GetStudentIDFromCookie(r))
+
+	userID := mux.Vars(r)["id"]
+	if r.Method == "POST" {
+		log.Println("post!!!")
+		name := r.PostFormValue("name")
+		studentID := r.PostFormValue("studentID")
+		department := r.PostFormValue("department")
+		comment := r.PostFormValue("comment")
+		grade, err := strconv.Atoi(r.PostFormValue("grade"))
+		if err != nil {
+			// TODO: handling
+			log.Println("int parse error")
+		}
+		// TODO: バリデーション!
+
+		user, err := uh.UserController.UpdateByID(userID, name, studentID, department, comment, grade)
+		if err != nil {
+			response.InternalServerError(w, info)
+		}
+		log.Println(user)
+		http.Redirect(w, r, "/members/"+userID, http.StatusSeeOther)
+	}
+	body, err := uh.UserController.GetByID(userID)
+	if err != nil {
+		response.InternalServerError(w, info)
+	}
+	response.Success(w, "member/edit.html", info, body)
+
 }
 
 func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {

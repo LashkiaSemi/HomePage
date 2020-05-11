@@ -1,8 +1,8 @@
 package interactor
 
 import (
-	"homepage/pkg/domain/model"
 	"homepage/pkg/domain/service"
+	"homepage/pkg/entity"
 )
 
 type jobInteractor struct {
@@ -12,7 +12,7 @@ type jobInteractor struct {
 
 // JobInteractor 就職先のユースケースを実装
 type JobInteractor interface {
-	GetAll() ([]*model.Job, error)
+	GetAll() ([]*entity.Job, error)
 }
 
 // NewJobInteractor インタラクタの作成
@@ -23,6 +23,6 @@ func NewJobInteractor(js service.JobService, jr JobRepository) JobInteractor {
 	}
 }
 
-func (ji *jobInteractor) GetAll() ([]*model.Job, error) {
+func (ji *jobInteractor) GetAll() ([]*entity.Job, error) {
 	return ji.JobRepository.FindAll()
 }

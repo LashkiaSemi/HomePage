@@ -1,4 +1,4 @@
-package model
+package entity
 
 // Society 学会発表
 type Society struct {

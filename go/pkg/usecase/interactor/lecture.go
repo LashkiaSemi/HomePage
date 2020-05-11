@@ -1,8 +1,8 @@
 package interactor
 
 import (
-	"homepage/pkg/domain/model"
 	"homepage/pkg/domain/service"
+	"homepage/pkg/entity"
 )
 
 type lectureInteractor struct {
@@ -12,7 +12,7 @@ type lectureInteractor struct {
 
 // LectureInteractor レクチャーのユースケースを実装
 type LectureInteractor interface {
-	GetAll() ([]*model.Lecture, error)
+	GetAll() ([]*entity.Lecture, error)
 }
 
 // NewLectureInteractor インタラクタの作成
@@ -23,6 +23,6 @@ func NewLectureInteractor(ls service.LectureService, lr LectureRepository) Lectu
 	}
 }
 
-func (li *lectureInteractor) GetAll() ([]*model.Lecture, error) {
+func (li *lectureInteractor) GetAll() ([]*entity.Lecture, error) {
 	return li.LectureRepository.FindAll()
 }

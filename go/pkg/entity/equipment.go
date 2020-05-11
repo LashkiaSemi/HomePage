@@ -1,4 +1,4 @@
-package model
+package entity
 
 // Equipment 備品
 type Equipment struct {

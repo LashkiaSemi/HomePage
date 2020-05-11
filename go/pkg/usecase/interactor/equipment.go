@@ -1,8 +1,8 @@
 package interactor
 
 import (
-	"homepage/pkg/domain/model"
 	"homepage/pkg/domain/service"
+	"homepage/pkg/entity"
 )
 
 type equipmentInteractor struct {
@@ -12,7 +12,7 @@ type equipmentInteractor struct {
 
 // EquipmentInteractor 備品のユースケースを実現
 type EquipmentInteractor interface {
-	GetAll() ([]*model.Equipment, error)
+	GetAll() ([]*entity.Equipment, error)
 }
 
 // NewEquipmentInteractor インタラクタの作成
@@ -23,6 +23,6 @@ func NewEquipmentInteractor(es service.EquipmentService, er EquipmentRepository)
 	}
 }
 
-func (ei *equipmentInteractor) GetAll() ([]*model.Equipment, error) {
+func (ei *equipmentInteractor) GetAll() ([]*entity.Equipment, error) {
 	return ei.EquipmentRepository.FindAll()
 }

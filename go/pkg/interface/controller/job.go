@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"homepage/pkg/domain/model"
+	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 )
 
@@ -44,7 +44,7 @@ type JobResponse struct {
 	Job     string
 }
 
-func convertToJobResponse(job *model.Job) *JobResponse {
+func convertToJobResponse(job *entity.Job) *JobResponse {
 	return &JobResponse{
 		Company: job.Company,
 		Job:     job.Job,

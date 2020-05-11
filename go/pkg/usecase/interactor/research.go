@@ -1,8 +1,8 @@
 package interactor
 
 import (
-	"homepage/pkg/domain/model"
 	"homepage/pkg/domain/service"
+	"homepage/pkg/entity"
 )
 
 type researchInteractor struct {
@@ -12,7 +12,7 @@ type researchInteractor struct {
 
 // ResearchInteractor 卒業研究のユースケースを実装
 type ResearchInteractor interface {
-	GetAll() ([]*model.Research, error)
+	GetAll() ([]*entity.Research, error)
 }
 
 // NewResearchInteractor インタラクタを作成
@@ -23,6 +23,6 @@ func NewResearchInteractor(rs service.ResearchService, rr ResearchRepository) Re
 	}
 }
 
-func (ri *researchInteractor) GetAll() ([]*model.Research, error) {
+func (ri *researchInteractor) GetAll() ([]*entity.Research, error) {
 	return ri.ResearchRepository.FindAll()
 }

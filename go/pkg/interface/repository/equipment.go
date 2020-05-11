@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"homepage/pkg/domain/model"
+	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
 )
@@ -17,7 +17,7 @@ func NewEquipmentRepository(sh SQLHandler) interactor.EquipmentRepository {
 	}
 }
 
-func (er *equipmentRepository) FindAll() ([]*model.Equipment, error) {
+func (er *equipmentRepository) FindAll() ([]*entity.Equipment, error) {
 	rows, err := er.SQLHandler.Query(`
 		SELECT e.id, e.name, e.num, e.note, tags.name, e.created_at
 		FROM equipments as e
@@ -26,12 +26,12 @@ func (er *equipmentRepository) FindAll() ([]*model.Equipment, error) {
 	`)
 	if err != nil {
 		log.Println("equipmentRepository: FindAll: ", err)
-		return []*model.Equipment{}, err
+		return []*entity.Equipment{}, err
 	}
-	var res []*model.Equipment
+	var res []*entity.Equipment
 	for rows.Next() {
-		var data model.Equipment
-		var tag model.Tag
+		var data entity.Equipment
+		var tag entity.Tag
 		if err = rows.Scan(&data.ID, &data.Name, &data.Stock, &data.Comment, &tag.Name, &data.CreatedAt); err != nil {
 			log.Println("equipmentRepository: FindAll: ", err)
 			continue

@@ -1,4 +1,4 @@
-package model
+package entity
 
 // Research 卒業研究
 type Research struct {
