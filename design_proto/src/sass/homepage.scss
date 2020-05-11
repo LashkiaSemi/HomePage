@@ -25,7 +25,6 @@ body {
     border-bottom: 1px solid $sub-color;
 }
 
-
 ul li {
     line-height: 1.8rem;
 }
@@ -42,6 +41,21 @@ ul li {
     }
     &-40 {
         margin-bottom: 40px;
+    }
+}
+
+.ml {
+    &-10 {
+        margin-left: 10px;
+    }
+    &-20 {
+        margin-left: 20px;
+    }
+    &-30 {
+        margin-left: 30px;
+    }
+    &-40 {
+        margin-left: 40px;
     }
 }
 
@@ -243,6 +257,10 @@ ul li {
         }
         .card-content {
             padding: 10px 20px;
+        }
+        .card-footer {
+            padding: 10px 20px;
+            border-top: 1px solid $sub-color;
         }
     }
     .table {
