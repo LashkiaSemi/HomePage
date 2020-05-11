@@ -8,7 +8,7 @@
                 </div>
             </div>
             <div class="content" style="display: flex; justify-content: center;">
-                <form class="form" method="POST" style="width: 100%; max-width: 500px;">
+                <form class="form" method="POST" enctype="multipart/form-data" style="width: 100%; max-width: 500px;">
                     {{ if .Info.Errors }}
                     <div class="notify-bar notify-bar-danger mb-20">
                         {{ range .Info.Errors }}
@@ -25,6 +25,12 @@
                         <label>コメント</label>
                         <textarea name="comment" class="form-textarea">{{ .Data.Comment }}</textarea>
                     </div>
+                    {{ if eq .Info.PageType "create" }}
+                    <div>
+                        <label>資料</label>
+                        <input type="file" name="file" class="form-file" style="display: block;">
+                    </div>
+                    {{ end }}
                     <div>
                         <label>公開する</label>
                         <input type="checkbox" name="activation" value="public" checked>

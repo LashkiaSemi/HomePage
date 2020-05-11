@@ -48,7 +48,11 @@ func (s *server) Serve() {
 	r.HandleFunc("/links", handler.LinkHandler)
 	r.HandleFunc("/equipments", middleware.Authorized(s.Handler.EquipmentHandler.GetAll))
 	r.HandleFunc("/lectures", middleware.Authorized(s.Handler.LectureHandler.GetAll))
+	r.HandleFunc("/lectures/new", middleware.Authorized(s.Handler.LectureHandler.Create))
 	r.HandleFunc("/lectures/{id}/edit", middleware.Authorized(s.Handler.LectureHandler.UpdateByID))
+
+	// TODO: フォーム形式にして！
+	r.HandleFunc("/lectures/{id}/delete", s.Handler.LectureHandler.DeleteByID)
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)

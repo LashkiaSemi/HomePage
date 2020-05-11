@@ -29,8 +29,11 @@ type JobRepository interface {
 type LectureRepository interface {
 	FindAll() ([]*entity.Lecture, error)
 	FindByID(id int) (*entity.Lecture, error)
+	FindAuthorByStudentID(studentID string) (*entity.User, error)
 
+	Create(*entity.Lecture) (int, error)
 	UpdateByID(*entity.Lecture) error
+	DeleteByID(id int) error
 }
 
 // ResearchRepository 卒業研究関連のDBアクセスを実現

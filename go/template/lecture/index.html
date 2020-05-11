@@ -5,7 +5,7 @@
             <div class="content">
                 <div class="content-title">
                     <h1 class="h1">レクチャー資料</h1>
-                    <button class="btn btn-success">file upload</button>
+                    <a href="/lectures/new"><button class="btn btn-success">新規作成</button></a>
                 </div>
             </div>
             <div class="content">
@@ -31,7 +31,7 @@
                                 <button class="btn btn-primary">download</button>
                                 {{ if eq $studentID .Author.StudentID }}
                                 <a href="/lectures/{{ .ID }}/edit"><button class="btn btn-success">編集</button></a>
-                                <button class="btn btn-danger">delete</button>
+                                <button class="btn btn-danger">削除</button>
                                 {{ end }}
                             </td>
                         </tr>

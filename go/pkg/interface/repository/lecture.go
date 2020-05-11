@@ -62,6 +62,39 @@ func (lr *lectureRepository) FindByID(id int) (*entity.Lecture, error) {
 	return &lec, nil
 }
 
+func (lr *lectureRepository) FindAuthorByStudentID(studentID string) (*entity.User, error) {
+	row := lr.SQLHandler.QueryRow(`
+		SELECT users.id, users.name, users.student_id, intr.department, intr.grade, intr.comments
+		FROM users
+		INNER JOIN introductions as intr
+		ON intr.user_id = users.id
+		WHERE users.student_id = ?
+	`, studentID)
+	var user entity.User
+	if err := row.Scan(&user.ID, &user.Name, &user.StudentID, &user.Department, &user.Grade, &user.Comment); err != nil {
+		log.Println("userRepository: FindByID: ", err)
+		return &entity.User{}, err
+	}
+	return &user, nil
+}
+
+func (lr *lectureRepository) Create(lec *entity.Lecture) (int, error) {
+	result, err := lr.SQLHandler.Execute(`
+		INSERT INTO lectures(user_id, title, file, comments, activation, created_at, updated_at)
+		VALUES (?,?,?,?,?,?,?)
+	`, lec.Author.ID, lec.Title, lec.File, lec.Comment, lec.Activation, lec.CreatedAt, lec.UpdatedAt)
+	if err != nil {
+		log.Println("lectureRepository: Create: insertDB: ", err)
+		return 0, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		log.Println("lectureRepository: Create: getID: ", err)
+		return 0, err
+	}
+	return int(id), err
+}
+
 func (lr *lectureRepository) UpdateByID(lec *entity.Lecture) error {
 	_, err := lr.SQLHandler.Execute(`
 		UPDATE lectures
@@ -70,6 +103,17 @@ func (lr *lectureRepository) UpdateByID(lec *entity.Lecture) error {
 	`, lec.Title, lec.Comment, lec.Activation, lec.ID)
 	if err != nil {
 		log.Println("lectureRepository: UpdateByID: ", err)
+		return err
+	}
+	return nil
+}
+
+func (lr *lectureRepository) DeleteByID(id int) error {
+	_, err := lr.SQLHandler.Execute(`
+		DELETE FROM lectures WHERE id = ?
+	`, id)
+	if err != nil {
+		log.Println("lectureRepository: DeleteByID: ", err)
 		return err
 	}
 	return nil
