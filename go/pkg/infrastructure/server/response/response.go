@@ -72,11 +72,11 @@ func InternalServerError(w http.ResponseWriter, info *Info) {
 
 // Info ヘッダー描画用のデータ
 type Info struct {
-	IsLogin  bool
-	PageType string
+	PageType  string
+	StudentID string
 }
 
-// ErrorData
+// ErrorData エラー描画用
 type ErrorData struct {
 	Title   string
 	Message string

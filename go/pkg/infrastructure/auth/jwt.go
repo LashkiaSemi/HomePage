@@ -9,13 +9,12 @@ import (
 )
 
 // CreateToken create jwt
-func CreateToken(userID string) (string, error) {
+func CreateToken(studentID string) (string, error) {
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
 
-	// TODO: claimsの設定
 	token.Claims = jwt.MapClaims{
-		"user": userID,
-		"exp":  time.Now().Add(time.Hour * 1).Unix(),
+		configs.JWTStudentIDClaim: studentID,
+		"exp":                     time.Now().Add(time.Hour * 1).Unix(),
 	}
 
 	var secretKey = configs.JWTSecret
@@ -42,5 +41,5 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 // GetStudentIDFromJWT jwtのクレームから学籍番号の取得
 func GetStudentIDFromJWT(token *jwt.Token) string {
 	claims := token.Claims.(jwt.MapClaims)
-	return claims["student_id"].(string)
+	return claims[configs.JWTStudentIDClaim].(string)
 }

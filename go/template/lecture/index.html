@@ -20,7 +20,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{ $isLogin := .Info.IsLogin }}
+                        {{ $studentID := .Info.StudentID }}
                         {{ range .Data.Lectures }}
                         <tr>
                             <td>{{ .Title }}</td>
@@ -28,9 +28,8 @@
                             <td>{{ .Comment }}</td>
                             <td>{{ .CreatedAt }}</td>
                             <td>
-                                <!-- TODO:a admin -->
                                 <button class="btn btn-primary">download</button>
-                                {{ if $isLogin }}
+                                {{ if eq $studentID .Author.StudentID }}
                                 <button class="btn btn-success">編集</button>
                                 <button class="btn btn-danger">delete</button>
                                 {{ end }}

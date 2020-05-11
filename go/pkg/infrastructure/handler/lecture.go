@@ -2,6 +2,7 @@ package handler
 
 import (
 	"homepage/pkg/domain/service"
+	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
@@ -13,7 +14,7 @@ type lectureHandler struct {
 	controller.LectureController
 }
 
-// LectureHandler レクチャーのハンドラ
+// LectureHandler レクチャーの入出力の受付
 type LectureHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
 }
@@ -31,7 +32,7 @@ func NewLectureHandler(sh repository.SQLHandler) LectureHandler {
 }
 
 func (lh *lectureHandler) GetAll(w http.ResponseWriter, r *http.Request) {
-	info := createInfo(r, "lecture")
+	info := createInfo(r, "lecture", auth.GetStudentIDFromCookie(r))
 	res, err := lh.LectureController.GetAll()
 	if err != nil {
 		response.InternalServerError(w, info)

@@ -19,7 +19,7 @@ func NewLectureRepository(sh SQLHandler) interactor.LectureRepository {
 
 func (lr *lectureRepository) FindAll() ([]*model.Lecture, error) {
 	rows, err := lr.SQLHandler.Query(`
-		SELECT l.id, l.title, l.file, l.comments, l.activation, l.created_at, users.name
+		SELECT l.id, l.title, l.file, l.comments, l.activation, l.created_at, users.name, users.student_id
 		FROM lectures as l
 		INNER JOIN users
 		ON user_id = users.id;
@@ -32,7 +32,7 @@ func (lr *lectureRepository) FindAll() ([]*model.Lecture, error) {
 	for rows.Next() {
 		var lecture model.Lecture
 		var user model.User
-		if err = rows.Scan(&lecture.ID, &lecture.Title, &lecture.File, &lecture.Comment, &lecture.Activation, &lecture.CreatedAt, &user.Name); err != nil {
+		if err = rows.Scan(&lecture.ID, &lecture.Title, &lecture.File, &lecture.Comment, &lecture.Activation, &lecture.CreatedAt, &user.Name, &user.StudentID); err != nil {
 			log.Println("lectureRepository: FindAll: ", err)
 			continue
 		}

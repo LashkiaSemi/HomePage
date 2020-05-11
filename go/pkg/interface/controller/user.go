@@ -9,12 +9,14 @@ type userController struct {
 	interactor.UserInteractor
 }
 
+// UserController ユーザの入出力を変換
 type UserController interface {
 	GetAllGroupByGrade() (*UsersGroupByGradeResponse, error)
 	Login(studentID, password string) error
 }
 
-func NewUserContoroller(ui interactor.UserInteractor) UserController {
+// NewUserController コントローラの作成
+func NewUserController(ui interactor.UserInteractor) UserController {
 	return &userController{
 		UserInteractor: ui,
 	}
@@ -38,14 +40,17 @@ func (uc *userController) Login(studentID, password string) error {
 	return uc.AuthenticationByStudentID(studentID, password)
 }
 
+// UsersResponse 複数ユーザのレスポンス
 type UsersResponse struct {
 	Users []*UserResponse
 }
 
+// UsersGroupByGradeResponse 学年別mapを作成する
 type UsersGroupByGradeResponse struct {
 	GradeUsers map[int][]*UserResponse
 }
 
+// UserResponse ユーザ一件分
 type UserResponse struct {
 	ID         int
 	StudentID  string

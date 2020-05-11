@@ -2,6 +2,7 @@ package handler
 
 import (
 	"homepage/pkg/configs"
+	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"net/http"
 )
@@ -19,7 +20,7 @@ func NewAuthHandler() AuthHandler {
 }
 
 func (ah *authHandler) Login(w http.ResponseWriter, r *http.Request) {
-	info := createInfo(r, "login")
+	info := createInfo(r, "login", auth.GetStudentIDFromCookie(r))
 	var body interface{}
 
 	studentID := r.PostFormValue("studentID")

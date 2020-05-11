@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"net/http"
 )
@@ -8,7 +9,7 @@ import (
 // LinkHandler リンクページのあれ
 // TODO: DBにいれたら？
 func LinkHandler(w http.ResponseWriter, r *http.Request) {
-	header := createInfo(r, "link")
+	header := createInfo(r, "link", auth.GetStudentIDFromCookie(r))
 
 	labLinks := []*link{
 		&link{

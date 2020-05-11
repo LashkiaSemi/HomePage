@@ -12,10 +12,12 @@ type societyController struct {
 	interactor.SocietyInteractor
 }
 
+// SocietyController 学会発表の入出力を変換
 type SocietyController interface {
 	GetAll() (*SocietiesResponse, error)
 }
 
+// NewSocietyController コントローラの作成
 func NewSocietyController(si interactor.SocietyInteractor) SocietyController {
 	return &societyController{
 		SocietyInteractor: si,
@@ -37,10 +39,12 @@ func (sc *societyController) GetAll() (*SocietiesResponse, error) {
 
 }
 
+// SocietiesResponse 学会発表の複数件分
 type SocietiesResponse struct {
 	Societies []*SocietyResponse
 }
 
+// SocietyResponse 学会発表一件分
 type SocietyResponse struct {
 	Title   string
 	Author  string

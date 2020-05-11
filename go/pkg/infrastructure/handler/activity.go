@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"net/http"
 	"time"
@@ -9,16 +10,18 @@ import (
 type activityHandler struct {
 }
 
+// ActivityHandler 活動内容の入出力を受付
 type ActivityHandler interface {
 	GetActivities(w http.ResponseWriter, r *http.Request)
 }
 
+// NewActivityHandler ハンドラの作成
 func NewActivityHandler() ActivityHandler {
 	return &activityHandler{}
 }
 
 func (ah *activityHandler) GetActivities(w http.ResponseWriter, r *http.Request) {
-	info := createInfo(r, "activity")
+	info := createInfo(r, "activity", auth.GetStudentIDFromCookie(r))
 
 	// TODO: get data
 	datas := []*activity{

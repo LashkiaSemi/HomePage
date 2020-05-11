@@ -16,14 +16,16 @@ type userHandler struct {
 	controller.UserController
 }
 
+// UserHandler 入力と出力の受付
 type UserHandler interface {
 	GetAllGroupByGrade(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 }
 
+// NewUserHandler ハンドラの作成
 func NewUserHandler(sh repository.SQLHandler) UserHandler {
 	return &userHandler{
-		UserController: controller.NewUserContoroller(
+		UserController: controller.NewUserController(
 			interactor.NewUserInteractor(
 				service.NewUserService(),
 				repository.NewUserRepository(sh),
@@ -34,7 +36,7 @@ func NewUserHandler(sh repository.SQLHandler) UserHandler {
 }
 
 func (uh *userHandler) GetAllGroupByGrade(w http.ResponseWriter, r *http.Request) {
-	info := createInfo(r, "user")
+	info := createInfo(r, "user", auth.GetStudentIDFromCookie(r))
 
 	res, err := uh.UserController.GetAllGroupByGrade()
 	if err != nil {
@@ -46,7 +48,7 @@ func (uh *userHandler) GetAllGroupByGrade(w http.ResponseWriter, r *http.Request
 }
 
 func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
-	info := createInfo(r, "login")
+	info := createInfo(r, "login", auth.GetStudentIDFromCookie(r))
 	var body interface{}
 
 	if r.Method == "POST" {
@@ -66,9 +68,17 @@ func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// jwtの作成
+		token, err := auth.CreateToken(studentID)
+		if err != nil {
+			log.Println("failed to create token: ", err)
+			response.InternalServerError(w, info)
+			return
+		}
+
 		cookie := &http.Cookie{
 			Name:  configs.CookieName,
-			Value: studentID,
+			Value: token,
 		}
 		http.SetCookie(w, cookie)
 		log.Println("redirect")
