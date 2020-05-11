@@ -21,9 +21,8 @@
                     </div>
                     {{ if eq .Data.StudentID .Info.StudentID }}
                     <div class="card-footer">
-                        <!-- TODO: path -->
                         <a href="/members/edit/profile"><button class="btn btn-info">編集</button></a>
-                        <a href="#"><button class="btn btn-success ml-10">パスワードの変更</button></a>
+                        <a href="/members/edit/password"><button class="btn btn-success ml-10">パスワードの変更</button></a>
                     </div>
                     {{ end }}
                 </div>

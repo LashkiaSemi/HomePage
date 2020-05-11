@@ -10,6 +10,14 @@
                     </div>
                     <div class="card-content">
                         <form method="POST" action="/login" class="form">
+                            {{ if .Info.Errors }}
+                            <div class="notify-bar notify-bar-danger mb-20">
+                                {{ range .Info.Errors }}
+                                <div>{{ . }}</div>
+                                {{ end }}
+                            </div>
+                            {{ end }}
+
                             <div>
                                 <label>学籍番号</label>
                                 <input type="text" class="form-text" name="studentID">

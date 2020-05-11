@@ -12,6 +12,7 @@ type UserRepository interface {
 	FindAuthInfoByStudentID(studentID string) (*entity.User, error)
 
 	UpdateByID(*entity.User) error
+	UpdatePasswordByStudentID(studentID, password string) error
 }
 
 // SocietyRepository 学会発表のDBアクセスを実現

@@ -15,6 +15,8 @@ type UserController interface {
 	GetByID(userID int) (*UserResponse, error)
 	GetByStudentID(studentID string) (*UserResponse, error)
 	UpdateByID(userID int, name, studentID, department, comment string, grade int) (*UserResponse, error)
+	UpdatePasswordByStudentID(studentID, oldPassword, newPassword string) error
+
 	Login(studentID, password string) error
 }
 
@@ -60,6 +62,10 @@ func (uc *userController) UpdateByID(userID int, name, studentID, department, co
 		return &UserResponse{}, err
 	}
 	return convertToUserResponse(user), err
+}
+
+func (uc *userController) UpdatePasswordByStudentID(studentID, oldPassword, newPassword string) error {
+	return uc.UserInteractor.UpdatePasswordByStudentID(studentID, oldPassword, newPassword)
 }
 
 func (uc *userController) Login(studentID, password string) error {

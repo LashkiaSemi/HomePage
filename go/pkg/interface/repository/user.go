@@ -110,3 +110,16 @@ func (ur *userRepository) UpdateByID(user *entity.User) error {
 	}
 	return nil
 }
+
+func (ur *userRepository) UpdatePasswordByStudentID(studentID, password string) error {
+	_, err := ur.SQLHandler.Execute(`
+		UPDATE users 
+		SET password_digest = ? 
+		WHERE student_id = ?
+	`, password, studentID)
+	if err != nil {
+		log.Println("userRepository: UpdatePassword: ", err)
+		return err
+	}
+	return nil
+}

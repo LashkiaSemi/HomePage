@@ -24,6 +24,8 @@ type UserHandler interface {
 	GetAllGroupByGrade(w http.ResponseWriter, r *http.Request)
 	GetByID(w http.ResponseWriter, r *http.Request)
 	UpdateByID(w http.ResponseWriter, r *http.Request)
+	UpdatePasswordByStudentID(w http.ResponseWriter, r *http.Request)
+
 	Login(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
 }
@@ -104,7 +106,38 @@ func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, fmt.Sprintf("/members/%d", body.ID), http.StatusSeeOther)
 	}
 	response.Success(w, "member/edit.html", info, body)
+}
 
+func (uh *userHandler) UpdatePasswordByStudentID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "", auth.GetStudentIDFromCookie(r))
+	var body interface{}
+	if r.Method == "POST" {
+		log.Println("password update!")
+		oldPassword := r.PostFormValue("oldPassword")
+		newPassword := r.PostFormValue("newPassword")
+		confirmPassword := r.PostFormValue("confirmPassword")
+		// バリデーション
+		if oldPassword == "" || newPassword == "" || confirmPassword == "" {
+			info.Errors = append(info.Errors, "全フィールドが必須です")
+			response.Success(w, "member/password_edit.html", info, body)
+			return
+		}
+		if newPassword != confirmPassword {
+			info.Errors = append(info.Errors, "新しいパスワードと確認用パスワードが一致しませんでした")
+			response.Success(w, "member/password_edit.html", info, body)
+			return
+		}
+
+		err := uh.UserController.UpdatePasswordByStudentID(info.StudentID, oldPassword, newPassword)
+		if err != nil {
+			info.Errors = append(info.Errors, "更新失敗")
+			response.Success(w, "member/password_edit.html", info, body)
+			return
+		}
+		log.Println("success update password")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	}
+	response.Success(w, "member/password_edit.html", info, body)
 }
 
 func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -116,14 +149,15 @@ func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
 		password := r.PostFormValue("password")
 
 		if studentID == "" || password == "" {
+			info.Errors = append(info.Errors, "全フィールドが必須です")
 			response.Success(w, "login.html", info, body)
 			return
 		}
 
 		err := uh.UserController.Login(studentID, password)
 		if err != nil {
-			// TODO: ろぐいんしっぱいじの
 			log.Println("failed to login: ", err)
+			info.Errors = append(info.Errors, "ログイン失敗")
 			response.Success(w, "login.html", info, body)
 			return
 		}

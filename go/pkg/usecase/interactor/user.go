@@ -16,6 +16,7 @@ type UserInteractor interface {
 	GetByID(userID int) (*entity.User, error)
 	GetByStudentID(studentID string) (*entity.User, error)
 	UpdateByID(userID int, name, studentID, department, comment string, grade int) (*entity.User, error)
+	UpdatePasswordByStudentID(studentID, oldPassword, newPassword string) error
 
 	// AuthenticationByStudentID 学籍番号からログイン機能を使う
 	AuthenticationByStudentID(studentID, password string) error
@@ -58,6 +59,35 @@ func (ui *userInteractor) UpdateByID(userID int, name, studentID, department, co
 		return &entity.User{}, err
 	}
 	return newUser, nil
+}
+
+func (ui *userInteractor) UpdatePasswordByStudentID(studentID, oldPassword, newPassword string) error {
+	// 現在のパスワードがあってるか検証
+	user, err := ui.UserRepository.FindAuthInfoByStudentID(studentID)
+	if err != nil {
+		log.Println("userInteractor: UpdatePassword: ", err)
+		return err
+	}
+	err = ui.VerifyHandler.PasswordVerify(user.Password, oldPassword)
+	if err != nil {
+		log.Println("現在のパスワードが違う")
+		return err
+	}
+
+	// 新規パスワードのハッシュ
+	hash, err := ui.VerifyHandler.PasswordHash(newPassword)
+	if err != nil {
+		log.Println("パスワードのハッシュエラー")
+		return err
+	}
+
+	// 新規パスワードを登録
+	err = ui.UserRepository.UpdatePasswordByStudentID(studentID, hash)
+	if err != nil {
+		log.Println("登録でエラー")
+		return err
+	}
+	return nil
 }
 
 func (ui *userInteractor) AuthenticationByStudentID(studentID, password string) error {
