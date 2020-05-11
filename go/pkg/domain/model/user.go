@@ -1,5 +1,6 @@
 package model
 
+// User ユーザ
 type User struct {
 	ID         int
 	StudentID  string

@@ -12,16 +12,18 @@ type AppHandler struct {
 	ResearchHandler
 	JobHandler
 	LectureHandler
+	EquipmentHandler
 }
 
 // NewAppHandler ハンドラの作成
 func NewAppHandler(sh repository.SQLHandler) *AppHandler {
 	return &AppHandler{
-		UserHandler:     NewUserHandler(sh),
-		ActivityHandler: NewActivityHandler(),
-		SocietyHandler:  NewSocietyHandler(sh),
-		ResearchHandler: NewResearchHandler(sh),
-		JobHandler:      NewJobHandler(sh),
-		LectureHandler:  NewLectureHandler(sh),
+		UserHandler:      NewUserHandler(sh),
+		ActivityHandler:  NewActivityHandler(),
+		SocietyHandler:   NewSocietyHandler(sh),
+		ResearchHandler:  NewResearchHandler(sh),
+		JobHandler:       NewJobHandler(sh),
+		LectureHandler:   NewLectureHandler(sh),
+		EquipmentHandler: NewEquipmentHandler(sh),
 	}
 }

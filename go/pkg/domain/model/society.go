@@ -1,5 +1,6 @@
 package model
 
+// Society 学会発表
 type Society struct {
 	ID        int
 	Title     string

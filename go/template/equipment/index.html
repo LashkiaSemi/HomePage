@@ -20,14 +20,15 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{ range .Data.Equipments }}
                         <tr>
-                            <td>name</td>
-                            <td>1</td>
-                            <td>comment</td>
-                            <td>tag</td>
-                            <td>2020/02/02</td>
+                            <td>{{ .Name }}</td>
+                            <td>{{ .Stock }}</td>
+                            <td>{{ .Comment }}</td>
+                            <td>{{ .Tag.Name }}</td>
+                            <td>{{ .CreatedAt }}</td>
                         </tr>
-
+                        {{ end }}
                     </tbody>
                 </table>
             </div>

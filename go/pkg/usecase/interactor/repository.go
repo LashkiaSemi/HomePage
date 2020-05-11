@@ -27,3 +27,8 @@ type LectureRepository interface {
 type ResearchRepository interface {
 	FindAll() ([]*model.Research, error)
 }
+
+// EquipmentRepository 備品関連のDBアクセスを実現
+type EquipmentRepository interface {
+	FindAll() ([]*model.Equipment, error)
+}

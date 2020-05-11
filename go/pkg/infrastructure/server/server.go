@@ -37,7 +37,7 @@ func (s *server) Serve() {
 	http.HandleFunc("/jobs", s.Handler.JobHandler.GetAll)
 	http.HandleFunc("/members", s.Handler.UserHandler.GetAllGroupByGrade)
 	http.HandleFunc("/links", handler.LinkHandler)
-	http.HandleFunc("/equipments", dummyHandler("equipment/index.html"))
+	http.HandleFunc("/equipments", s.Handler.EquipmentHandler.GetAll)
 	http.HandleFunc("/lectures", s.Handler.LectureHandler.GetAll)
 
 	log.Println("server running http://localhost:8080")
