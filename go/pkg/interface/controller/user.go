@@ -4,6 +4,8 @@ import (
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"strconv"
+
+	"github.com/pkg/errors"
 )
 
 type userController struct {
@@ -21,7 +23,9 @@ type UserController interface {
 
 	Login(studentID, password string) error
 
+	// admin
 	AdminGetAll() ([]map[string]string, error)
+	AdminGetByID(userID int) (*AdminResponse, error)
 }
 
 // NewUserController コントローラの作成
@@ -93,6 +97,7 @@ func (uc *userController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	users, err := uc.UserInteractor.GetAll()
 	if err != nil {
+		err = errors.Wrap(err, "AdminGetAll")
 		return res, err
 	}
 	for _, user := range users {
@@ -103,6 +108,41 @@ func (uc *userController) AdminGetAll() ([]map[string]string, error) {
 	}
 
 	return res, err
+}
+
+func (uc *userController) AdminGetByID(userID int) (*AdminResponse, error) {
+	var res AdminResponse
+
+	user, err := uc.UserInteractor.GetByID(userID)
+	if err != nil {
+		err = errors.Wrap(err, "AdminGetByID")
+		return &res, err
+	}
+
+	res.Fields = append(res.Fields,
+		&AdminField{Key: "ID", Value: user.ID},
+		&AdminField{Key: "名前", Value: user.Name},
+		&AdminField{Key: "学籍番号", Value: user.StudentID},
+		&AdminField{Key: "学部", Value: user.Department},
+		&AdminField{Key: "学年", Value: convertGradeFromIntToString(user.Grade)},
+		&AdminField{Key: "コメント", Value: user.Comment},
+	)
+	res.ID = user.ID
+	return &res, err
+}
+
+// TODO:移動！
+// AdminField adminサイトで使うやつ
+type AdminField struct {
+	Key   string
+	Value interface{}
+}
+
+// TODO: 移動
+// AdminResponse adminサイトで使うやつ
+type AdminResponse struct {
+	ID     int
+	Fields []*AdminField
 }
 
 // UsersResponse 複数ユーザのレスポンス

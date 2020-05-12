@@ -68,6 +68,8 @@ func (s *server) Serve() {
 	r.HandleFunc("/admin/equipments", s.Handler.EquipmentHandler.AdminGetAll)
 	// r.HandleFunc("/admin/tags")
 
+	r.HandleFunc("/admin/members/{id}", s.Handler.UserHandler.AdminGetByID)
+
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)
 }

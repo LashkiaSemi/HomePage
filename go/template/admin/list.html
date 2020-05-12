@@ -20,13 +20,14 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{ $type := .Info.PageType }}
                         {{ range .Data }}
                         <tr>
                             <td>{{ index . "id" }}</td>
-                            <td><a href="#">{{ index . "title" }}</a></td>
+                            <td><a href="/admin/{{ $type }}/{{ index . "id" }}">{{ index . "title" }}</a></td>
                             <td class="controls">
-                                <a href="#"><button class="btn btn-success">編集</button></a>
-                                <a href="#"><button class="btn btn-danger ml-10">削除</button></a>
+                                <a href="/admin/{{ $type }}/{{ index . "id" }}/edit"><button class="btn btn-success">編集</button></a>
+                                <a href="/admin/{{ $type }}/{{ index . "id" }}/delete"><button class="btn btn-danger ml-10">削除</button></a>
                             </td>
                         </tr>
                         {{ end }}

@@ -31,6 +31,7 @@ type UserHandler interface {
 
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
+	AdminGetByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewUserHandler ハンドラの作成
@@ -202,7 +203,7 @@ func (uh *userHandler) Logout(w http.ResponseWriter, r *http.Request) {
 
 // admin
 func (uh *userHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
-	info := createInfo(r, "member", auth.GetStudentIDFromCookie(r))
+	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
 	res, err := uh.UserController.AdminGetAll()
 	if err != nil {
 		log.Println("userHandler: AdminGetAll:", err)
@@ -212,4 +213,21 @@ func (uh *userHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.AdminRender(w, "list.html", info, res)
+}
+
+func (uh *userHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
+	userID, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("userHandler: AdminGetByID: failed to parse path param: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	res, err := uh.UserController.AdminGetByID(userID)
+	if err != nil {
+		log.Println("userHandler: AdminGetByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	response.AdminRender(w, "detail.html", info, res)
 }
