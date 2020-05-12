@@ -6,6 +6,8 @@ import (
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
+
+	"github.com/pkg/errors"
 )
 
 type societyRepository struct {
@@ -41,4 +43,18 @@ func (sr *societyRepository) FindAll() ([]*entity.Society, error) {
 		datas = append(datas, &data)
 	}
 	return datas, nil
+}
+
+func (sr *societyRepository) FindByID(id int) (*entity.Society, error) {
+	row := sr.SQLHandler.QueryRow(`
+		SELECT id, title, author, society, award, date
+		FROM societies
+		WHERE id=?
+	`, id)
+	var data entity.Society
+	if err := row.Scan(&data.ID, &data.Title, &data.Author, &data.Society, &data.Award, &data.Date); err != nil {
+		err = errors.Wrap(err, "FindByID: scan error: ")
+		return &data, err
+	}
+	return &data, nil
 }

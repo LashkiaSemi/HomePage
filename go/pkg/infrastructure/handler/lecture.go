@@ -30,6 +30,7 @@ type LectureHandler interface {
 
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
+	AdminGetByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewLectureHandler ハンドラの作成
@@ -209,4 +210,21 @@ func (lh *lectureHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.AdminRender(w, "list.html", info, res)
+}
+
+func (lh *lectureHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "lectures", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("lectureHandler: AdminGetByID: failed to parse path param: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	res, err := lh.LectureController.AdminGetByID(id)
+	if err != nil {
+		log.Println("lectureHandler: AdminGetByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	response.AdminRender(w, "detail.html", info, res)
 }

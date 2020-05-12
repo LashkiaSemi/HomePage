@@ -24,6 +24,7 @@ type LectureController interface {
 
 	// admin
 	AdminGetAll() ([]map[string]string, error)
+	AdminGetByID(id int) (*FieldsResponse, error)
 }
 
 // NewLectureController コントローラを作成
@@ -88,6 +89,24 @@ func (lc *lectureController) AdminGetAll() ([]map[string]string, error) {
 		})
 	}
 	return res, nil
+}
+
+func (lc *lectureController) AdminGetByID(id int) (*FieldsResponse, error) {
+	var res FieldsResponse
+	data, err := lc.LectureInteractor.GetByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "lectureController: AdminGetByID")
+		return &res, err
+	}
+	res.Fields = append(res.Fields,
+		&Field{Key: "ID", Value: data.ID},
+		&Field{Key: "タイトル", Value: data.Title},
+		&Field{Key: "投稿者", Value: data.Author},
+		&Field{Key: "ファイル名", Value: data.File},
+		&Field{Key: "コメント", Value: data.Comment},
+		&Field{Key: "公開", Value: data.Activation},
+	)
+	return &res, nil
 }
 
 // LecturesResponse Lectures

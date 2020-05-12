@@ -8,6 +8,9 @@ import (
 	"homepage/pkg/usecase/interactor"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type activityHandler struct {
@@ -20,6 +23,7 @@ type ActivityHandler interface {
 
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
+	AdminGetByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewActivityHandler ハンドラの作成
@@ -56,4 +60,21 @@ func (ah *activityHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 
 	response.AdminRender(w, "list.html", info, res)
 
+}
+
+func (ah *activityHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("activityHandler: AdminGetByID: failed to parse path param: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	res, err := ah.ActivityController.AdminGetByID(id)
+	if err != nil {
+		log.Println("activityHandler: AdminGetByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	response.AdminRender(w, "detail.html", info, res)
 }

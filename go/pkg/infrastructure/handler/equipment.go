@@ -8,6 +8,9 @@ import (
 	"homepage/pkg/usecase/interactor"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type equipmentHandler struct {
@@ -20,6 +23,7 @@ type EquipmentHandler interface {
 
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
+	AdminGetByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewEquipmentHandler ハンドラの作成
@@ -52,4 +56,21 @@ func (eh *equipmentHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	response.AdminRender(w, "list.html", info, res)
+}
+
+func (eh *equipmentHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("equipmentHandler: AdminGetByID: failed to parse path param: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	res, err := eh.EquipmentController.AdminGetByID(id)
+	if err != nil {
+		log.Println("equipmentHandler: AdminGetByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	response.AdminRender(w, "detail.html", info, res)
 }

@@ -20,6 +20,7 @@ type SocietyController interface {
 	GetAll() (*SocietiesResponse, error)
 
 	AdminGetAll() ([]map[string]string, error)
+	AdminGetByID(id int) (*FieldsResponse, error)
 }
 
 // NewSocietyController コントローラの作成
@@ -59,6 +60,26 @@ func (sc *societyController) AdminGetAll() ([]map[string]string, error) {
 		})
 	}
 	return res, nil
+}
+
+// admin
+func (sc *societyController) AdminGetByID(id int) (*FieldsResponse, error) {
+	var res FieldsResponse
+	data, err := sc.SocietyInteractor.GetByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "societyController: AdminGetByID")
+		return &res, err
+	}
+	res.Fields = append(res.Fields,
+		&Field{Key: "ID", Value: data.ID},
+		&Field{Key: "タイトル", Value: data.Title},
+		&Field{Key: "氏名", Value: data.Author},
+		&Field{Key: "学会", Value: data.Society},
+		&Field{Key: "受賞", Value: data.Award},
+		&Field{Key: "日付", Value: data.Date},
+	)
+	res.ID = data.ID
+	return &res, nil
 }
 
 // SocietiesResponse 学会発表の複数件分

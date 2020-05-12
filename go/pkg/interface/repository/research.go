@@ -4,6 +4,8 @@ import (
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
+
+	"github.com/pkg/errors"
 )
 
 type researchRepository struct {
@@ -37,4 +39,18 @@ func (rr *researchRepository) FindAll() ([]*entity.Research, error) {
 		res = append(res, &data)
 	}
 	return res, nil
+}
+
+func (rr *researchRepository) FindByID(id int) (*entity.Research, error) {
+	row := rr.SQLHandler.QueryRow(`
+		SELECT id, title, author, file, comments, activation
+		FROM researches
+		WHERE id=?
+	`, id)
+	var data entity.Research
+	if err := row.Scan(&data.ID, &data.Title, &data.Author, &data.File, &data.Comment, &data.Activation); err != nil {
+		err = errors.Wrap(err, "researchRepository: FindByID")
+		return &data, err
+	}
+	return &data, nil
 }

@@ -69,6 +69,12 @@ func (s *server) Serve() {
 	// r.HandleFunc("/admin/tags")
 
 	r.HandleFunc("/admin/members/{id}", s.Handler.UserHandler.AdminGetByID)
+	r.HandleFunc("/admin/activities/{id}", s.Handler.ActivityHandler.AdminGetByID)
+	r.HandleFunc("/admin/societies/{id}", s.Handler.SocietyHandler.AdminGeByID)
+	r.HandleFunc("/admin/jobs/{id}", s.Handler.JobHandler.AdminGetByID)
+	r.HandleFunc("/admin/lectures/{id}", s.Handler.LectureHandler.AdminGetByID)
+	r.HandleFunc("/admin/researches/{id}", s.Handler.ResearchHandler.AdminGetByID)
+	r.HandleFunc("/admin/equipments/{id}", s.Handler.EquipmentHandler.AdminGetByID)
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)

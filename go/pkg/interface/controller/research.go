@@ -18,6 +18,7 @@ type ResearchController interface {
 
 	// admin
 	AdminGetAll() ([]map[string]string, error)
+	AdminGetByID(id int) (*FieldsResponse, error)
 }
 
 // NewResearchController コントローラの作成
@@ -54,6 +55,24 @@ func (rc *researchController) AdminGetAll() ([]map[string]string, error) {
 		})
 	}
 	return res, nil
+}
+
+func (rc *researchController) AdminGetByID(id int) (*FieldsResponse, error) {
+	var res FieldsResponse
+	data, err := rc.ResearchInteractor.GetByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "researchController: AdminGetByID")
+		return &res, err
+	}
+	res.Fields = append(res.Fields,
+		&Field{Key: "ID", Value: data.ID},
+		&Field{Key: "タイトル", Value: data.Title},
+		&Field{Key: "著者", Value: data.Author},
+		&Field{Key: "ファイル", Value: data.File},
+		&Field{Key: "コメント", Value: data.Comment},
+		&Field{Key: "公開", Value: data.Activation},
+	)
+	return &res, nil
 }
 
 // ResearchesResponse 卒業研究のレスポンス

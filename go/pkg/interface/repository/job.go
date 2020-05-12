@@ -4,6 +4,8 @@ import (
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
+
+	"github.com/pkg/errors"
 )
 
 type jobRepository struct {
@@ -36,4 +38,18 @@ func (jr *jobRepository) FindAll() ([]*entity.Job, error) {
 		jobs = append(jobs, &job)
 	}
 	return jobs, nil
+}
+
+func (jr *jobRepository) FindByID(id int) (*entity.Job, error) {
+	row := jr.SQLHandler.QueryRow(`
+		SELECT id, company, job
+		FROM jobs
+		WHERE id=?
+	`, id)
+	var data entity.Job
+	if err := row.Scan(&data.ID, &data.Company, &data.Job); err != nil {
+		err = errors.Wrap(err, "jobRepository: FindByID")
+		return &data, err
+	}
+	return &data, nil
 }

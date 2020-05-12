@@ -40,3 +40,17 @@ func (ar *activityRepository) FindAll() ([]*entity.Activity, error) {
 	}
 	return acts, nil
 }
+
+func (ar *activityRepository) FindByID(id int) (*entity.Activity, error) {
+	row := ar.SQLHandler.QueryRow(`
+		SELECT id, activity, date
+		FROM activities
+		WHERE id=?
+	`, id)
+	var data entity.Activity
+	if err := row.Scan(&data.ID, &data.Activity, &data.Date); err != nil {
+		errors.Wrap(err, "FindByID")
+		return &data, err
+	}
+	return &data, nil
+}

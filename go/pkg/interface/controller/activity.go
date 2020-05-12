@@ -18,6 +18,7 @@ type ActivityController interface {
 
 	// admin
 	AdminGetAll() ([]map[string]string, error)
+	AdminGetByID(id int) (*FieldsResponse, error)
 }
 
 // NewActivityController コントローラの作成
@@ -76,6 +77,22 @@ func (ac *activityController) AdminGetAll() ([]map[string]string, error) {
 		})
 	}
 	return res, nil
+}
+
+func (ac *activityController) AdminGetByID(id int) (*FieldsResponse, error) {
+	var res FieldsResponse
+	data, err := ac.ActivityInteractor.GetByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "AdminGetByID")
+		return &res, err
+	}
+	res.Fields = append(res.Fields,
+		&Field{Key: "ID", Value: data.ID},
+		&Field{Key: "活動内容", Value: data.Activity},
+		&Field{Key: "日付", Value: data.Date},
+	)
+	res.ID = id
+	return &res, nil
 }
 
 // ActivitiesGroupByYearResponse 年ごとに分けた活動内容

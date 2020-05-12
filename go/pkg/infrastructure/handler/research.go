@@ -8,6 +8,9 @@ import (
 	"homepage/pkg/usecase/interactor"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type researchHandler struct {
@@ -20,6 +23,7 @@ type ResearchHandler interface {
 
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
+	AdminGetByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewResearchHandler ハンドラの作成
@@ -54,4 +58,21 @@ func (rh *researchHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.AdminRender(w, "list.html", info, res)
+}
+
+func (rh *researchHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "researches", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("researchHandler: AdminGetByID: failed to parse path param: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	res, err := rh.ResearchController.AdminGetByID(id)
+	if err != nil {
+		log.Println("researchHandler: AdminGetByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	response.AdminRender(w, "detail.html", info, res)
 }

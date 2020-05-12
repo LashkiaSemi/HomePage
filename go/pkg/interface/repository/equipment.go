@@ -4,6 +4,8 @@ import (
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
+
+	"github.com/pkg/errors"
 )
 
 type equipmentRepository struct {
@@ -40,4 +42,21 @@ func (er *equipmentRepository) FindAll() ([]*entity.Equipment, error) {
 		res = append(res, &data)
 	}
 	return res, nil
+}
+
+func (er *equipmentRepository) FindByID(id int) (*entity.Equipment, error) {
+	row := er.SQLHandler.QueryRow(`
+		SELECT e.id, e.name, e.num, e.note, tags.id, tags.name
+		FROM equipments as e
+		JOIN tags ON tags.id = tag_id
+		WHERE e.id = ?
+	`, id)
+	var data entity.Equipment
+	var tag entity.Tag
+	if err := row.Scan(&data.ID, &data.Name, &data.Stock, &data.Comment, &tag.ID, &tag.Name); err != nil {
+		err = errors.Wrap(err, "equipmentRepository: FindByAll")
+		return &data, err
+	}
+	data.Tag = &tag
+	return &data, nil
 }

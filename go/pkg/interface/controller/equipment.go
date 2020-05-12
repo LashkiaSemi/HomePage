@@ -18,6 +18,7 @@ type EquipmentController interface {
 
 	// admin
 	AdminGetAll() ([]map[string]string, error)
+	AdminGetByID(id int) (*FieldsResponse, error)
 }
 
 // NewEquipmentController コントローラの作成
@@ -53,6 +54,23 @@ func (ec *equipmentController) AdminGetAll() ([]map[string]string, error) {
 		})
 	}
 	return res, nil
+}
+
+func (ec *equipmentController) AdminGetByID(id int) (*FieldsResponse, error) {
+	var res FieldsResponse
+	data, err := ec.EquipmentInteractor.GetByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "equipmentController: AdmingetByID")
+		return &res, err
+	}
+	res.Fields = append(res.Fields,
+		&Field{Key: "ID", Value: data.ID},
+		&Field{Key: "備品名", Value: data.Name},
+		&Field{Key: "在庫", Value: data.Stock},
+		&Field{Key: "コメント", Value: data.Comment},
+		&Field{Key: "タグ", Value: data.Tag.Name},
+	)
+	return &res, nil
 }
 
 // EquipmentsResponse 備品のレスポンス
