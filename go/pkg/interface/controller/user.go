@@ -89,7 +89,7 @@ func (uc *userController) UpdatePasswordByStudentID(studentID, oldPassword, newP
 }
 
 func (uc *userController) Login(studentID, password string) error {
-	return uc.AuthenticationByStudentID(studentID, password)
+	return uc.UserInteractor.AuthenticationByStudentID(studentID, password)
 }
 
 // admin
