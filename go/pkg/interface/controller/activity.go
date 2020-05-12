@@ -13,7 +13,7 @@ type activityController struct {
 
 // ActivityController 活動内容の入出力を変換
 type ActivityController interface {
-	GetAllGroupByYear() (*ActivitiesGroupByYearResponse, error)
+	GetAllGroupByYear() ([]*ActivitiesGroupByYearResponse, error)
 }
 
 // NewActivityController コントローラの作成
@@ -23,23 +23,45 @@ func NewActivityController(ai interactor.ActivityInteractor) ActivityController 
 	}
 }
 
-func (ac *activityController) GetAllGroupByYear() (*ActivitiesGroupByYearResponse, error) {
+func (ac *activityController) GetAllGroupByYear() ([]*ActivitiesGroupByYearResponse, error) {
 	acts, err := ac.ActivityInteractor.GetAll()
 	if err != nil {
 		err = errors.Wrap(err, "controller")
-		return &ActivitiesGroupByYearResponse{}, err
+		return []*ActivitiesGroupByYearResponse{}, err
 	}
-	var res = make(map[string][]*ActivityResponse)
+
+	// responseづくり...
+	var res = []*ActivitiesGroupByYearResponse{}
+	var key = ""
+	var tmp = []*ActivityResponse{}
 	for _, act := range acts {
-		res[act.Date[:4]] = append(res[act.Date[:4]], convertToActivityResponse(act))
+		if key == act.Date[:4] {
+			tmp = append(tmp, convertToActivityResponse(act))
+			continue
+		} else {
+			if len(tmp) > 0 {
+				res = append(res, &ActivitiesGroupByYearResponse{
+					Year:       key,
+					Activities: tmp,
+				})
+			}
+			key = act.Date[:4]
+			tmp = []*ActivityResponse{}
+		}
 	}
-	// TODO: 降順にmap
-	return &ActivitiesGroupByYearResponse{Activities: res}, err
+	if len(tmp) > 0 {
+		res = append(res, &ActivitiesGroupByYearResponse{
+			Year:       key,
+			Activities: tmp,
+		})
+	}
+	return res, err
 }
 
 // ActivitiesGroupByYearResponse 年ごとに分けた活動内容
 type ActivitiesGroupByYearResponse struct {
-	Activities map[string][]*ActivityResponse
+	Year       string
+	Activities []*ActivityResponse
 }
 
 // ActivityResponse 活動内容のレスポンス

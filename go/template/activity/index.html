@@ -11,16 +11,16 @@
             <div class="content">
                 <h2 class="h2 list-title">目次</h2>
                 <ul class="list">
-                    {{ range $key, $val := .Data.Activities }}
-                    <li class="list-item"><a href="#{{$key}}" class="list-link">{{ $key }}年のニュース</a></li>
+                    {{ range .Data }}
+                    <li class="list-item"><a href="#{{ .Year }}" class="list-link">{{ .Year }}年のニュース</a></li>
                     {{ end }}
                 </ul>
             </div>
-            {{ range $key, $val := .Data.Activities }}
-            <div class="content underline" id="{{ $key }}">
-                <h2 class="h2 list-title">{{ $key }}年のニュース</h2>
+            {{ range .Data }}
+            <div class="content underline" id="{{ .Year }}">
+                <h2 class="h2 list-title">{{ .Year }}年のニュース</h2>
                 <ul>
-                    {{ range $val }}
+                    {{ range .Activities }}
                     <li>&lt;{{ .Date }}&gt; {{ .Activity }}</li>
                     {{ end }}
                 </ul>
