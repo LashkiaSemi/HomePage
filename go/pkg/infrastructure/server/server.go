@@ -68,13 +68,16 @@ func (s *server) Serve() {
 	r.HandleFunc("/admin/equipments", s.Handler.EquipmentHandler.AdminGetAll)
 	// r.HandleFunc("/admin/tags")
 
-	r.HandleFunc("/admin/members/{id}", s.Handler.UserHandler.AdminGetByID)
+	r.HandleFunc("/admin/members/{id:[0-9]+}", s.Handler.UserHandler.AdminGetByID)
 	r.HandleFunc("/admin/activities/{id}", s.Handler.ActivityHandler.AdminGetByID)
 	r.HandleFunc("/admin/societies/{id}", s.Handler.SocietyHandler.AdminGeByID)
 	r.HandleFunc("/admin/jobs/{id}", s.Handler.JobHandler.AdminGetByID)
 	r.HandleFunc("/admin/lectures/{id}", s.Handler.LectureHandler.AdminGetByID)
 	r.HandleFunc("/admin/researches/{id}", s.Handler.ResearchHandler.AdminGetByID)
 	r.HandleFunc("/admin/equipments/{id}", s.Handler.EquipmentHandler.AdminGetByID)
+
+	r.HandleFunc("/admin/members/new", s.Handler.UserHandler.AdminCreate)
+	r.HandleFunc("/admin/members/{id}/edit", s.Handler.UserHandler.AdminUpdateByID)
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)
@@ -109,7 +112,9 @@ func dummyHandler(templateFile string) http.HandlerFunc {
 
 func adminDummyHandler(templateFile string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		t, err := template.ParseFiles(
+		funcMap := template.FuncMap{"convPageType": func(p string) string { return "dummy" }}
+		t := template.New(templateFile).Funcs(funcMap)
+		t, err := t.ParseFiles(
 			"template/admin/"+templateFile,
 			"template/admin/_footer.html",
 			"template/admin/_header.html",

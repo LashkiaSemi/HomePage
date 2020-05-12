@@ -26,6 +26,8 @@ type UserController interface {
 	// admin
 	AdminGetAll() ([]map[string]string, error)
 	AdminGetByID(userID int) (*FieldsResponse, error)
+	AdminCreate(name, studentID, department, comment, password, role string, grade int) (int, error)
+	AdminUpdateByID(userID int, name, studentID, department, comment, role string, grade int) error
 }
 
 // NewUserController コントローラの作成
@@ -126,9 +128,18 @@ func (uc *userController) AdminGetByID(userID int) (*FieldsResponse, error) {
 		&Field{Key: "学部", Value: user.Department},
 		&Field{Key: "学年", Value: convertGradeFromIntToString(user.Grade)},
 		&Field{Key: "コメント", Value: user.Comment},
+		&Field{Key: "権限", Value: user.Role},
 	)
 	res.ID = user.ID
 	return &res, err
+}
+
+func (uc *userController) AdminCreate(name, studentID, department, comment, password, role string, grade int) (int, error) {
+	return uc.UserInteractor.AdminCreate(name, studentID, password, role, department, comment, grade)
+}
+
+func (uc *userController) AdminUpdateByID(userID int, name, studentID, department, comment, role string, grade int) error {
+	return uc.UserInteractor.AdminUpdate(userID, name, studentID, role, department, comment, grade)
 }
 
 // UsersResponse 複数ユーザのレスポンス

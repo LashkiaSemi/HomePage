@@ -32,6 +32,8 @@ type UserHandler interface {
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
+	AdminCreate(w http.ResponseWriter, r *http.Request)
+	AdminUpdateByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewUserHandler ハンドラの作成
@@ -230,4 +232,138 @@ func (uh *userHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.AdminRender(w, "detail.html", info, res)
+}
+
+func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
+	// createform行こう
+	gradeMap := map[string]string{
+		"2": "学部2年",
+		"3": "学部3年",
+		"4": "学部4年",
+		"5": "大学院1年",
+		"6": "大学院2年",
+		"0": "卒業生",
+	}
+	roleMap := map[string]string{
+		"member": "member",
+		"admin":  "admin",
+		"owner":  "owner",
+	}
+	// create form
+	body := []*FormField{
+		createFormField("name", "", "名前", "text", nil),
+		createFormField("studentID", "", "学籍番号", "text", nil),
+		createFormField("department", "", "学部", "text", nil),
+		createFormField("grade", "", "学年", "select", gradeMap),
+		createFormField("password", "", "パスワード", "password", nil),
+		createFormField("confirmPassword", "", "パスワード(確認用)", "password", nil),
+		createFormField("role", "", "権限", "select", roleMap),
+		createFormField("comment", "", "コメント", "textarea", nil),
+	}
+
+	if r.Method == "POST" {
+		log.Println("user update: post")
+		name := r.PostFormValue("name")
+		studentID := r.PostFormValue("studentID")
+		department := r.PostFormValue("department")
+		comment := r.PostFormValue("comment")
+		password := r.PostFormValue("password")
+		confPassword := r.PostFormValue("confirmPassword")
+		role := r.PostFormValue("role")
+		grade, err := strconv.Atoi(r.PostFormValue("grade"))
+		if err != nil {
+			// TODO: handling
+			log.Println("int parse error")
+		}
+		// TODO: バリデーション!
+		if name == "" || studentID == "" || password == "" || confPassword == "" || role == "" {
+			info.Errors = append(info.Errors, "名前、学籍番号、パスワード、権限は必須")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+		if password != confPassword {
+			info.Errors = append(info.Errors, "パスワードが一致しません")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+
+		id, err := uh.UserController.AdminCreate(name, studentID, department, comment, password, role, grade)
+		if err != nil {
+			response.InternalServerError(w, info)
+			return
+		}
+		log.Println("success create!")
+		http.Redirect(w, r, fmt.Sprintf("/admin/members/%d", id), http.StatusSeeOther)
+	}
+	response.AdminRender(w, "edit.html", info, body)
+}
+
+func (uh *userHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
+	userID, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		// TODO: ?
+		log.Println("userHandler: AdminUpdateByID: failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	// 初期値の獲得
+	user, err := uh.UserController.GetByID(userID)
+	if err != nil {
+		log.Println("userHandler: AdminUpdateByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	gradeMap := map[string]string{
+		"2": "学部2年",
+		"3": "学部3年",
+		"4": "学部4年",
+		"5": "大学院1年",
+		"6": "大学院2年",
+		"0": "卒業生",
+	}
+	roleMap := map[string]string{
+		"member": "member",
+		"admin":  "admin",
+		"owner":  "owner",
+	}
+	// create form
+	body := []*FormField{
+		createFormField("name", user.Name, "名前", "text", nil),
+		createFormField("studentID", user.StudentID, "学籍番号", "text", nil),
+		createFormField("department", user.Department, "学部", "text", nil),
+		createFormField("grade", user.Grade, "学年", "select", gradeMap),
+		createFormField("role", "", "権限", "select", roleMap),
+		createFormField("comment", user.Comment, "コメント", "textarea", nil),
+	}
+
+	if r.Method == "POST" {
+		log.Println("user update: post")
+		name := r.PostFormValue("name")
+		studentID := r.PostFormValue("studentID")
+		department := r.PostFormValue("department")
+		comment := r.PostFormValue("comment")
+		role := r.PostFormValue("role")
+		grade, err := strconv.Atoi(r.PostFormValue("grade"))
+		if err != nil {
+			// TODO: handling
+			log.Println("int parse error")
+		}
+		// TODO: バリデーション!
+		if name == "" || studentID == "" || role == "" {
+			info.Errors = append(info.Errors, "名前、学籍番号、権限は必須")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+
+		err = uh.UserController.AdminUpdateByID(userID, name, studentID, department, comment, role, grade)
+		if err != nil {
+			response.InternalServerError(w, info)
+			return
+		}
+		log.Println("success update!")
+		http.Redirect(w, r, fmt.Sprintf("/admin/members/%d", userID), http.StatusSeeOther)
+	}
+	response.AdminRender(w, "edit.html", info, body)
 }

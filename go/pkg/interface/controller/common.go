@@ -4,6 +4,7 @@ package controller
 type Field struct {
 	Key   string
 	Value interface{}
+	Type  string
 }
 
 // FieldsResponse adminサイトで使うやつ

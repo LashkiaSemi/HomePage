@@ -5,23 +5,43 @@
 
             <div class="content">
                 <div class="content-title">
-                    <h2 class="h2">活動内容</h2>
+                    <h2 class="h2">{{ convPageType .Info.PageType }}</h2>
                 </div>
             </div>
+
             <div class="content" style="display: flex; justify-content: center;">
-                <form class="form">
-                    <div>
-                        <label>Label</label>
-                        <input type="text" class="form-text">
+                <form class="form" method="POST">
+                    {{ if .Info.Errors }}
+                    <div class="notify-bar notify-bar-danger mb-20">
+                        {{ range .Info.Errors }}
+                        <div>{{ . }}</div>
+                        {{ end }}
                     </div>
+                    {{ end }}
+
+                    {{ range .Data }}
                     <div>
-                        <label>Label</label>
-                        <input type="text" class="form-text">
-                    </div>
-                    <div>
-                        <label>Label</label>
-                        <input type="text" class="form-text">
-                    </div>
+                        <label>{{ .Label }}</label>
+                        
+                        {{ if eq .Type "text" }}
+                        <input name="{{ .Name }}" type="{{ .Type }}" class="form-{{ .Type }}" value="{{ .Value }}">
+                        
+                        {{ else if eq .Type "textarea" }}
+                        <textarea name="{{ .Name }}" class="form-{{ .Type }}" >{{ .Value }}</textarea>
+                        
+                        {{ else if eq .Type "select" }}
+                        <select class="form-{{ .Type }}" name="{{ .Name }}">
+                            {{ range $key, $val := .Props }}
+                            <option value="{{ $key }}">{{ $val }}</option>
+                            {{ end }}
+                        </select>
+
+                        {{ else if eq .Type "password" }}
+                        <input name="{{ .Name }}" type="{{ .Type }}" class="form-text">
+                        {{ end }}
+                        </div>
+                    {{ end }}
+                    
                     <div>
                         <button type="submit" class="btn btn-primary">登録</button>
                     </div>

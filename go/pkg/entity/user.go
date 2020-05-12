@@ -23,6 +23,29 @@ type User struct {
 	UpdatedAt  string
 }
 
+func (u *User) Create(name, studentID, password, role, department, comment string, grade int) {
+	u.Name = name
+	u.StudentID = studentID
+	u.Password = password
+	u.Role = role
+	u.Department = department
+	u.Comment = comment
+	u.Grade = grade
+	u.CreatedAt = time.Now().Format(configs.DateTimeFormat)
+	u.UpdatedAt = u.CreatedAt
+}
+
+func (u User) AdminUpdate(name, studentID, department, comment, role string, grade int) *User {
+	u.Name = name
+	u.StudentID = studentID
+	u.Role = role
+	u.Department = department
+	u.Comment = comment
+	u.Grade = grade
+	u.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
+	return &u
+}
+
 func (u User) Update(name, studentID, department, comment string, grade int) *User {
 	res := u
 	res.Name = name
