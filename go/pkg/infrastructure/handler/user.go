@@ -28,6 +28,9 @@ type UserHandler interface {
 
 	Login(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
+
+	// admin
+	AdminGetAll(w http.ResponseWriter, r *http.Request)
 }
 
 // NewUserHandler ハンドラの作成
@@ -195,4 +198,18 @@ func (uh *userHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	cookie.MaxAge = -1
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+// admin
+func (uh *userHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "member", auth.GetStudentIDFromCookie(r))
+	res, err := uh.UserController.AdminGetAll()
+	if err != nil {
+		log.Println("userHandler: AdminGetAll:", err)
+		// TODO: ?
+		response.InternalServerError(w, info)
+		return
+	}
+
+	response.AdminRender(w, "list.html", info, res)
 }

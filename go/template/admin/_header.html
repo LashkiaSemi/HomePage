@@ -1,0 +1,26 @@
+{{ define "admin_header" }}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/admin.css">
+</head>
+
+<body>
+    <div class="header-wrapper">
+        <div class="nav-wrapper">
+            <div>
+                <a href="/admin" class="logo">Lashkia研究室 admin</a>
+                <span style="color: #bbb;">user: {{ .StudentID }}</span>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="/admin" class="nav-link">リソース管理</a></li>
+                <li class="nav-item"><a href="/" class="nav-link">ゼミページ</a></li>
+                <li class="nav-item"><a href="/logout" class="nav-link">ログアウト</a></li>
+            </ul>
+        </div>
+        <!-- END nav-wrapper -->
+    </div>
+    <!-- END header-wrapper -->
+{{ end }}

@@ -3,6 +3,7 @@ package controller
 import (
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
+	"strconv"
 )
 
 type userController struct {
@@ -11,6 +12,7 @@ type userController struct {
 
 // UserController ユーザの入出力を変換
 type UserController interface {
+	GetAll() (*UsersResponse, error)
 	GetAllGroupByGrade() (*UsersGroupByGradeResponse, error)
 	GetByID(userID int) (*UserResponse, error)
 	GetByStudentID(studentID string) (*UserResponse, error)
@@ -18,6 +20,8 @@ type UserController interface {
 	UpdatePasswordByStudentID(studentID, oldPassword, newPassword string) error
 
 	Login(studentID, password string) error
+
+	AdminGetAll() ([]map[string]string, error)
 }
 
 // NewUserController コントローラの作成
@@ -25,6 +29,18 @@ func NewUserController(ui interactor.UserInteractor) UserController {
 	return &userController{
 		UserInteractor: ui,
 	}
+}
+
+func (uc *userController) GetAll() (*UsersResponse, error) {
+	users, err := uc.UserInteractor.GetAll()
+	if err != nil {
+		return &UsersResponse{}, err
+	}
+	var res UsersResponse
+	for _, user := range users {
+		res.Users = append(res.Users, convertToUserResponse(user))
+	}
+	return &res, err
 }
 
 func (uc *userController) GetAllGroupByGrade() (*UsersGroupByGradeResponse, error) {
@@ -70,6 +86,23 @@ func (uc *userController) UpdatePasswordByStudentID(studentID, oldPassword, newP
 
 func (uc *userController) Login(studentID, password string) error {
 	return uc.AuthenticationByStudentID(studentID, password)
+}
+
+// admin
+func (uc *userController) AdminGetAll() ([]map[string]string, error) {
+	var res []map[string]string
+	users, err := uc.UserInteractor.GetAll()
+	if err != nil {
+		return res, err
+	}
+	for _, user := range users {
+		data := map[string]string{}
+		data["id"] = strconv.Itoa(user.ID)
+		data["title"] = user.Name
+		res = append(res, data)
+	}
+
+	return res, err
 }
 
 // UsersResponse 複数ユーザのレスポンス

@@ -56,6 +56,10 @@ func (s *server) Serve() {
 	r.HandleFunc("/lectures/{id}/edit", middleware.Authorized(s.Handler.LectureHandler.UpdateByID))
 	r.HandleFunc("/lectures/{id}/delete", middleware.Authorized(s.Handler.LectureHandler.DeleteByID))
 
+	// admin site
+	r.HandleFunc("/admin", adminDummyHandler("index.html"))
+	r.HandleFunc("/admin/users", s.Handler.UserHandler.AdminGetAll)
+
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)
 }
@@ -87,7 +91,31 @@ func dummyHandler(templateFile string) http.HandlerFunc {
 	}
 }
 
+func adminDummyHandler(templateFile string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		t, err := template.ParseFiles(
+			"template/admin/"+templateFile,
+			"template/admin/_footer.html",
+			"template/admin/_header.html",
+		)
+		if err != nil {
+			log.Printf("failed to parse template: %v", err)
+		}
+		if err = t.Execute(w, struct {
+			Info *dummyInfo
+		}{
+			Info: &dummyInfo{
+				StudentID: "dummy",
+				PageType:  "",
+			},
+		}); err != nil {
+			log.Printf("failed to execute template: %v", err)
+		}
+	}
+}
+
 type dummyInfo struct {
 	StudentID string
 	PageType  string
+	Errors    []string
 }

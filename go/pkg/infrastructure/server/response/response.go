@@ -70,6 +70,32 @@ func InternalServerError(w http.ResponseWriter, info *Info) {
 	})
 }
 
+// AdminRender テンプレートファイルを指定して描画
+func AdminRender(w http.ResponseWriter, templateFile string, info *Info, body interface{}) {
+	funcMap := template.FuncMap{"convPageType": convertPageType}
+	t := template.New(templateFile).Funcs(funcMap)
+	t, err := t.ParseFiles(
+		"template/admin/"+templateFile,
+		"template/admin/_footer.html",
+		"template/admin/_header.html",
+	)
+	if err != nil {
+		// TODO: redirect internal server error
+		log.Printf("failed to parse template: %v", err)
+	}
+
+	if err = t.Execute(w, struct {
+		Info *Info
+		Data interface{}
+	}{
+		Info: info,
+		Data: body,
+	}); err != nil {
+		// TODO: redirect internal server error
+		log.Printf("failed to execute template: %v", err)
+	}
+}
+
 // Info ヘッダー描画用のデータ
 type Info struct {
 	PageType  string
@@ -81,4 +107,13 @@ type Info struct {
 type ErrorData struct {
 	Title   string
 	Message string
+}
+
+func convertPageType(pageType string) string {
+	switch pageType {
+	case "member":
+		return "メンバー管理"
+	default:
+		return "default"
+	}
 }
