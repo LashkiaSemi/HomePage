@@ -27,6 +27,9 @@ type LectureHandler interface {
 	Create(w http.ResponseWriter, r *http.Request)
 	UpdateByID(w http.ResponseWriter, r *http.Request)
 	DeleteByID(w http.ResponseWriter, r *http.Request)
+
+	// admin
+	AdminGetAll(w http.ResponseWriter, r *http.Request)
 }
 
 // NewLectureHandler ハンドラの作成
@@ -194,4 +197,16 @@ func (lh *lectureHandler) DeleteByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Success(w, "lecture/delete.html", info, body)
+}
+
+// admin
+func (lh *lectureHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "lectures", auth.GetStudentIDFromCookie(r))
+	res, err := lh.LectureController.AdminGetAll()
+	if err != nil {
+		log.Println("lectureHandler: AdminGetAll: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	response.AdminRender(w, "list.html", info, res)
 }

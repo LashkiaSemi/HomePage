@@ -21,7 +21,7 @@ func NewSocietyRepository(sh SQLHandler) interactor.SocietyRepository {
 
 func (sr *societyRepository) FindAll() ([]*entity.Society, error) {
 	rows, err := sr.SQLHandler.Query(`
-		SELECT title, author, society, award, date
+		SELECT id, title, author, society, award, date
 		FROM societies
 		ORDER BY date DESC
 	`)
@@ -34,7 +34,7 @@ func (sr *societyRepository) FindAll() ([]*entity.Society, error) {
 	var datas []*entity.Society
 	for rows.Next() {
 		var data entity.Society
-		if err = rows.Scan(&data.Title, &data.Author, &data.Society, &data.Award, &data.Date); err != nil {
+		if err = rows.Scan(&data.ID, &data.Title, &data.Author, &data.Society, &data.Award, &data.Date); err != nil {
 			log.Println(err)
 			continue
 		}

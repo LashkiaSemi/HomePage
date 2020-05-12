@@ -6,6 +6,7 @@ import (
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
 	"homepage/pkg/usecase/interactor"
+	"log"
 	"net/http"
 )
 
@@ -16,6 +17,9 @@ type societyHandler struct {
 // SocietyHandler 学会発表の入出力の受付
 type SocietyHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
+
+	// admin
+	AdminGetAll(w http.ResponseWriter, r *http.Request)
 }
 
 // NewSocietyHandler ハンドラの作成
@@ -34,12 +38,22 @@ func (sh *societyHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "society", auth.GetStudentIDFromCookie(r))
 
 	// get data
-	datas, err := sh.SocietyController.GetAll()
+	res, err := sh.SocietyController.GetAll()
 	if err != nil {
 		response.InternalServerError(w, info)
 		return
 	}
-	res := datas
 	// response
 	response.Success(w, "society/index.html", info, res)
+}
+
+func (sh *societyHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
+	res, err := sh.SocietyController.AdminGetAll()
+	if err != nil {
+		log.Println("societyHandler: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	response.AdminRender(w, "list.html", info, res)
 }

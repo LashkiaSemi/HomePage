@@ -6,6 +6,7 @@ import (
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
 	"homepage/pkg/usecase/interactor"
+	"log"
 	"net/http"
 )
 
@@ -16,6 +17,9 @@ type researchHandler struct {
 // ResearchHandler 卒業研究の入出力を受け付け
 type ResearchHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
+
+	// admin
+	AdminGetAll(w http.ResponseWriter, r *http.Request)
 }
 
 // NewResearchHandler ハンドラの作成
@@ -38,4 +42,16 @@ func (rh *researchHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		response.InternalServerError(w, info)
 	}
 	response.Success(w, "research/index.html", info, res)
+}
+
+// admin
+func (rh *researchHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "researches", auth.GetStudentIDFromCookie(r))
+	res, err := rh.ResearchController.AdminGetAll()
+	if err != nil {
+		log.Println("jobHandler: AdminGetAll: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	response.AdminRender(w, "list.html", info, res)
 }

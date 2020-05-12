@@ -17,6 +17,9 @@ type activityHandler struct {
 // ActivityHandler 活動内容の入出力を受付
 type ActivityHandler interface {
 	GetActivities(w http.ResponseWriter, r *http.Request)
+
+	// admin
+	AdminGetAll(w http.ResponseWriter, r *http.Request)
 }
 
 // NewActivityHandler ハンドラの作成
@@ -40,4 +43,17 @@ func (ah *activityHandler) GetActivities(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	response.Success(w, "activity/index.html", info, res)
+}
+
+func (ah *activityHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "activities", auth.GetStudentIDFromCookie(r))
+	res, err := ah.ActivityController.AdminGetAll()
+	if err != nil {
+		log.Println(err)
+		response.InternalServerError(w, info)
+		return
+	}
+
+	response.AdminRender(w, "list.html", info, res)
+
 }

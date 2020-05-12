@@ -19,7 +19,7 @@ func NewJobRepository(sh SQLHandler) interactor.JobRepository {
 
 func (jr *jobRepository) FindAll() ([]*entity.Job, error) {
 	rows, err := jr.SQLHandler.Query(`
-		SELECT company, job
+		SELECT id, company, job
 		FROM jobs
 	`)
 	if err != nil {
@@ -29,7 +29,7 @@ func (jr *jobRepository) FindAll() ([]*entity.Job, error) {
 	var jobs []*entity.Job
 	for rows.Next() {
 		var job entity.Job
-		if err = rows.Scan(&job.Company, &job.Job); err != nil {
+		if err = rows.Scan(&job.ID, &job.Company, &job.Job); err != nil {
 			log.Println("job: FindAll: ", err)
 			continue
 		}

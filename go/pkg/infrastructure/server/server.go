@@ -58,8 +58,15 @@ func (s *server) Serve() {
 
 	// admin site
 	// TODO: middleware
-	r.HandleFunc("/admin", adminDummyHandler("index.html"))
+	r.HandleFunc("/admin", handler.AdminIndexHandler)
+	r.HandleFunc("/admin/activities", s.Handler.ActivityHandler.AdminGetAll)
+	r.HandleFunc("/admin/societies", s.Handler.SocietyHandler.AdminGetAll)
+	r.HandleFunc("/admin/researches", s.Handler.ResearchHandler.AdminGetAll)
+	r.HandleFunc("/admin/jobs", s.Handler.JobHandler.AdminGetAll)
 	r.HandleFunc("/admin/members", s.Handler.UserHandler.AdminGetAll)
+	r.HandleFunc("/admin/lectures", s.Handler.LectureHandler.AdminGetAll)
+	r.HandleFunc("/admin/equipments", s.Handler.EquipmentHandler.AdminGetAll)
+	// r.HandleFunc("/admin/tags")
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)

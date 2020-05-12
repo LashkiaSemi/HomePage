@@ -1,8 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
+	"strconv"
+
+	"github.com/pkg/errors"
 )
 
 type jobController struct {
@@ -12,6 +16,9 @@ type jobController struct {
 // JobController 就職先の入出力を変換
 type JobController interface {
 	GetAll() (*JobsResponse, error)
+
+	// admin
+	AdminGetAll() ([]map[string]string, error)
 }
 
 // NewJobController コントローラの作成
@@ -31,6 +38,22 @@ func (jc *jobController) GetAll() (*JobsResponse, error) {
 		res.Jobs = append(res.Jobs, convertToJobResponse(job))
 	}
 	return &res, nil
+}
+
+func (jc *jobController) AdminGetAll() ([]map[string]string, error) {
+	var res []map[string]string
+	datas, err := jc.JobInteractor.GetAll()
+	if err != nil {
+		err = errors.Wrap(err, "AdminGetAll")
+		return res, err
+	}
+	for _, data := range datas {
+		res = append(res, map[string]string{
+			"id":    strconv.Itoa(data.ID),
+			"title": fmt.Sprintf("%s / %s", data.Company, data.Job),
+		})
+	}
+	return res, nil
 }
 
 // JobsResponse 就職先のレスポンス

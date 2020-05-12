@@ -3,6 +3,9 @@ package controller
 import (
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
+	"strconv"
+
+	"github.com/pkg/errors"
 )
 
 type researchController struct {
@@ -12,6 +15,9 @@ type researchController struct {
 // ResearchController 卒業研究の入出力を変換
 type ResearchController interface {
 	GetAll() (*ResearchesResponse, error)
+
+	// admin
+	AdminGetAll() ([]map[string]string, error)
 }
 
 // NewResearchController コントローラの作成
@@ -31,6 +37,23 @@ func (rc *researchController) GetAll() (*ResearchesResponse, error) {
 		res.Researches = append(res.Researches, convertToResearchResponse(data))
 	}
 	return &res, nil
+}
+
+// admin
+func (rc *researchController) AdminGetAll() ([]map[string]string, error) {
+	var res []map[string]string
+	datas, err := rc.ResearchInteractor.GetAll()
+	if err != nil {
+		err = errors.Wrap(err, "AdminGetAll")
+		return res, err
+	}
+	for _, data := range datas {
+		res = append(res, map[string]string{
+			"id":    strconv.Itoa(data.ID),
+			"title": data.Title,
+		})
+	}
+	return res, nil
 }
 
 // ResearchesResponse 卒業研究のレスポンス

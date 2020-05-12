@@ -6,6 +6,7 @@ import (
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
 	"homepage/pkg/usecase/interactor"
+	"log"
 	"net/http"
 )
 
@@ -16,6 +17,9 @@ type equipmentHandler struct {
 // EquipmentHandler 備品関連の入出力を受け付け
 type EquipmentHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
+
+	// admin
+	AdminGetAll(w http.ResponseWriter, r *http.Request)
 }
 
 // NewEquipmentHandler ハンドラの作成
@@ -37,4 +41,15 @@ func (eh *equipmentHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.Success(w, "equipment/index.html", info, res)
+}
+
+func (eh *equipmentHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
+	res, err := eh.EquipmentController.AdminGetAll()
+	if err != nil {
+		log.Println("EquipmentHandler: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	response.AdminRender(w, "list.html", info, res)
 }

@@ -3,6 +3,7 @@ package controller
 import (
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
+	"strconv"
 
 	"github.com/pkg/errors"
 )
@@ -14,6 +15,9 @@ type activityController struct {
 // ActivityController 活動内容の入出力を変換
 type ActivityController interface {
 	GetAllGroupByYear() ([]*ActivitiesGroupByYearResponse, error)
+
+	// admin
+	AdminGetAll() ([]map[string]string, error)
 }
 
 // NewActivityController コントローラの作成
@@ -56,6 +60,22 @@ func (ac *activityController) GetAllGroupByYear() ([]*ActivitiesGroupByYearRespo
 		})
 	}
 	return res, err
+}
+
+func (ac *activityController) AdminGetAll() ([]map[string]string, error) {
+	var res []map[string]string
+	acts, err := ac.ActivityInteractor.GetAll()
+	if err != nil {
+		err = errors.Wrap(err, "AdminGetAll")
+		return res, err
+	}
+	for _, act := range acts {
+		res = append(res, map[string]string{
+			"id":    strconv.Itoa(act.ID),
+			"title": act.Activity,
+		})
+	}
+	return res, nil
 }
 
 // ActivitiesGroupByYearResponse 年ごとに分けた活動内容

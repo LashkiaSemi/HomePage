@@ -6,6 +6,9 @@ import (
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
+	"strconv"
+
+	"github.com/pkg/errors"
 )
 
 type societyController struct {
@@ -15,6 +18,8 @@ type societyController struct {
 // SocietyController 学会発表の入出力を変換
 type SocietyController interface {
 	GetAll() (*SocietiesResponse, error)
+
+	AdminGetAll() ([]map[string]string, error)
 }
 
 // NewSocietyController コントローラの作成
@@ -37,6 +42,23 @@ func (sc *societyController) GetAll() (*SocietiesResponse, error) {
 	}
 	return &res, nil
 
+}
+
+// admin
+func (sc *societyController) AdminGetAll() ([]map[string]string, error) {
+	var res []map[string]string
+	socs, err := sc.SocietyInteractor.GetAll()
+	if err != nil {
+		err = errors.Wrap(err, "AdminGetAll")
+		return res, err
+	}
+	for _, soc := range socs {
+		res = append(res, map[string]string{
+			"id":    strconv.Itoa(soc.ID),
+			"title": soc.Title,
+		})
+	}
+	return res, nil
 }
 
 // SocietiesResponse 学会発表の複数件分

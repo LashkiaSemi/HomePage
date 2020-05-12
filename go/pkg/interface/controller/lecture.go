@@ -5,6 +5,9 @@ import (
 	"homepage/pkg/configs"
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
+	"strconv"
+
+	"github.com/pkg/errors"
 )
 
 type lectureController struct {
@@ -18,6 +21,9 @@ type LectureController interface {
 	Create(studentID, title, file, comment string, activation int) (*LectureResponse, error)
 	UpdateByID(id int, title, comment string, activation int) (*LectureResponse, error)
 	DeleteByID(id int) error
+
+	// admin
+	AdminGetAll() ([]map[string]string, error)
 }
 
 // NewLectureController コントローラを作成
@@ -65,6 +71,23 @@ func (lc *lectureController) UpdateByID(id int, title, comment string, activatio
 
 func (lc *lectureController) DeleteByID(id int) error {
 	return lc.LectureInteractor.DeleteByID(id)
+}
+
+// admin
+func (lc *lectureController) AdminGetAll() ([]map[string]string, error) {
+	var res []map[string]string
+	datas, err := lc.LectureInteractor.GetAll()
+	if err != nil {
+		err = errors.Wrap(err, "AdminGetAll")
+		return res, err
+	}
+	for _, data := range datas {
+		res = append(res, map[string]string{
+			"id":    strconv.Itoa(data.ID),
+			"title": data.Title,
+		})
+	}
+	return res, nil
 }
 
 // LecturesResponse Lectures

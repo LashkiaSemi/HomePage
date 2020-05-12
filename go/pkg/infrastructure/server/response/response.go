@@ -111,8 +111,22 @@ type ErrorData struct {
 
 func convertPageType(pageType string) string {
 	switch pageType {
-	case "member":
+	case "activities":
+		return "活動内容管理"
+	case "societies":
+		return "学会発表管理"
+	case "researches":
+		return "卒業研究管理"
+	case "jobs":
+		return "就職先管理"
+	case "members":
 		return "メンバー管理"
+	case "links":
+		return "外部リンク管理"
+	case "equipments":
+		return "研究室備品管理"
+	case "lectures":
+		return "レクチャー管理"
 	default:
 		return "default"
 	}

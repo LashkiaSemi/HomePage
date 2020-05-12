@@ -96,10 +96,10 @@ func (uc *userController) AdminGetAll() ([]map[string]string, error) {
 		return res, err
 	}
 	for _, user := range users {
-		data := map[string]string{}
-		data["id"] = strconv.Itoa(user.ID)
-		data["title"] = user.Name
-		res = append(res, data)
+		res = append(res, map[string]string{
+			"id":    strconv.Itoa(user.ID),
+			"title": user.Name,
+		})
 	}
 
 	return res, err

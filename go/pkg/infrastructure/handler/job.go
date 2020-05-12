@@ -13,6 +13,9 @@ import (
 // JobHandler 入出力の受付
 type JobHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
+
+	// admin
+	AdminGetAll(w http.ResponseWriter, r *http.Request)
 }
 
 type jobHandler struct {
@@ -40,4 +43,15 @@ func (jh *jobHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.Success(w, "job/index.html", info, res)
+}
+
+func (jh *jobHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "jobs", auth.GetStudentIDFromCookie(r))
+	res, err := jh.JobController.AdminGetAll()
+	if err != nil {
+		log.Println("jobHandler: AdminGetAll: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	response.AdminRender(w, "list.html", info, res)
 }
