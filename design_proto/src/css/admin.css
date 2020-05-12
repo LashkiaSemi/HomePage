@@ -335,6 +335,7 @@ ul li {
 .content-wrapper .table .controls {
   display: flex;
   justify-content: flex-end;
+  min-width: 9rem;
 }
 
 .footer-wrapper .footer {

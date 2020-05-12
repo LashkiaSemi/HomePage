@@ -306,6 +306,7 @@ ul li {
         .controls {
             display: flex;
             justify-content: flex-end;
+            min-width: 9rem;
         }
     }
 }
