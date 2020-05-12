@@ -3,11 +3,15 @@ package handler
 import (
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
+	"homepage/pkg/interface/controller"
+	"homepage/pkg/interface/repository"
+	"homepage/pkg/usecase/interactor"
+	"log"
 	"net/http"
-	"time"
 )
 
 type activityHandler struct {
+	controller.ActivityController
 }
 
 // ActivityHandler 活動内容の入出力を受付
@@ -16,39 +20,24 @@ type ActivityHandler interface {
 }
 
 // NewActivityHandler ハンドラの作成
-func NewActivityHandler() ActivityHandler {
-	return &activityHandler{}
+func NewActivityHandler(sh repository.SQLHandler) ActivityHandler {
+	return &activityHandler{
+		ActivityController: controller.NewActivityController(
+			interactor.NewActivityInteractor(
+				repository.NewActivityRepository(sh),
+			),
+		),
+	}
 }
 
 func (ah *activityHandler) GetActivities(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "activity", auth.GetStudentIDFromCookie(r))
 
-	// TODO: get data
-	datas := []*activity{
-		&activity{
-			Date:     time.Now(),
-			Activity: "れくちゃー",
-		},
-		&activity{
-			Date:     time.Now(),
-			Activity: "ぜみ見学",
-		},
-		&activity{
-			Date:     time.Now(),
-			Activity: "選考",
-		},
+	res, err := ah.ActivityController.GetAllGroupByYear()
+	if err != nil {
+		log.Println(err)
+		response.InternalServerError(w, info)
+		return
 	}
-
-	body := struct {
-		Activities []*activity
-	}{
-		Activities: datas,
-	}
-	response.Success(w, "activity/index.html", info, body)
-}
-
-// TODO: move handler to controller
-type activity struct {
-	Date     time.Time
-	Activity string
+	response.Success(w, "activity/index.html", info, res)
 }

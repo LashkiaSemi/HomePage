@@ -19,7 +19,7 @@ type AppHandler struct {
 func NewAppHandler(sh repository.SQLHandler) *AppHandler {
 	return &AppHandler{
 		UserHandler:      NewUserHandler(sh),
-		ActivityHandler:  NewActivityHandler(),
+		ActivityHandler:  NewActivityHandler(sh),
 		SocietyHandler:   NewSocietyHandler(sh),
 		ResearchHandler:  NewResearchHandler(sh),
 		JobHandler:       NewJobHandler(sh),

@@ -7,6 +7,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gorilla/mux v1.7.4
+	github.com/pkg/errors v0.9.1
 	github.com/yawn-yawn-yawn/sampleNoteApp/go v0.0.0-20200312090238-758cb2dec372
 	golang.org/x/arch v0.0.0-20200312215426-ff8b605520f4 // indirect
 	golang.org/x/crypto v0.0.0-20191219195013-becbf705a915

@@ -15,6 +15,11 @@ type UserRepository interface {
 	UpdatePasswordByStudentID(studentID, password string) error
 }
 
+// ActivityRepository 活動内容のDBアクセスを実現
+type ActivityRepository interface {
+	FindAll() ([]*entity.Activity, error)
+}
+
 // SocietyRepository 学会発表のDBアクセスを実現
 type SocietyRepository interface {
 	FindAll() ([]*entity.Society, error)

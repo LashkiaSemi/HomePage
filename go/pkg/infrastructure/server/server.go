@@ -57,8 +57,9 @@ func (s *server) Serve() {
 	r.HandleFunc("/lectures/{id}/delete", middleware.Authorized(s.Handler.LectureHandler.DeleteByID))
 
 	// admin site
+	// TODO: middleware
 	r.HandleFunc("/admin", adminDummyHandler("index.html"))
-	r.HandleFunc("/admin/users", s.Handler.UserHandler.AdminGetAll)
+	r.HandleFunc("/admin/members", s.Handler.UserHandler.AdminGetAll)
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)
