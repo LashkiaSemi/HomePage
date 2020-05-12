@@ -31,7 +31,7 @@
                                 <button class="btn btn-primary">download</button>
                                 {{ if eq $studentID .Author.StudentID }}
                                 <a href="/lectures/{{ .ID }}/edit"><button class="btn btn-success">編集</button></a>
-                                <button class="btn btn-danger">削除</button>
+                                <a href="/lectures/{{ .ID }}/delete"><button class="btn btn-danger">削除</button></a>
                                 {{ end }}
                             </td>
                         </tr>

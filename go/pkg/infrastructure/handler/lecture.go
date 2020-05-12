@@ -61,26 +61,29 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 		title := r.PostFormValue("title")
 		comment := r.PostFormValue("comment")
 		_, fileHeader, err := r.FormFile("file")
-		var fileName string
+		if title == "" {
+			info.Errors = append(info.Errors, "タイトルは必須です")
+			response.Success(w, "lecture/edit.html", info, body)
+			return
+		}
 		if err != nil {
 			log.Println("lectureHandler: Create: ", err)
+			info.Errors = append(info.Errors, "ファイルは必須です")
+			response.Success(w, "lecture/edit.html", info, body)
+			return
 		}
-		// TODO: savefile
-		// かぶった時用に、名前帰るとかした方が良さげ
-
-		fileName = fileHeader.Filename
-
 		var activation int
 		if r.PostFormValue("activation") == "public" {
 			activation = 1
 		} else {
 			activation = 0
 		}
-		if title == "" {
-			info.Errors = append(info.Errors, "タイトルは必須です")
-			response.Success(w, "lecture/edit.html", info, body)
-			return
-		}
+
+		// TODO: savefile
+		// かぶった時用に、名前帰るとかした方が良さげ
+
+		fileName := fileHeader.Filename
+
 		_, err = lh.LectureController.Create(info.StudentID, title, fileName, comment, activation)
 		if err != nil {
 			info.Errors = append(info.Errors, "作成失敗")
@@ -146,11 +149,28 @@ func (lh *lectureHandler) DeleteByID(w http.ResponseWriter, r *http.Request) {
 		response.InternalServerError(w, info)
 		return
 	}
-	err = lh.LectureController.DeleteByID(lectureID)
+	body, err := lh.LectureController.GetByID(lectureID)
 	if err != nil {
-		log.Println("lectureHandler: DeleteByID: ", err)
+		log.Println("lectureHandler: DeleteByID: failed to get lecture: ", err)
 		response.InternalServerError(w, info)
 		return
 	}
-	http.Redirect(w, r, "/lectures", http.StatusSeeOther)
+	if body.Author.StudentID != info.StudentID {
+		log.Println("lectureHandler: DeleteByID: call wrong user: studentID is", info.StudentID)
+		http.Redirect(w, r, "/lectures", http.StatusSeeOther)
+		return
+	}
+
+	if r.Method == "POST" {
+		log.Println("lectureHandler: DeleteByID: post")
+		err = lh.LectureController.DeleteByID(lectureID)
+		if err != nil {
+			log.Println("lectureHandler: DeleteByID: ", err)
+			response.InternalServerError(w, info)
+			return
+		}
+		http.Redirect(w, r, "/lectures", http.StatusSeeOther)
+	}
+
+	response.Success(w, "lecture/delete.html", info, body)
 }

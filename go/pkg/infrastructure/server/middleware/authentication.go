@@ -33,6 +33,9 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		token, err := auth.VerifyToken(tokenString)
 		if err != nil {
 			log.Println("failed to verify token: ", err)
+			log.Println("delete cookie")
+			cookie.MaxAge = -1
+			http.SetCookie(w, cookie)
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}

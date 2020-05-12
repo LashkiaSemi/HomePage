@@ -1,0 +1,42 @@
+{{ template "header" .Info }}
+<div class="container-wrapper">
+    <div class="container">
+        <div class="content-wrapper">
+
+            <div class="content">
+                <div class="content-title">
+                    <h1 class="h1">レクチャー資料</h1>
+                </div>
+            </div>
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="h2">削除確認</h2>
+                    </div>
+                    <div class="card-content">
+                        <span>以下のデータを削除します。よろしいですか？</span>
+                        <ul>
+                            <li>タイトル: {{ .Data.Title }}</li>
+                            <li>投稿者: {{ .Data.Author.Name }}</li>
+                            <li>コメント: {{ .Data.Comment }}</li>
+                            <li>投稿日: {{ .Data.CreatedAt }}</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <form class="form" method="POST" style="display: inline-block;">
+                            <div style="margin: 0">
+                                <button type="submit" class="btn btn-danger">削除する</button>
+                            </div>
+                        </form>
+                        <a href="/lectures"><button class="btn btn-secondary ml-10">戻る</button></a>
+                    </div>
+                </div>
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-wrapper -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END contaienr-wrapper -->
+{{ template "footer" }}
