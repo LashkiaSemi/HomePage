@@ -31,6 +31,10 @@ func NewServer(port string, ah *handler.AppHandler) Server {
 func (s *server) Serve() {
 	r := mux.NewRouter()
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
+
+	//TODO: 環境変数とかのがいいかも。レクチャーの資料とかしまってある場所
+	r.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("public/"))))
+
 	// r.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
 	r.HandleFunc("/health", healthHandler)
 

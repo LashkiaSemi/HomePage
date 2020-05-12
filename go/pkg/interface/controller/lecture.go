@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+	"homepage/pkg/configs"
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 )
@@ -75,7 +77,8 @@ type LectureResponse struct {
 	ID         int
 	Author     *UserResponse
 	Title      string
-	File       string
+	FileName   string
+	FilePath   string
 	Comment    string
 	Activation int
 	CreatedAt  string
@@ -86,7 +89,8 @@ func convertToLectureResponse(lec *entity.Lecture) *LectureResponse {
 		ID:         lec.ID,
 		Author:     convertToUserResponse(lec.Author),
 		Title:      lec.Title,
-		File:       lec.File,
+		FileName:   lec.File,
+		FilePath:   fmt.Sprintf("%s/%s", configs.SaveLectureFileDir, lec.File),
 		Comment:    lec.Comment,
 		Activation: lec.Activation,
 		CreatedAt:  lec.CreatedAt,

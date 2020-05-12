@@ -28,7 +28,7 @@
                             <td>{{ .Comment }}</td>
                             <td>{{ .CreatedAt }}</td>
                             <td>
-                                <button class="btn btn-primary">download</button>
+                                <a href="{{ .FilePath }}" download="{{ .FileName }}"><button class="btn btn-primary">download</button></a>
                                 {{ if eq $studentID .Author.StudentID }}
                                 <a href="/lectures/{{ .ID }}/edit"><button class="btn btn-success">編集</button></a>
                                 <a href="/lectures/{{ .ID }}/delete"><button class="btn btn-danger">削除</button></a>

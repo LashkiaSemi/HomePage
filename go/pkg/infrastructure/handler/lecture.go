@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"homepage/pkg/configs"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
@@ -86,7 +87,7 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 		// かぶった時用に、名前帰るとかした方が良さげ?
 		fileName := fileHeader.Filename
 		var saveImage *os.File
-		saveImage, err = os.Create(configs.SaveLectureFileDir + fileName)
+		saveImage, err = os.Create(fmt.Sprintf("%s/%s", configs.SaveLectureFileDir, fileName))
 		if err != nil {
 			log.Println("lectureHandler: Create: createFile: ", err)
 			// TODO: 驚き最小じゃない気がする

@@ -12,5 +12,5 @@ const (
 
 const (
 	// TODO: 環境変数にした方がいい。絶対パスなら任意の場所に突っ込める
-	SaveLectureFileDir = "./lecture"
+	SaveLectureFileDir = "./public/lectures"
 )

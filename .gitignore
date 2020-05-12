@@ -33,6 +33,7 @@ vendor/bundle
 go/lectures
 go/researches
 go/logfile.log
+go/public/
 note.md
 node_modules/
 *.bak
