@@ -1,13 +1,16 @@
 package handler
 
 import (
+	"homepage/pkg/configs"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
 	"homepage/pkg/usecase/interactor"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -60,7 +63,7 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 		log.Println("lecture create: post")
 		title := r.PostFormValue("title")
 		comment := r.PostFormValue("comment")
-		_, fileHeader, err := r.FormFile("file")
+		file, fileHeader, err := r.FormFile("file")
 		if title == "" {
 			info.Errors = append(info.Errors, "タイトルは必須です")
 			response.Success(w, "lecture/edit.html", info, body)
@@ -80,9 +83,26 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// TODO: savefile
-		// かぶった時用に、名前帰るとかした方が良さげ
-
+		// かぶった時用に、名前帰るとかした方が良さげ?
 		fileName := fileHeader.Filename
+		var saveImage *os.File
+		saveImage, err = os.Create(configs.SaveLectureFileDir + fileName)
+		if err != nil {
+			log.Println("lectureHandler: Create: createFile: ", err)
+			// TODO: 驚き最小じゃない気がする
+			response.InternalServerError(w, info)
+			return
+		}
+		defer saveImage.Close()
+		defer file.Close()
+		_, err = io.Copy(saveImage, file)
+		if err != nil {
+			log.Println("lectureHandler: Create: save file: ", err)
+			// 驚き最小じゃない気がする
+			response.InternalServerError(w, info)
+			return
+		}
+		log.Println("lectureHandler: Create: success save file: ", fileName)
 
 		_, err = lh.LectureController.Create(info.StudentID, title, fileName, comment, activation)
 		if err != nil {
