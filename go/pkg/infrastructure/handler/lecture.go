@@ -19,6 +19,7 @@ import (
 
 type lectureHandler struct {
 	controller.LectureController
+	controller.UserController
 }
 
 // LectureHandler レクチャーの入出力の受付
@@ -31,6 +32,8 @@ type LectureHandler interface {
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
+	AdminCreate(w http.ResponseWriter, r *http.Request)
+	AdminUpdateByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewLectureHandler ハンドラの作成
@@ -39,6 +42,12 @@ func NewLectureHandler(sh repository.SQLHandler) LectureHandler {
 		LectureController: controller.NewLectureController(
 			interactor.NewLectureInteractor(
 				repository.NewLectureRepository(sh),
+			),
+		),
+		UserController: controller.NewUserController(
+			interactor.NewUserInteractor(
+				repository.NewUserRepository(sh),
+				auth.NewVerifyHandler(),
 			),
 		),
 	}
@@ -154,7 +163,7 @@ func (lh *lectureHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 			response.Success(w, "lecture/edit.html", info, body)
 			return
 		}
-		_, err := lh.LectureController.UpdateByID(lectureID, title, comment, activation)
+		_, err := lh.LectureController.UpdateByID(lectureID, info.StudentID, title, body.FileName, comment, activation)
 		if err != nil {
 			info.Errors = append(info.Errors, "更新失敗")
 			response.Success(w, "lecture/edit.html", info, body)
@@ -228,4 +237,178 @@ func (lh *lectureHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 	}
 	res.ID = id
 	response.AdminRender(w, "detail.html", info, res)
+}
+
+func (lh *lectureHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "lectures", auth.GetStudentIDFromCookie(r))
+
+	// create user map
+	users, err := lh.UserController.GetAll()
+	if err != nil {
+		log.Println("failed to get author options")
+		response.InternalServerError(w, info)
+		return
+	}
+	userMap := map[string]string{}
+	for _, user := range users.Users {
+		userMap[user.StudentID] = user.Name
+	}
+
+	body := []*FormField{
+		createFormField("title", "", "タイトル", "text", nil),
+		createFormField("author", "", "投稿者", "select", userMap),
+		createFormField("file", "", "ファイル", "file", nil),
+		createFormField("comment", "", "コメント", "textarea", nil),
+		createFormField("activation", "public", "公開する", "checkbox", nil),
+	}
+
+	if r.Method == "POST" {
+		log.Println("lecture create: post request")
+		title := r.PostFormValue("title")
+		studentID := r.PostFormValue("author")
+		comment := r.PostFormValue("comment")
+		var activation int
+		if r.PostFormValue("activation") == "public" {
+			activation = 1
+		} else {
+			activation = 0
+		}
+		if title == "" || studentID == "" {
+			info.Errors = append(info.Errors, "タイトル、投稿者は必須です")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+		// file
+		var fileName string
+		file, fileHeader, err := r.FormFile("file")
+		if err != nil {
+			log.Println("empty file", err)
+			fileName = ""
+		} else {
+			// TODO: funcにしたい
+			fileName = fileHeader.Filename
+			var saveImage *os.File
+			saveImage, err = os.Create(fmt.Sprintf("%s/%s", configs.SaveResearchFileDir, fileName))
+			if err != nil {
+				log.Println("failed to create file: ", err)
+				// TODO: 驚き最小じゃない気がする
+				response.InternalServerError(w, info)
+				return
+			}
+			defer saveImage.Close()
+			defer file.Close()
+			_, err = io.Copy(saveImage, file)
+			if err != nil {
+				log.Println("failed to save file: ", err)
+				// 驚き最小じゃない気がする
+				response.InternalServerError(w, info)
+				return
+			}
+			log.Println("complete to save file")
+		}
+
+		res, err := lh.LectureController.Create(studentID, title, fileName, comment, activation)
+		if err != nil {
+			log.Println(err)
+			response.InternalServerError(w, info)
+			return
+		}
+		log.Println("success create lecture")
+		http.Redirect(w, r, fmt.Sprintf("/admin/lectures/%d", res.ID), http.StatusSeeOther)
+	}
+
+	response.AdminRender(w, "edit.html", info, body)
+}
+
+func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "lectures", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	data, err := lh.LectureController.GetByID(id)
+	if err != nil {
+		log.Println("failed to get target: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+
+	// create user map
+	users, err := lh.UserController.GetAll()
+	if err != nil {
+		log.Println("failed to get author options")
+		response.InternalServerError(w, info)
+		return
+	}
+	userMap := map[string]string{}
+	for _, user := range users.Users {
+		userMap[user.StudentID] = user.Name
+	}
+
+	body := []*FormField{
+		createFormField("title", data.Title, "タイトル", "text", nil),
+		createFormField("author", data.Author.Name, "投稿者", "select", userMap),
+		createFormField("file", data.FileName, "ファイル", "file", nil),
+		createFormField("comment", data.Comment, "コメント", "textarea", nil),
+		createFormField("activation", "public", "公開する", "checkbox", nil),
+	}
+
+	if r.Method == "POST" {
+		log.Println("lecture update: post request")
+		title := r.PostFormValue("title")
+		studentID := r.PostFormValue("author")
+		comment := r.PostFormValue("comment")
+		var activation int
+		if r.PostFormValue("activation") == "public" {
+			activation = 1
+		} else {
+			activation = 0
+		}
+		if title == "" || studentID == "" {
+			info.Errors = append(info.Errors, "タイトル、投稿者は必須です")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+		// file
+		var fileName string
+		file, fileHeader, err := r.FormFile("file")
+		if err != nil {
+			log.Println("empty file", err)
+			fileName = data.FileName
+		} else {
+			// TODO: funcにしたい
+			fileName = fileHeader.Filename
+			var saveImage *os.File
+			saveImage, err = os.Create(fmt.Sprintf("%s/%s", configs.SaveResearchFileDir, fileName))
+			if err != nil {
+				log.Println("failed to create file: ", err)
+				// TODO: 驚き最小じゃない気がする
+				response.InternalServerError(w, info)
+				return
+			}
+			defer saveImage.Close()
+			defer file.Close()
+			_, err = io.Copy(saveImage, file)
+			if err != nil {
+				log.Println("failed to save file: ", err)
+				// 驚き最小じゃない気がする
+				response.InternalServerError(w, info)
+				return
+			}
+			log.Println("complete to save file")
+		}
+
+		_, err = lh.LectureController.UpdateByID(id, studentID, title, fileName, comment, activation)
+		if err != nil {
+			log.Println(err)
+			response.InternalServerError(w, info)
+			return
+		}
+		log.Println("success update lecture")
+		http.Redirect(w, r, fmt.Sprintf("/admin/lectures/%d", id), http.StatusSeeOther)
+	}
+
+	response.AdminRender(w, "edit.html", info, body)
 }

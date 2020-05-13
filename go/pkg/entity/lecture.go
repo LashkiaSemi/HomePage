@@ -1,5 +1,10 @@
 package entity
 
+import (
+	"homepage/pkg/configs"
+	"time"
+)
+
 // Lecture レクチャーのモデル
 type Lecture struct {
 	ID         int
@@ -12,20 +17,21 @@ type Lecture struct {
 	UpdatedAt  string
 }
 
-// func (l *Lecture) Create(title, file, comment string, activation int, author *User) {
-// 	l.Title = title
-// 	l.File = file
-// 	l.Comment = comment
-// 	l.Activation = activation
-// 	l.CreatedAt = time.Now().Format(configs.DateTimeFormat)
-// 	l.UpdatedAt = l.CreatedAt
-// 	l.Author = author
-// }
+func (l *Lecture) Create(title, file, comment string, activation int, author *User) {
+	l.Title = title
+	l.File = file
+	l.Comment = comment
+	l.Activation = activation
+	l.CreatedAt = time.Now().Format(configs.DateTimeFormat)
+	l.UpdatedAt = l.CreatedAt
+	l.Author = author
+}
 
-func (l Lecture) Update(title, comment string, activation int) *Lecture {
-	res := l
-	res.Title = title
-	res.Comment = comment
-	res.Activation = activation
-	return &res
+func (l Lecture) Update(title, file, comment string, activation int, author *User) *Lecture {
+	l.Title = title
+	l.File = file
+	l.Comment = comment
+	l.Activation = activation
+	l.Author = author
+	return &l
 }

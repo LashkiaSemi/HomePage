@@ -7,7 +7,10 @@
             <div class="content">
                 <div class="content-title">
                     <h2 class="h2">{{ convPageType .Info.PageType }}</h2>
-                    <a href="/admin/{{ .Info.PageType }}/new"><button class="btn btn-success">新規作成</button></a>
+                    <div>
+                        <a href="/admin"><button class="btn btn-secondary">トップへ戻る</button></a>
+                        <a href="/admin/{{ .Info.PageType }}/new"><button class="btn btn-success">新規作成</button></a>
+                    </div>
                 </div>
             </div>
             <div class="content">

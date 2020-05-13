@@ -98,9 +98,9 @@ func (lr *lectureRepository) Create(lec *entity.Lecture) (int, error) {
 func (lr *lectureRepository) UpdateByID(lec *entity.Lecture) error {
 	_, err := lr.SQLHandler.Execute(`
 		UPDATE lectures
-		SET title=?, comments=?, activation=?
+		SET title=?, file=?, comments=?, activation=?, user_id=?
 		WHERE id=?
-	`, lec.Title, lec.Comment, lec.Activation, lec.ID)
+	`, lec.Title, lec.File, lec.Comment, lec.Activation, lec.Author.ID, lec.ID)
 	if err != nil {
 		log.Println("lectureRepository: UpdateByID: ", err)
 		return err

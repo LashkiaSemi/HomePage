@@ -21,7 +21,7 @@ func NewUserRepository(sh SQLHandler) interactor.UserRepository {
 
 func (ur *userRepository) FindAll() ([]*entity.User, error) {
 	rows, err := ur.SQLHandler.Query(`
-		SELECT users.id, name, grade
+		SELECT users.id, name, student_id, grade
 		FROM users
 		INNER JOIN introductions ON users.id = user_id
 	`)
@@ -33,7 +33,7 @@ func (ur *userRepository) FindAll() ([]*entity.User, error) {
 	var users []*entity.User
 	for rows.Next() {
 		var user entity.User
-		if err = rows.Scan(&user.ID, &user.Name, &user.Grade); err != nil {
+		if err = rows.Scan(&user.ID, &user.Name, &user.StudentID, &user.Grade); err != nil {
 			log.Println("userRepository: FindAll: ", err)
 			continue
 		}

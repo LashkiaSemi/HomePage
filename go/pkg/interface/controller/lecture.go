@@ -19,7 +19,7 @@ type LectureController interface {
 	GetAll() (*LecturesResponse, error)
 	GetByID(id int) (*LectureResponse, error)
 	Create(studentID, title, file, comment string, activation int) (*LectureResponse, error)
-	UpdateByID(id int, title, comment string, activation int) (*LectureResponse, error)
+	UpdateByID(id int, studentID, title, file, comment string, activation int) (*LectureResponse, error)
 	DeleteByID(id int) error
 
 	// admin
@@ -62,8 +62,8 @@ func (lc *lectureController) Create(studentID, title, file, comment string, acti
 	return convertToLectureResponse(lecture), nil
 }
 
-func (lc *lectureController) UpdateByID(id int, title, comment string, activation int) (*LectureResponse, error) {
-	lec, err := lc.LectureInteractor.UpdateByID(id, title, comment, activation)
+func (lc *lectureController) UpdateByID(id int, studentID, title, file, comment string, activation int) (*LectureResponse, error) {
+	lec, err := lc.LectureInteractor.UpdateByID(id, studentID, title, file, comment, activation)
 	if err != nil {
 		return &LectureResponse{}, err
 	}

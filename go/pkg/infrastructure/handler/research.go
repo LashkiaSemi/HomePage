@@ -86,7 +86,6 @@ func (rh *researchHandler) Create(w http.ResponseWriter, r *http.Request) {
 		// file
 		var fileName string
 		file, fileHeader, err := r.FormFile("file")
-		defer file.Close()
 		if err != nil {
 			log.Println("empty file", err)
 			fileName = ""
@@ -102,6 +101,7 @@ func (rh *researchHandler) Create(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			defer saveImage.Close()
+			defer file.Close()
 			_, err = io.Copy(saveImage, file)
 			if err != nil {
 				log.Println("failed to save file: ", err)
@@ -169,7 +169,7 @@ func (rh *researchHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		file, fileHeader, err := r.FormFile("file")
 		if err != nil {
 			log.Println("empty file", err)
-			fileName = ""
+			fileName = data.FileName
 		} else {
 			// TODO: funcにしたい
 			fileName = fileHeader.Filename
