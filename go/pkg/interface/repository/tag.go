@@ -82,3 +82,14 @@ func (tr *tagRepository) UpdateByID(data *entity.Tag) error {
 	}
 	return err
 }
+
+func (tr *tagRepository) DeleteByID(id int) error {
+	_, err := tr.SQLHandler.Execute(`
+		DELETE FROM tags
+		WHERE id=?
+	`, id)
+	if err != nil {
+		err = errors.Wrap(err, "DeleteByID")
+	}
+	return err
+}

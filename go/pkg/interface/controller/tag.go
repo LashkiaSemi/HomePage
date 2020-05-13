@@ -18,6 +18,7 @@ type TagController interface {
 	GetByID(id int) (*TagResponse, error)
 	Create(name string) (int, error)
 	UpdateByID(id int, name string) error
+	DeleteByID(id int) error
 
 	AdminGetAll() ([]map[string]string, error)
 	AdminGetByID(id int) (*FieldsResponse, error)
@@ -60,6 +61,11 @@ func (tc *tagController) UpdateByID(id int, name string) error {
 	return tc.TagInteractor.UpdateByID(id, name)
 }
 
+func (tc *tagController) DeleteByID(id int) error {
+	return tc.TagInteractor.DeleteByID(id)
+}
+
+// admin
 func (tc *tagController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	tags, err := tc.TagInteractor.GetAll()

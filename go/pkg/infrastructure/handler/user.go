@@ -34,6 +34,7 @@ type UserHandler interface {
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
 	AdminCreate(w http.ResponseWriter, r *http.Request)
 	AdminUpdateByID(w http.ResponseWriter, r *http.Request)
+	AdminDeleteByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewUserHandler ハンドラの作成
@@ -366,4 +367,34 @@ func (uh *userHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, fmt.Sprintf("/admin/members/%d", userID), http.StatusSeeOther)
 	}
 	response.AdminRender(w, "edit.html", info, body)
+}
+
+func (uh *userHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	body, err := uh.UserController.AdminGetByID(id)
+	if err != nil {
+		log.Println("AdminDeleteByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+
+	if r.Method == "POST" {
+		log.Println("post request: delete user")
+		err = uh.UserController.DeleteByID(id)
+		if err != nil {
+			log.Println("failed to delete")
+			info.Errors = append(info.Errors, "削除に失敗しました")
+			response.AdminRender(w, "delete.html", info, body)
+			return
+		}
+		log.Println("success to delete user")
+		http.Redirect(w, r, "/admin/members", http.StatusSeeOther)
+	}
+	response.AdminRender(w, "delete.html", info, body)
 }

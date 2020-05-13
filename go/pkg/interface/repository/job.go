@@ -83,3 +83,14 @@ func (jr *jobRepository) UpdateByID(data *entity.Job) error {
 	}
 	return nil
 }
+
+func (jr *jobRepository) DeleteByID(id int) error {
+	_, err := jr.SQLHandler.Execute(`
+		DELETE FROM jobs
+		WHERE id=?
+	`, id)
+	if err != nil {
+		err = errors.Wrap(err, "DeleteByID")
+	}
+	return err
+}

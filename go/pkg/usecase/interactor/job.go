@@ -17,6 +17,8 @@ type JobInteractor interface {
 
 	Create(company, job string) (int, error)
 	UpdateByID(id int, company, job string) error
+
+	DeleteByID(id int) error
 }
 
 // NewJobInteractor インタラクタの作成
@@ -67,4 +69,8 @@ func (ji *jobInteractor) UpdateByID(id int, company, job string) error {
 		return err
 	}
 	return nil
+}
+
+func (ji *jobInteractor) DeleteByID(id int) error {
+	return ji.JobRepository.DeleteByID(id)
 }

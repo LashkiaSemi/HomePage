@@ -17,6 +17,7 @@ type EquipmentInteractor interface {
 
 	Create(name, comment string, stock, tagID int) (int, error)
 	UpdateByID(id int, name, comment string, stock, tagID int) error
+	DeleteByID(id int) error
 }
 
 // NewEquipmentInteractor インタラクタの作成
@@ -68,4 +69,8 @@ func (ei *equipmentInteractor) UpdateByID(id int, name, comment string, stock, t
 		return err
 	}
 	return nil
+}
+
+func (ei *equipmentInteractor) DeleteByID(id int) error {
+	return ei.EquipmentRepository.DeleteByID(id)
 }

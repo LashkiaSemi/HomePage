@@ -17,6 +17,7 @@ type ResearchInteractor interface {
 
 	Create(title, author, file, comment string, activation int) (int, error)
 	UpdateByID(id int, title, author, file, comment string, activation int) error
+	DeleteByID(id int) error
 }
 
 // NewResearchInteractor インタラクタを作成
@@ -67,4 +68,8 @@ func (ri *researchInteractor) UpdateByID(id int, title, author, file, comment st
 		return err
 	}
 	return nil
+}
+
+func (ri *researchInteractor) DeleteByID(id int) error {
+	return ri.ResearchRepository.DeleteByID(id)
 }

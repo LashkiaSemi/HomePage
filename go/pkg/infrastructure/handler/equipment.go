@@ -29,6 +29,7 @@ type EquipmentHandler interface {
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
+	AdminDeleteByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewEquipmentHandler ハンドラの作成
@@ -215,4 +216,34 @@ func (eh *equipmentHandler) AdminGetByID(w http.ResponseWriter, r *http.Request)
 	}
 	res.ID = id
 	response.AdminRender(w, "detail.html", info, res)
+}
+
+func (eh *equipmentHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	body, err := eh.EquipmentController.AdminGetByID(id)
+	if err != nil {
+		log.Println("AdminDeleteByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+
+	if r.Method == "POST" {
+		log.Println("post request: delete equipment")
+		err = eh.EquipmentController.DeleteByID(id)
+		if err != nil {
+			log.Println("failed to delete")
+			info.Errors = append(info.Errors, "削除に失敗しました")
+			response.AdminRender(w, "delete.html", info, body)
+			return
+		}
+		log.Println("success to delete equipment")
+		http.Redirect(w, r, "/admin/equipments", http.StatusSeeOther)
+	}
+	response.AdminRender(w, "delete.html", info, body)
 }

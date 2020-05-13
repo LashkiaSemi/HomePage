@@ -174,3 +174,22 @@ func (ur *userRepository) AdminUpdateByID(user *entity.User) error {
 	}
 	return nil
 }
+
+func (ur *userRepository) DeleteByID(id int) error {
+	_, err := ur.SQLHandler.Execute(`
+		DELETE FROM users
+		WHERE id=?
+	`, id)
+	if err != nil {
+		err = errors.Wrap(err, "DeleteByID: failed to delete from users")
+		return err
+	}
+	_, err = ur.SQLHandler.Execute(`
+		DELETE FROM introductions
+		WHERE user_id=?
+	`, id)
+	if err != nil {
+		err = errors.Wrap(err, "DeleteByID: failed to delete from introductions")
+	}
+	return err
+}

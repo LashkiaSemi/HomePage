@@ -24,6 +24,7 @@ type JobHandler interface {
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
+	AdminDeleteByID(w http.ResponseWriter, r *http.Request)
 }
 
 type jobHandler struct {
@@ -154,4 +155,34 @@ func (jh *jobHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 	}
 	res.ID = id
 	response.AdminRender(w, "detail.html", info, res)
+}
+
+func (jh *jobHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "jobs", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	body, err := jh.JobController.AdminGetByID(id)
+	if err != nil {
+		log.Println("AdminDeleteByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+
+	if r.Method == "POST" {
+		log.Println("post request: delete job")
+		err = jh.JobController.DeleteByID(id)
+		if err != nil {
+			log.Println("failed to delete")
+			info.Errors = append(info.Errors, "削除に失敗しました")
+			response.AdminRender(w, "delete.html", info, body)
+			return
+		}
+		log.Println("success to delete job")
+		http.Redirect(w, r, "/admin/jobs", http.StatusSeeOther)
+	}
+	response.AdminRender(w, "delete.html", info, body)
 }

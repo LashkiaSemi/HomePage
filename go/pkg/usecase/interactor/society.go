@@ -17,6 +17,8 @@ type SocietyInteractor interface {
 
 	Create(title, author, society, award, date string) (int, error)
 	UpdateByID(id int, title, author, society, award, date string) error
+
+	DeleteByID(id int) error
 }
 
 // NewSocietyInteractor インタラクタの作成
@@ -68,4 +70,8 @@ func (si *societyInteractor) UpdateByID(id int, title, author, society, award, d
 		return err
 	}
 	return nil
+}
+
+func (si *societyInteractor) DeleteByID(id int) error {
+	return si.SocietyRepository.DeleteByID(id)
 }

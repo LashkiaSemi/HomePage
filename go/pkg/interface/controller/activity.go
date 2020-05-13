@@ -20,6 +20,8 @@ type ActivityController interface {
 	Create(activity, date string) (int, error)
 	UpdateByID(id int, activity, date string) error
 
+	DeleteByID(id int) error
+
 	// admin
 	AdminGetAll() ([]map[string]string, error)
 	AdminGetByID(id int) (*FieldsResponse, error)
@@ -90,6 +92,10 @@ func (ac *activityController) UpdateByID(id int, activity, date string) error {
 		err = errors.Wrap(err, "controller")
 	}
 	return err
+}
+
+func (ac *activityController) DeleteByID(id int) error {
+	return ac.ActivityInteractor.DeleteByID(id)
 }
 
 // admin

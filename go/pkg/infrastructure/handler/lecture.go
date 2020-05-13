@@ -34,6 +34,7 @@ type LectureHandler interface {
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
 	AdminCreate(w http.ResponseWriter, r *http.Request)
 	AdminUpdateByID(w http.ResponseWriter, r *http.Request)
+	AdminDeleteByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewLectureHandler ハンドラの作成
@@ -411,4 +412,34 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 	}
 
 	response.AdminRender(w, "edit.html", info, body)
+}
+
+func (lh *lectureHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "lectures", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	body, err := lh.LectureController.AdminGetByID(id)
+	if err != nil {
+		log.Println("AdminDeleteByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+
+	if r.Method == "POST" {
+		log.Println("post request: delete lecture")
+		err = lh.LectureController.DeleteByID(id)
+		if err != nil {
+			log.Println("failed to delete")
+			info.Errors = append(info.Errors, "削除に失敗しました")
+			response.AdminRender(w, "delete.html", info, body)
+			return
+		}
+		log.Println("success to delete lecture")
+		http.Redirect(w, r, "/admin/lectures", http.StatusSeeOther)
+	}
+	response.AdminRender(w, "delete.html", info, body)
 }

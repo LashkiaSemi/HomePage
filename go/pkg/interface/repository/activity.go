@@ -84,3 +84,14 @@ func (ar *activityRepository) UpdateByID(data *entity.Activity) error {
 	}
 	return nil
 }
+
+func (ar *activityRepository) DeleteByID(id int) error {
+	_, err := ar.SQLHandler.Execute(`
+		DELETE FROM activities
+		WHERE id=?
+	`, id)
+	if err != nil {
+		err = errors.Wrap(err, "DeleteByID")
+	}
+	return err
+}

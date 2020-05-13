@@ -31,6 +31,7 @@ type ResearchHandler interface {
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
+	AdminDeleteByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewResearchHandler ハンドラの作成
@@ -233,4 +234,34 @@ func (rh *researchHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) 
 	}
 	res.ID = id
 	response.AdminRender(w, "detail.html", info, res)
+}
+
+func (rh *researchHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "researches", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	body, err := rh.ResearchController.AdminGetByID(id)
+	if err != nil {
+		log.Println("AdminDeleteByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+
+	if r.Method == "POST" {
+		log.Println("post request: delete research")
+		err = rh.ResearchController.DeleteByID(id)
+		if err != nil {
+			log.Println("failed to delete")
+			info.Errors = append(info.Errors, "削除に失敗しました")
+			response.AdminRender(w, "delete.html", info, body)
+			return
+		}
+		log.Println("success to delete research")
+		http.Redirect(w, r, "/admin/researches", http.StatusSeeOther)
+	}
+	response.AdminRender(w, "delete.html", info, body)
 }

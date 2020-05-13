@@ -28,6 +28,7 @@ type TagHandler interface {
 
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
+	AdminDeleteByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewTagHandler ハンドラの作成
@@ -137,4 +138,34 @@ func (th *tagHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.AdminRender(w, "edit.html", info, body)
+}
+
+func (th *tagHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "tags", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	body, err := th.TagController.AdminGetByID(id)
+	if err != nil {
+		log.Println("AdminDeleteByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+
+	if r.Method == "POST" {
+		log.Println("post request: delete tag")
+		err = th.TagController.DeleteByID(id)
+		if err != nil {
+			log.Println("failed to delete")
+			info.Errors = append(info.Errors, "削除に失敗しました")
+			response.AdminRender(w, "delete.html", info, body)
+			return
+		}
+		log.Println("success to delete tag")
+		http.Redirect(w, r, "/admin/tags", http.StatusSeeOther)
+	}
+	response.AdminRender(w, "delete.html", info, body)
 }

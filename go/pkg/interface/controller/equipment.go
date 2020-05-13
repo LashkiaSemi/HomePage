@@ -20,6 +20,8 @@ type EquipmentController interface {
 	Create(name, comment string, stock, tagID int) (int, error)
 	UpdateByID(id int, name, comment string, stock, tagID int) error
 
+	DeleteByID(id int) error
+
 	// admin
 	AdminGetAll() ([]map[string]string, error)
 	AdminGetByID(id int) (*FieldsResponse, error)
@@ -69,6 +71,11 @@ func (ec *equipmentController) UpdateByID(id int, name, comment string, stock, t
 	return err
 }
 
+func (ec *equipmentController) DeleteByID(id int) error {
+	return ec.EquipmentInteractor.DeleteByID(id)
+}
+
+// admin
 func (ec *equipmentController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	datas, err := ec.EquipmentInteractor.GetAll()

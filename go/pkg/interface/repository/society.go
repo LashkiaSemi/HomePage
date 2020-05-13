@@ -88,3 +88,14 @@ func (sr *societyRepository) UpdateByID(data *entity.Society) error {
 	}
 	return nil
 }
+
+func (sr *societyRepository) DeleteByID(id int) error {
+	_, err := sr.SQLHandler.Execute(`
+		DELETE FROM societies
+		WHERE id=?
+	`, id)
+	if err != nil {
+		err = errors.Wrap(err, "DeleteByID")
+	}
+	return err
+}

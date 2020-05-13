@@ -16,6 +16,8 @@ type UserRepository interface {
 
 	AdminCreate(*entity.User) (int, error)
 	AdminUpdateByID(*entity.User) error
+
+	DeleteByID(userID int) error
 }
 
 // ActivityRepository 活動内容のDBアクセスを実現
@@ -25,6 +27,8 @@ type ActivityRepository interface {
 
 	Create(*entity.Activity) (int, error)
 	UpdateByID(*entity.Activity) error
+
+	DeleteByID(id int) error
 }
 
 // SocietyRepository 学会発表のDBアクセスを実現
@@ -34,6 +38,8 @@ type SocietyRepository interface {
 
 	Create(*entity.Society) (int, error)
 	UpdateByID(*entity.Society) error
+
+	DeleteByID(id int) error
 }
 
 // JobRepository 就職先のDBアクセスを実現
@@ -43,6 +49,8 @@ type JobRepository interface {
 
 	Create(*entity.Job) (int, error)
 	UpdateByID(*entity.Job) error
+
+	DeleteByID(id int) error
 }
 
 // LectureRepository レクチャーのDBアクセスを実現
@@ -63,6 +71,8 @@ type ResearchRepository interface {
 
 	Create(*entity.Research) (int, error)
 	UpdateByID(*entity.Research) error
+
+	DeleteByID(id int) error
 }
 
 // EquipmentRepository 備品関連のDBアクセスを実現
@@ -72,6 +82,8 @@ type EquipmentRepository interface {
 
 	Create(*entity.Equipment) (int, error)
 	UpdateByID(*entity.Equipment) error
+
+	DeleteByID(id int) error
 }
 
 // TagRepository タグ関連のDBアクセスを実現
@@ -80,4 +92,5 @@ type TagRepository interface {
 	FindByID(id int) (*entity.Tag, error)
 	Create(data *entity.Tag) (int, error)
 	UpdateByID(data *entity.Tag) error
+	DeleteByID(id int) error
 }

@@ -30,6 +30,8 @@ type UserInteractor interface {
 	// roleのことがあるので...
 	AdminCreate(name, studentID, password, role, department, comment string, grade int) (int, error)
 	AdminUpdate(userID int, name, studentID, role, department, comment string, grade int) error
+
+	DeleteByID(id int) error
 }
 
 // NewUserInteractor インタラクタの作成
@@ -132,6 +134,10 @@ func (ui *userInteractor) AdminUpdate(userID int, name, studentID, role, departm
 		return err
 	}
 	return nil
+}
+
+func (ui *userInteractor) DeleteByID(id int) error {
+	return ui.UserRepository.DeleteByID(id)
 }
 
 // auth

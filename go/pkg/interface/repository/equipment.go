@@ -90,3 +90,14 @@ func (er *equipmentRepository) UpdateByID(data *entity.Equipment) error {
 	}
 	return nil
 }
+
+func (er *equipmentRepository) DeleteByID(id int) error {
+	_, err := er.SQLHandler.Execute(`
+		DELETE FROM equipments
+		WHERE id=?
+	`, id)
+	if err != nil {
+		err = errors.Wrap(err, "DeleteByID")
+	}
+	return err
+}

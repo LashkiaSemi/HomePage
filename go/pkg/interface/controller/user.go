@@ -21,6 +21,8 @@ type UserController interface {
 	UpdateByID(userID int, name, studentID, department, comment string, grade int) (*UserResponse, error)
 	UpdatePasswordByStudentID(studentID, oldPassword, newPassword string) error
 
+	DeleteByID(id int) error
+
 	Login(studentID, password string) error
 
 	// admin
@@ -90,6 +92,11 @@ func (uc *userController) UpdatePasswordByStudentID(studentID, oldPassword, newP
 	return uc.UserInteractor.UpdatePasswordByStudentID(studentID, oldPassword, newPassword)
 }
 
+func (uc *userController) DeleteByID(id int) error {
+	return uc.UserInteractor.DeleteByID(id)
+}
+
+// session
 func (uc *userController) Login(studentID, password string) error {
 	return uc.UserInteractor.AuthenticationByStudentID(studentID, password)
 }

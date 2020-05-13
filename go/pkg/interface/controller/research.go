@@ -22,6 +22,8 @@ type ResearchController interface {
 	Create(title, author, file, comment string, activation int) (int, error)
 	UpdateByID(id int, title, author, file, comment string, activation int) error
 
+	DeleteByID(id int) error
+
 	// admin
 	AdminGetAll() ([]map[string]string, error)
 	AdminGetByID(id int) (*FieldsResponse, error)
@@ -69,6 +71,10 @@ func (rc *researchController) UpdateByID(id int, title, author, file, comment st
 		err = errors.Wrap(err, "controller")
 	}
 	return err
+}
+
+func (rc *researchController) DeleteByID(id int) error {
+	return rc.ResearchInteractor.DeleteByID(id)
 }
 
 // admin

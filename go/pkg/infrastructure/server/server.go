@@ -79,20 +79,35 @@ func (s *server) Serve() {
 
 	r.HandleFunc("/admin/members/new", s.Handler.UserHandler.AdminCreate)
 	r.HandleFunc("/admin/members/{id}/edit", s.Handler.UserHandler.AdminUpdateByID)
+	r.HandleFunc("/admin/members/{id}/delete", s.Handler.UserHandler.AdminDeleteByID)
+
 	r.HandleFunc("/admin/activities/new", s.Handler.ActivityHandler.Create)
 	r.HandleFunc("/admin/activities/{id}/edit", s.Handler.ActivityHandler.UpdateByID)
+	r.HandleFunc("/admin/activities/{id}/delete", s.Handler.ActivityHandler.AdminDeleteByID)
+
 	r.HandleFunc("/admin/societies/new", s.Handler.SocietyHandler.Create)
 	r.HandleFunc("/admin/societies/{id}/edit", s.Handler.SocietyHandler.UpdateByID)
+	r.HandleFunc("/admin/societies/{id}/delete", s.Handler.SocietyHandler.AdminDeleteByID)
+
 	r.HandleFunc("/admin/jobs/new", s.Handler.JobHandler.Create)
 	r.HandleFunc("/admin/jobs/{id}/edit", s.Handler.JobHandler.UpdateByID)
+	r.HandleFunc("/admin/jobs/{id}/delete", s.Handler.JobHandler.AdminDeleteByID)
+
 	r.HandleFunc("/admin/lectures/new", s.Handler.LectureHandler.AdminCreate)
 	r.HandleFunc("/admin/lectures/{id}/edit", s.Handler.LectureHandler.AdminUpdateByID)
+	r.HandleFunc("/admin/lectures/{id}/delete", s.Handler.LectureHandler.AdminDeleteByID)
+
 	r.HandleFunc("/admin/researches/new", s.Handler.ResearchHandler.Create)
 	r.HandleFunc("/admin/researches/{id}/edit", s.Handler.ResearchHandler.UpdateByID)
+	r.HandleFunc("/admin/researches/{id}/delete", s.Handler.ResearchHandler.AdminDeleteByID)
+
 	r.HandleFunc("/admin/equipments/new", s.Handler.EquipmentHandler.Create)
 	r.HandleFunc("/admin/equipments/{id}/edit", s.Handler.EquipmentHandler.UpdateByID)
+	r.HandleFunc("/admin/equipments/{id}/delete", s.Handler.EquipmentHandler.AdminDeleteByID)
+
 	r.HandleFunc("/admin/tags/new", s.Handler.TagHandler.Create)
 	r.HandleFunc("/admin/tags/{id}/edit", s.Handler.TagHandler.UpdateByID)
+	r.HandleFunc("/admin/tags/{id}/delete", s.Handler.TagHandler.AdminDeleteByID)
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)

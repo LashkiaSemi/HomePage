@@ -21,6 +21,8 @@ type JobController interface {
 	Create(company, job string) (int, error)
 	UpdateByID(id int, company, job string) error
 
+	DeleteByID(id int) error
+
 	// admin
 	AdminGetAll() ([]map[string]string, error)
 	AdminGetByID(id int) (*FieldsResponse, error)
@@ -68,6 +70,10 @@ func (jc *jobController) UpdateByID(id int, company, job string) error {
 		err = errors.Wrap(err, "controller")
 	}
 	return err
+}
+
+func (jc *jobController) DeleteByID(id int) error {
+	return jc.JobInteractor.DeleteByID(id)
 }
 
 // admin

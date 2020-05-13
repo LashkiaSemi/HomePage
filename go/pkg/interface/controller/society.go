@@ -23,6 +23,8 @@ type SocietyController interface {
 	Create(title, author, society, award, date string) (int, error)
 	UpdateByID(id int, title, author, society, award, date string) error
 
+	DeleteByID(id int) error
+
 	// admin
 	AdminGetAll() ([]map[string]string, error)
 	AdminGetByID(id int) (*FieldsResponse, error)
@@ -72,6 +74,10 @@ func (sc *societyController) UpdateByID(id int, title, author, society, award, d
 		err = errors.Wrap(err, "controller")
 	}
 	return err
+}
+
+func (sc *societyController) DeleteByID(id int) error {
+	return sc.SocietyInteractor.DeleteByID(id)
 }
 
 // admin

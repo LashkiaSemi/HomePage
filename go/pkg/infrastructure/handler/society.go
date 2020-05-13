@@ -28,6 +28,7 @@ type SocietyHandler interface {
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGeByID(w http.ResponseWriter, r *http.Request)
+	AdminDeleteByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewSocietyHandler ハンドラの作成
@@ -85,7 +86,7 @@ func (sh *societyHandler) Create(w http.ResponseWriter, r *http.Request) {
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success create activity")
+		log.Println("success create society")
 		http.Redirect(w, r, fmt.Sprintf("/admin/societies/%d", id), http.StatusSeeOther)
 	}
 
@@ -134,7 +135,7 @@ func (sh *societyHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success update activity")
+		log.Println("success update society")
 		http.Redirect(w, r, fmt.Sprintf("/admin/societies/%d", id), http.StatusSeeOther)
 	}
 
@@ -170,4 +171,34 @@ func (sh *societyHandler) AdminGeByID(w http.ResponseWriter, r *http.Request) {
 	res.ID = id
 	response.AdminRender(w, "detail.html", info, res)
 
+}
+
+func (sh *societyHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	body, err := sh.SocietyController.AdminGetByID(id)
+	if err != nil {
+		log.Println("AdminDeleteByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+
+	if r.Method == "POST" {
+		log.Println("post request: delete society")
+		err = sh.SocietyController.DeleteByID(id)
+		if err != nil {
+			log.Println("failed to delete")
+			info.Errors = append(info.Errors, "削除に失敗しました")
+			response.AdminRender(w, "delete.html", info, body)
+			return
+		}
+		log.Println("success to delete society")
+		http.Redirect(w, r, "/admin/societies", http.StatusSeeOther)
+	}
+	response.AdminRender(w, "delete.html", info, body)
 }

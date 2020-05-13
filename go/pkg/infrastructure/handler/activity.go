@@ -28,6 +28,7 @@ type ActivityHandler interface {
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
+	AdminDeleteByID(w http.ResponseWriter, r *http.Request)
 }
 
 // NewActivityHandler ハンドラの作成
@@ -141,7 +142,7 @@ func (ah *activityHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ah *activityHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
-	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
+	info := createInfo(r, "activities", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
 		log.Println("activityHandler: AdminGetByID: failed to parse path param: ", err)
@@ -156,4 +157,34 @@ func (ah *activityHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) 
 	}
 	res.ID = id
 	response.AdminRender(w, "detail.html", info, res)
+}
+
+func (ah *activityHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "activities", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	body, err := ah.ActivityController.AdminGetByID(id)
+	if err != nil {
+		log.Println("AdminDeleteByID: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+
+	if r.Method == "POST" {
+		log.Println("post request: delete activity")
+		err = ah.ActivityController.DeleteByID(id)
+		if err != nil {
+			log.Println("failed to delete")
+			info.Errors = append(info.Errors, "削除に失敗しました")
+			response.AdminRender(w, "delete.html", info, body)
+			return
+		}
+		log.Println("success to delete activity")
+		http.Redirect(w, r, "/admin/activities", http.StatusSeeOther)
+	}
+	response.AdminRender(w, "delete.html", info, body)
 }

@@ -17,6 +17,8 @@ type ActivityInteractor interface {
 
 	Create(activity, date string) (int, error)
 	UpdateByID(id int, activity, date string) error
+
+	DeleteByID(id int) error
 }
 
 // NewActivityInteractor インタラクタの作成
@@ -72,4 +74,8 @@ func (ai *activityInteractor) UpdateByID(id int, activity, date string) error {
 		return err
 	}
 	return nil
+}
+
+func (ai *activityInteractor) DeleteByID(id int) error {
+	return ai.ActivityRepository.DeleteByID(id)
 }

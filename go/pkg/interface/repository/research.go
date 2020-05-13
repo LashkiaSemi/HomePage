@@ -85,3 +85,14 @@ func (rr *researchRepository) UpdateByID(data *entity.Research) error {
 	return nil
 
 }
+
+func (rr *researchRepository) DeleteByID(id int) error {
+	_, err := rr.SQLHandler.Execute(`
+		DELETE FROM researches
+		WHERE id=?
+	`, id)
+	if err != nil {
+		err = errors.Wrap(err, "DeleteByID")
+	}
+	return err
+}
