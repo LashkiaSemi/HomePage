@@ -66,7 +66,7 @@ func (s *server) Serve() {
 	r.HandleFunc("/admin/members", s.Handler.UserHandler.AdminGetAll)
 	r.HandleFunc("/admin/lectures", s.Handler.LectureHandler.AdminGetAll)
 	r.HandleFunc("/admin/equipments", s.Handler.EquipmentHandler.AdminGetAll)
-	// r.HandleFunc("/admin/tags")
+	r.HandleFunc("/admin/tags", s.Handler.TagHandler.AdminGetAll)
 
 	r.HandleFunc("/admin/members/{id:[0-9]+}", s.Handler.UserHandler.AdminGetByID)
 	r.HandleFunc("/admin/activities/{id:[0-9]+}", s.Handler.ActivityHandler.AdminGetByID)
@@ -75,6 +75,7 @@ func (s *server) Serve() {
 	r.HandleFunc("/admin/lectures/{id:[0-9]+}", s.Handler.LectureHandler.AdminGetByID)
 	r.HandleFunc("/admin/researches/{id:[0-9]+}", s.Handler.ResearchHandler.AdminGetByID)
 	r.HandleFunc("/admin/equipments/{id:[0-9]+}", s.Handler.EquipmentHandler.AdminGetByID)
+	r.HandleFunc("/admin/tags/{id:[0-9]+}", s.Handler.TagHandler.AdminGetByID)
 
 	r.HandleFunc("/admin/members/new", s.Handler.UserHandler.AdminCreate)
 	r.HandleFunc("/admin/members/{id}/edit", s.Handler.UserHandler.AdminUpdateByID)
@@ -90,6 +91,8 @@ func (s *server) Serve() {
 	r.HandleFunc("/admin/researches/{id}/edit", s.Handler.ResearchHandler.UpdateByID)
 	r.HandleFunc("/admin/equipments/new", s.Handler.EquipmentHandler.Create)
 	r.HandleFunc("/admin/equipments/{id}/edit", s.Handler.EquipmentHandler.UpdateByID)
+	r.HandleFunc("/admin/tags/new", s.Handler.TagHandler.Create)
+	r.HandleFunc("/admin/tags/{id}/edit", s.Handler.TagHandler.UpdateByID)
 
 	log.Println("server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)

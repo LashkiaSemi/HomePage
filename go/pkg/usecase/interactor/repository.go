@@ -73,3 +73,11 @@ type EquipmentRepository interface {
 	Create(*entity.Equipment) (int, error)
 	UpdateByID(*entity.Equipment) error
 }
+
+// TagRepository タグ関連のDBアクセスを実現
+type TagRepository interface {
+	FindAll() ([]*entity.Tag, error)
+	FindByID(id int) (*entity.Tag, error)
+	Create(data *entity.Tag) (int, error)
+	UpdateByID(data *entity.Tag) error
+}

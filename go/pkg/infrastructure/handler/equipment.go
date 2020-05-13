@@ -16,6 +16,7 @@ import (
 
 type equipmentHandler struct {
 	controller.EquipmentController
+	controller.TagController
 }
 
 // EquipmentHandler 備品関連の入出力を受け付け
@@ -38,6 +39,11 @@ func NewEquipmentHandler(sh repository.SQLHandler) EquipmentHandler {
 				repository.NewEquipmentRepository(sh),
 			),
 		),
+		TagController: controller.NewTagController(
+			interactor.NewTagInteractor(
+				repository.NewTagRepository(sh),
+			),
+		),
 	}
 }
 
@@ -54,11 +60,23 @@ func (eh *equipmentHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 func (eh *equipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
 
+	// tagmap
+	tags, err := eh.TagController.GetAll()
+	if err != nil {
+		log.Println("failed to get tags")
+		response.InternalServerError(w, info)
+		return
+	}
+	tagsMap := map[string]string{}
+	for _, tag := range tags.Tags {
+		tagsMap[strconv.Itoa(tag.ID)] = tag.Name
+	}
+
 	body := []*FormField{
 		createFormField("name", "", "品名", "text", nil),
 		createFormField("stock", "0", "在庫", "number", nil),
 		createFormField("comment", "", "コメント", "textarea", nil),
-		createFormField("tagID", "", "タグ", "select", nil), // TODO; 選択肢
+		createFormField("tagID", "", "タグ", "select", tagsMap),
 	}
 	if r.Method == "POST" {
 		log.Println("equipment create: post request")
@@ -112,11 +130,25 @@ func (eh *equipmentHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		response.InternalServerError(w, info)
 		return
 	}
+
+	// tagmap
+	tags, err := eh.TagController.GetAll()
+	if err != nil {
+		log.Println("failed to get tags")
+		response.InternalServerError(w, info)
+		return
+	}
+	tagsMap := map[string]string{}
+	for _, tag := range tags.Tags {
+		tagsMap[strconv.Itoa(tag.ID)] = tag.Name
+	}
+
+	// create form
 	body := []*FormField{
 		createFormField("name", data.Name, "品名", "text", nil),
 		createFormField("stock", strconv.Itoa(data.Stock), "在庫", "number", nil),
 		createFormField("comment", data.Comment, "コメント", "textarea", nil),
-		createFormField("tagID", strconv.Itoa(data.Tag.ID), "タグ", "select", nil), // TODO; 選択肢
+		createFormField("tagID", strconv.Itoa(data.Tag.ID), "タグ", "select", tagsMap), // TODO; 選択肢
 	}
 	if r.Method == "POST" {
 		log.Println("equipment update: post request")

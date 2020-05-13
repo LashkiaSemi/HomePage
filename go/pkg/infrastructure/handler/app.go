@@ -13,6 +13,7 @@ type AppHandler struct {
 	JobHandler
 	LectureHandler
 	EquipmentHandler
+	TagHandler
 }
 
 // NewAppHandler ハンドラの作成
@@ -25,5 +26,6 @@ func NewAppHandler(sh repository.SQLHandler) *AppHandler {
 		JobHandler:       NewJobHandler(sh),
 		LectureHandler:   NewLectureHandler(sh),
 		EquipmentHandler: NewEquipmentHandler(sh),
+		TagHandler:       NewTagHandler(sh),
 	}
 }

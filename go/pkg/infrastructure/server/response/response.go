@@ -127,6 +127,8 @@ func convertPageType(pageType string) string {
 		return "研究室備品管理"
 	case "lectures":
 		return "レクチャー管理"
+	case "tags":
+		return "タグ管理"
 	default:
 		return "default"
 	}
