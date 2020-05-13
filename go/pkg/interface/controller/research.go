@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+	"homepage/pkg/configs"
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"strconv"
@@ -15,6 +17,10 @@ type researchController struct {
 // ResearchController 卒業研究の入出力を変換
 type ResearchController interface {
 	GetAll() (*ResearchesResponse, error)
+	GetByID(id int) (*ResearchResponse, error)
+
+	Create(title, author, file, comment string, activation int) (int, error)
+	UpdateByID(id int, title, author, file, comment string, activation int) error
 
 	// admin
 	AdminGetAll() ([]map[string]string, error)
@@ -38,6 +44,31 @@ func (rc *researchController) GetAll() (*ResearchesResponse, error) {
 		res.Researches = append(res.Researches, convertToResearchResponse(data))
 	}
 	return &res, nil
+}
+
+func (rc *researchController) GetByID(id int) (*ResearchResponse, error) {
+	data, err := rc.ResearchInteractor.GetByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "failed to find data")
+		return &ResearchResponse{}, err
+	}
+	return convertToResearchResponse(data), nil
+}
+
+func (rc *researchController) Create(title, author, file, comment string, activation int) (int, error) {
+	id, err := rc.ResearchInteractor.Create(title, author, file, comment, activation)
+	if err != nil {
+		err = errors.Wrap(err, "controller")
+	}
+	return id, err
+}
+
+func (rc *researchController) UpdateByID(id int, title, author, file, comment string, activation int) error {
+	err := rc.ResearchInteractor.UpdateByID(id, title, author, file, comment, activation)
+	if err != nil {
+		err = errors.Wrap(err, "controller")
+	}
+	return err
 }
 
 // admin
@@ -85,7 +116,8 @@ type ResearchResponse struct {
 	ID         int
 	Title      string
 	Author     string
-	File       string
+	FileName   string
+	FilePath   string
 	Comment    string
 	Activation int
 	CreatedAt  string
@@ -96,7 +128,8 @@ func convertToResearchResponse(data *entity.Research) *ResearchResponse {
 		ID:         data.ID,
 		Title:      data.Title,
 		Author:     data.Author,
-		File:       data.File,
+		FileName:   data.File,
+		FilePath:   fmt.Sprintf("%s/%s", configs.SaveResearchFileDir, data.File),
 		Comment:    data.Comment,
 		Activation: data.Activation,
 		CreatedAt:  data.CreatedAt,

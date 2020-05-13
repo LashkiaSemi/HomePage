@@ -18,7 +18,12 @@ type societyController struct {
 // SocietyController 学会発表の入出力を変換
 type SocietyController interface {
 	GetAll() (*SocietiesResponse, error)
+	GetByID(id int) (*SocietyResponse, error)
 
+	Create(title, author, society, award, date string) (int, error)
+	UpdateByID(id int, title, author, society, award, date string) error
+
+	// admin
 	AdminGetAll() ([]map[string]string, error)
 	AdminGetByID(id int) (*FieldsResponse, error)
 }
@@ -42,7 +47,31 @@ func (sc *societyController) GetAll() (*SocietiesResponse, error) {
 		res.Societies = append(res.Societies, convertToSocietyResponse(soc))
 	}
 	return &res, nil
+}
 
+func (sc *societyController) GetByID(id int) (*SocietyResponse, error) {
+	data, err := sc.SocietyInteractor.GetByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "failed to find data")
+		return &SocietyResponse{}, err
+	}
+	return convertToSocietyResponse(data), nil
+}
+
+func (sc *societyController) Create(title, author, society, award, date string) (int, error) {
+	id, err := sc.SocietyInteractor.Create(title, author, society, award, date)
+	if err != nil {
+		err = errors.Wrap(err, "controller")
+	}
+	return id, err
+}
+
+func (sc *societyController) UpdateByID(id int, title, author, society, award, date string) error {
+	err := sc.SocietyInteractor.UpdateByID(id, title, author, society, award, date)
+	if err != nil {
+		err = errors.Wrap(err, "controller")
+	}
+	return err
 }
 
 // admin

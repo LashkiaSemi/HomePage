@@ -14,6 +14,9 @@ type researchInteractor struct {
 type ResearchInteractor interface {
 	GetAll() ([]*entity.Research, error)
 	GetByID(id int) (*entity.Research, error)
+
+	Create(title, author, file, comment string, activation int) (int, error)
+	UpdateByID(id int, title, author, file, comment string, activation int) error
 }
 
 // NewResearchInteractor インタラクタを作成
@@ -33,4 +36,35 @@ func (ri *researchInteractor) GetByID(id int) (*entity.Research, error) {
 		err = errors.Wrap(err, "researchInteractor: GetByID")
 	}
 	return data, err
+}
+
+func (ri *researchInteractor) Create(title, author, file, comment string, activation int) (int, error) {
+	// create obj
+	data := entity.Research{}
+	data.Create(title, author, file, comment, activation)
+
+	// insert db
+	id, err := ri.ResearchRepository.Create(&data)
+	if err != nil {
+		err = errors.Wrap(err, "interactor: failed to insert db")
+		return 0, err
+	}
+	return id, nil
+}
+
+func (ri *researchInteractor) UpdateByID(id int, title, author, file, comment string, activation int) error {
+	data, err := ri.ResearchRepository.FindByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "can't find target data")
+		return err
+	}
+	newData := data.Update(title, author, file, comment, activation)
+
+	// update db
+	err = ri.ResearchRepository.UpdateByID(newData)
+	if err != nil {
+		err = errors.Wrap(err, "failed to update db")
+		return err
+	}
+	return nil
 }

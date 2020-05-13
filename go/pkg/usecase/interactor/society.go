@@ -14,6 +14,9 @@ type societyInteractor struct {
 type SocietyInteractor interface {
 	GetAll() ([]*entity.Society, error)
 	GetByID(id int) (*entity.Society, error)
+
+	Create(title, author, society, award, date string) (int, error)
+	UpdateByID(id int, title, author, society, award, date string) error
 }
 
 // NewSocietyInteractor インタラクタの作成
@@ -34,4 +37,35 @@ func (si *societyInteractor) GetByID(id int) (*entity.Society, error) {
 		err = errors.Wrap(err, "GetByID")
 	}
 	return data, err
+}
+
+func (si *societyInteractor) Create(title, author, society, award, date string) (int, error) {
+	// create obj
+	data := entity.Society{}
+	data.Create(title, author, society, award, date)
+
+	// insert db
+	id, err := si.SocietyRepository.Create(&data)
+	if err != nil {
+		err = errors.Wrap(err, "interactor: failed to insert db")
+		return 0, err
+	}
+	return id, nil
+}
+
+func (si *societyInteractor) UpdateByID(id int, title, author, society, award, date string) error {
+	data, err := si.SocietyRepository.FindByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "can't find target data")
+		return err
+	}
+	newData := data.Update(title, author, society, award, date)
+
+	// update db
+	err = si.SocietyRepository.UpdateByID(newData)
+	if err != nil {
+		err = errors.Wrap(err, "failed to update db")
+		return err
+	}
+	return nil
 }

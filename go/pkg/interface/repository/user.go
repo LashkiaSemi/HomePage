@@ -152,7 +152,7 @@ func (ur *userRepository) AdminCreate(user *entity.User) (int, error) {
 	return int(id), nil
 }
 
-func (ur *userRepository) AdminUpdate(user *entity.User) error {
+func (ur *userRepository) AdminUpdateByID(user *entity.User) error {
 	// TODO: tx
 	_, err := ur.SQLHandler.Execute(`
 		UPDATE users

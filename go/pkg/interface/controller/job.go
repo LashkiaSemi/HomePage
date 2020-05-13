@@ -16,6 +16,10 @@ type jobController struct {
 // JobController 就職先の入出力を変換
 type JobController interface {
 	GetAll() (*JobsResponse, error)
+	GetByID(id int) (*JobResponse, error)
+
+	Create(company, job string) (int, error)
+	UpdateByID(id int, company, job string) error
 
 	// admin
 	AdminGetAll() ([]map[string]string, error)
@@ -39,6 +43,31 @@ func (jc *jobController) GetAll() (*JobsResponse, error) {
 		res.Jobs = append(res.Jobs, convertToJobResponse(job))
 	}
 	return &res, nil
+}
+
+func (jc *jobController) GetByID(id int) (*JobResponse, error) {
+	data, err := jc.JobInteractor.GetByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "failed to find data")
+		return &JobResponse{}, err
+	}
+	return convertToJobResponse(data), nil
+}
+
+func (jc *jobController) Create(company, job string) (int, error) {
+	id, err := jc.JobInteractor.Create(company, job)
+	if err != nil {
+		err = errors.Wrap(err, "controller")
+	}
+	return id, err
+}
+
+func (jc *jobController) UpdateByID(id int, company, job string) error {
+	err := jc.JobInteractor.UpdateByID(id, company, job)
+	if err != nil {
+		err = errors.Wrap(err, "controller")
+	}
+	return err
 }
 
 // admin

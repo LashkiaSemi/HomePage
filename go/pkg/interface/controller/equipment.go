@@ -15,6 +15,10 @@ type equipmentController struct {
 // EquipmentController 備品の入出力を変換
 type EquipmentController interface {
 	GetAll() (*EquipmentsResponse, error)
+	GetByID(id int) (*EquipmentResponse, error)
+
+	Create(name, comment string, stock, tagID int) (int, error)
+	UpdateByID(id int, name, comment string, stock, tagID int) error
 
 	// admin
 	AdminGetAll() ([]map[string]string, error)
@@ -38,6 +42,31 @@ func (ec *equipmentController) GetAll() (*EquipmentsResponse, error) {
 		res.Equipments = append(res.Equipments, convertToEquipmentResponse(data))
 	}
 	return &res, nil
+}
+
+func (ec *equipmentController) GetByID(id int) (*EquipmentResponse, error) {
+	data, err := ec.EquipmentInteractor.GetByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "failed to find data")
+		return &EquipmentResponse{}, err
+	}
+	return convertToEquipmentResponse(data), nil
+}
+
+func (ec *equipmentController) Create(name, comment string, stock, tagID int) (int, error) {
+	id, err := ec.EquipmentInteractor.Create(name, comment, stock, tagID)
+	if err != nil {
+		err = errors.Wrap(err, "controller")
+	}
+	return id, err
+}
+
+func (ec *equipmentController) UpdateByID(id int, name, comment string, stock, tagID int) error {
+	err := ec.EquipmentInteractor.UpdateByID(id, name, comment, stock, tagID)
+	if err != nil {
+		err = errors.Wrap(err, "controller")
+	}
+	return err
 }
 
 func (ec *equipmentController) AdminGetAll() ([]map[string]string, error) {

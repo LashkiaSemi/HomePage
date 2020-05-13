@@ -226,5 +226,6 @@ func (lh *lectureHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 		response.InternalServerError(w, info)
 		return
 	}
+	res.ID = id
 	response.AdminRender(w, "detail.html", info, res)
 }

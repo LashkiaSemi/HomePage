@@ -27,7 +27,13 @@
                             <td>{{ .Comment }}</td>
                             <td>{{ .CreatedAt }}</td>
                             <!-- TODO: fileがなかった時にdisableにする -->
-                            <td><button class="btn btn-primary">download</button></td>
+                            <td>
+                                {{ if eq .FileName "" }}
+                                <button class="btn btn-primary disable">download</button>
+                                {{ else }}
+                                <a href="{{ .FilePath }}" download="{{ .FileName }}"><button class="btn btn-primary">download</button></a>
+                                {{ end }}
+                            </td>
                         </tr>
                         {{ end }}
                     </tbody>

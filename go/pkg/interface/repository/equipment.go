@@ -54,9 +54,39 @@ func (er *equipmentRepository) FindByID(id int) (*entity.Equipment, error) {
 	var data entity.Equipment
 	var tag entity.Tag
 	if err := row.Scan(&data.ID, &data.Name, &data.Stock, &data.Comment, &tag.ID, &tag.Name); err != nil {
-		err = errors.Wrap(err, "equipmentRepository: FindByAll")
+		err = errors.Wrap(err, "equipmentRepository: FindByID")
 		return &data, err
 	}
 	data.Tag = &tag
 	return &data, nil
+}
+
+func (er *equipmentRepository) Create(data *entity.Equipment) (int, error) {
+	result, err := er.SQLHandler.Execute(`
+		INSERT INTO equipments(name, num, note, tag_id, created_at, updated_at)
+		VALUES (?,?,?,?,?,?)
+	`, data.Name, data.Stock, data.Comment, data.Tag.ID, data.CreatedAt, data.UpdatedAt)
+	if err != nil {
+		err = errors.Wrap(err, "create error")
+		return 0, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		err = errors.Wrap(err, "can't get id")
+		return 0, err
+	}
+	return int(id), nil
+}
+
+func (er *equipmentRepository) UpdateByID(data *entity.Equipment) error {
+	_, err := er.SQLHandler.Execute(`
+		UPDATE equipments
+		SET name=?, num=?, note=?, tag_id=?, updated_at=?
+		WHERE id=?
+	`, data.Name, data.Stock, data.Comment, data.Tag.ID, data.UpdatedAt, data.ID)
+	if err != nil {
+		err = errors.Wrap(err, "can't update db")
+		return err
+	}
+	return nil
 }

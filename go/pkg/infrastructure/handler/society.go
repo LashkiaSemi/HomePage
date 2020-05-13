@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -20,6 +21,9 @@ type societyHandler struct {
 // SocietyHandler 学会発表の入出力の受付
 type SocietyHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
+
+	Create(w http.ResponseWriter, r *http.Request)
+	UpdateByID(w http.ResponseWriter, r *http.Request)
 
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
@@ -51,6 +55,92 @@ func (sh *societyHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	response.Success(w, "society/index.html", info, res)
 }
 
+func (sh *societyHandler) Create(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
+
+	body := []*FormField{
+		createFormField("title", "", "タイトル", "text", nil),
+		createFormField("author", "", "著者", "text", nil),
+		createFormField("society", "", "学会", "text", nil),
+		createFormField("award", "", "受賞", "text", nil),
+		createFormField("date", "", "日付", "date", nil),
+	}
+
+	if r.Method == "POST" {
+		log.Println("society create: post request")
+		title := r.PostFormValue("title")
+		author := r.PostFormValue("author")
+		society := r.PostFormValue("society")
+		award := r.PostFormValue("award")
+		date := r.PostFormValue("date")
+		if title == "" || author == "" || society == "" || date == "" {
+			info.Errors = append(info.Errors, "タイトル、著者、学会、日付は必須です")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+
+		id, err := sh.SocietyController.Create(title, author, society, award, date)
+		if err != nil {
+			log.Println(err)
+			response.InternalServerError(w, info)
+			return
+		}
+		log.Println("success create activity")
+		http.Redirect(w, r, fmt.Sprintf("/admin/societies/%d", id), http.StatusSeeOther)
+	}
+
+	response.AdminRender(w, "edit.html", info, body)
+}
+
+func (sh *societyHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	// 初期値の取得
+	data, err := sh.SocietyController.GetByID(id)
+	if err != nil {
+		log.Println("failed to get target: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	body := []*FormField{
+		createFormField("title", data.Title, "タイトル", "text", nil),
+		createFormField("author", data.Author, "著者", "text", nil),
+		createFormField("society", data.Society, "学会", "text", nil),
+		createFormField("award", data.Author, "受賞", "text", nil),
+		createFormField("date", data.Date, "日付", "date", nil),
+	}
+
+	if r.Method == "POST" {
+		log.Println("society update: post request")
+		title := r.PostFormValue("title")
+		author := r.PostFormValue("author")
+		society := r.PostFormValue("society")
+		award := r.PostFormValue("award")
+		date := r.PostFormValue("date")
+		if title == "" || author == "" || society == "" || date == "" {
+			info.Errors = append(info.Errors, "タイトル、著者、学会、日付は必須です")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+
+		err = sh.SocietyController.UpdateByID(id, title, author, society, award, date)
+		if err != nil {
+			log.Println(err)
+			response.InternalServerError(w, info)
+			return
+		}
+		log.Println("success update activity")
+		http.Redirect(w, r, fmt.Sprintf("/admin/societies/%d", id), http.StatusSeeOther)
+	}
+
+	response.AdminRender(w, "edit.html", info, body)
+}
+
 // admin
 func (sh *societyHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
@@ -77,6 +167,7 @@ func (sh *societyHandler) AdminGeByID(w http.ResponseWriter, r *http.Request) {
 		response.InternalServerError(w, info)
 		return
 	}
+	res.ID = id
 	response.AdminRender(w, "detail.html", info, res)
 
 }

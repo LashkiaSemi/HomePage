@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -20,6 +21,9 @@ type equipmentHandler struct {
 // EquipmentHandler 備品関連の入出力を受け付け
 type EquipmentHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
+
+	Create(w http.ResponseWriter, r *http.Request)
+	UpdateByID(w http.ResponseWriter, r *http.Request)
 
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
@@ -47,6 +51,111 @@ func (eh *equipmentHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	response.Success(w, "equipment/index.html", info, res)
 }
 
+func (eh *equipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
+
+	body := []*FormField{
+		createFormField("name", "", "品名", "text", nil),
+		createFormField("stock", "0", "在庫", "number", nil),
+		createFormField("comment", "", "コメント", "textarea", nil),
+		createFormField("tagID", "", "タグ", "select", nil), // TODO; 選択肢
+	}
+	if r.Method == "POST" {
+		log.Println("equipment create: post request")
+		name := r.PostFormValue("name")
+		comment := r.PostFormValue("comment")
+		stock, err := strconv.Atoi(r.PostFormValue("stock"))
+		if err != nil {
+			// TODO: 然るべき処理
+			log.Println("stock: failed to parse string to int")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+		tagID, err := strconv.Atoi(r.PostFormValue("tagID"))
+		if err != nil {
+			// TODO: 然るべき処理
+			log.Println("tagID: failed to parse string to int")
+			tagID = 6
+			// response.AdminRender(w, "edit.html", info, body)
+			// return
+		}
+		if name == "" {
+			info.Errors = append(info.Errors, "品名は必須です")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+		id, err := eh.EquipmentController.Create(name, comment, stock, tagID)
+		if err != nil {
+			log.Println(err)
+			response.InternalServerError(w, info)
+			return
+		}
+		log.Println("success create!")
+		http.Redirect(w, r, fmt.Sprintf("/admin/equipments/%d", id), http.StatusSeeOther)
+
+	}
+	response.AdminRender(w, "edit.html", info, body)
+}
+
+func (eh *equipmentHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Println("failed to parse path parameter", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	// get initial value
+	data, err := eh.EquipmentController.GetByID(id)
+	if err != nil {
+		log.Println("failed to get target: ", err)
+		response.InternalServerError(w, info)
+		return
+	}
+	body := []*FormField{
+		createFormField("name", data.Name, "品名", "text", nil),
+		createFormField("stock", strconv.Itoa(data.Stock), "在庫", "number", nil),
+		createFormField("comment", data.Comment, "コメント", "textarea", nil),
+		createFormField("tagID", strconv.Itoa(data.Tag.ID), "タグ", "select", nil), // TODO; 選択肢
+	}
+	if r.Method == "POST" {
+		log.Println("equipment update: post request")
+		name := r.PostFormValue("name")
+		comment := r.PostFormValue("comment")
+		stock, err := strconv.Atoi(r.PostFormValue("stock"))
+		if err != nil {
+			// TODO: 然るべき処理
+			log.Println("stock: failed to parse string to int")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+		tagID, err := strconv.Atoi(r.PostFormValue("tagID"))
+		if err != nil {
+			// TODO: 然るべき処理
+			log.Println("tagID: failed to parse string to int")
+			tagID = 6
+			// response.AdminRender(w, "edit.html", info, body)
+			// return
+		}
+		if name == "" {
+			info.Errors = append(info.Errors, "品名は必須です")
+			response.AdminRender(w, "edit.html", info, body)
+			return
+		}
+
+		err = eh.EquipmentController.UpdateByID(id, name, comment, stock, tagID)
+		if err != nil {
+			log.Println(err)
+			response.InternalServerError(w, info)
+			return
+		}
+		log.Println("success update!")
+		http.Redirect(w, r, fmt.Sprintf("/admin/equipments/%d", id), http.StatusSeeOther)
+
+	}
+	response.AdminRender(w, "edit.html", info, body)
+}
+
 func (eh *equipmentHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
 	res, err := eh.EquipmentController.AdminGetAll()
@@ -72,5 +181,6 @@ func (eh *equipmentHandler) AdminGetByID(w http.ResponseWriter, r *http.Request)
 		response.InternalServerError(w, info)
 		return
 	}
+	res.ID = id
 	response.AdminRender(w, "detail.html", info, res)
 }

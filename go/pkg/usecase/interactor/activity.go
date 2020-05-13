@@ -14,6 +14,9 @@ type activityInteractor struct {
 type ActivityInteractor interface {
 	GetAll() ([]*entity.Activity, error)
 	GetByID(id int) (*entity.Activity, error)
+
+	Create(activity, date string) (int, error)
+	UpdateByID(id int, activity, date string) error
 }
 
 // NewActivityInteractor インタラクタの作成
@@ -38,4 +41,35 @@ func (ai *activityInteractor) GetByID(id int) (*entity.Activity, error) {
 		err = errors.Wrap(err, "GetByID")
 	}
 	return data, nil
+}
+
+func (ai *activityInteractor) Create(activity, date string) (int, error) {
+	// create obj
+	act := entity.Activity{}
+	act.Create(activity, date)
+
+	// insert db
+	id, err := ai.ActivityRepository.Create(&act)
+	if err != nil {
+		err = errors.Wrap(err, "interactor")
+		return 0, err
+	}
+	return id, nil
+}
+
+func (ai *activityInteractor) UpdateByID(id int, activity, date string) error {
+	data, err := ai.ActivityRepository.FindByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "can't find target data")
+		return err
+	}
+	newData := data.Update(activity, date)
+
+	// update db
+	err = ai.ActivityRepository.UpdateByID(newData)
+	if err != nil {
+		err = errors.Wrap(err, "failed to update db")
+		return err
+	}
+	return nil
 }

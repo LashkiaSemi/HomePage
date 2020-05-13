@@ -58,3 +58,33 @@ func (sr *societyRepository) FindByID(id int) (*entity.Society, error) {
 	}
 	return &data, nil
 }
+
+func (sr *societyRepository) Create(data *entity.Society) (int, error) {
+	result, err := sr.SQLHandler.Execute(`
+		INSERT INTO societies(title, author, soiety, award, date, created_at, updated_at)
+		VALUES (?,?,?,?,?,?,?)
+	`, data.Title, data.Author, data.Society, data.Award, data.Date, data.CreatedAt, data.UpdatedAt)
+	if err != nil {
+		err = errors.Wrap(err, "create error")
+		return 0, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		err = errors.Wrap(err, "can't get id")
+		return 0, err
+	}
+	return int(id), nil
+}
+
+func (sr *societyRepository) UpdateByID(data *entity.Society) error {
+	_, err := sr.SQLHandler.Execute(`
+		UPDATE societies
+		SET title=?, author=?, society=?, award=?, date=?, updated_at=?
+		WHERE id=?
+	`, data.Title, data.Author, data.Society, data.Award, data.Date, data.UpdatedAt, data.ID)
+	if err != nil {
+		err = errors.Wrap(err, "can't update db")
+		return err
+	}
+	return nil
+}

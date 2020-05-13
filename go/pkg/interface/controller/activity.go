@@ -15,6 +15,10 @@ type activityController struct {
 // ActivityController 活動内容の入出力を変換
 type ActivityController interface {
 	GetAllGroupByYear() ([]*ActivitiesGroupByYearResponse, error)
+	GetByID(id int) (*ActivityResponse, error)
+
+	Create(activity, date string) (int, error)
+	UpdateByID(id int, activity, date string) error
 
 	// admin
 	AdminGetAll() ([]map[string]string, error)
@@ -63,6 +67,32 @@ func (ac *activityController) GetAllGroupByYear() ([]*ActivitiesGroupByYearRespo
 	return res, err
 }
 
+func (ac *activityController) GetByID(id int) (*ActivityResponse, error) {
+	data, err := ac.ActivityInteractor.GetByID(id)
+	if err != nil {
+		err = errors.Wrap(err, "failed to find data")
+		return &ActivityResponse{}, err
+	}
+	return convertToActivityResponse(data), nil
+}
+
+func (ac *activityController) Create(activity, date string) (int, error) {
+	id, err := ac.ActivityInteractor.Create(activity, date)
+	if err != nil {
+		err = errors.Wrap(err, "controller")
+	}
+	return id, err
+}
+
+func (ac *activityController) UpdateByID(id int, activity, date string) error {
+	err := ac.ActivityInteractor.UpdateByID(id, activity, date)
+	if err != nil {
+		err = errors.Wrap(err, "controller")
+	}
+	return err
+}
+
+// admin
 func (ac *activityController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	acts, err := ac.ActivityInteractor.GetAll()

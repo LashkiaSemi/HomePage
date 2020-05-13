@@ -54,3 +54,33 @@ func (ar *activityRepository) FindByID(id int) (*entity.Activity, error) {
 	}
 	return &data, nil
 }
+
+func (ar *activityRepository) Create(data *entity.Activity) (int, error) {
+	result, err := ar.SQLHandler.Execute(`
+		INSERT INTO activities(date, activity, created_at, updated_at)
+		VALUES (?,?,?,?)
+	`, data.Date, data.Activity, data.CreatedAt, data.UpdatedAt)
+	if err != nil {
+		err = errors.Wrap(err, "create error")
+		return 0, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		err = errors.Wrap(err, "can't get id")
+		return 0, err
+	}
+	return int(id), nil
+}
+
+func (ar *activityRepository) UpdateByID(data *entity.Activity) error {
+	_, err := ar.SQLHandler.Execute(`
+		UPDATE activities
+		SET date=?, activity=?, updated_at=?
+		WHERE id=?
+	`, data.Date, data.Activity, data.UpdatedAt, data.ID)
+	if err != nil {
+		err = errors.Wrap(err, "can't update db")
+		return err
+	}
+	return nil
+}

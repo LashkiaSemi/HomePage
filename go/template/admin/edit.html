@@ -10,7 +10,7 @@
             </div>
 
             <div class="content" style="display: flex; justify-content: center;">
-                <form class="form" method="POST">
+                <form class="form" method="POST" enctype="multipart/form-data" >
                     {{ if .Info.Errors }}
                     <div class="notify-bar notify-bar-danger mb-20">
                         {{ range .Info.Errors }}
@@ -38,6 +38,20 @@
 
                         {{ else if eq .Type "password" }}
                         <input name="{{ .Name }}" type="{{ .Type }}" class="form-text">
+
+                        {{ else if eq .Type "date" }}
+                        <input name="{{ .Name }}" type="{{ .Type }}" value="{{ .Value }}" class="form-text">
+
+                        {{ else if eq .Type "number" }}
+                        <input name="{{ .Name }}" type="{{ .Type }}" value="{{ .Value }}" class="form-text">
+
+                        {{ else if eq .Type "file" }}
+                        <input name="{{ .Name }}" type="{{ .Type }}" style="display: block;">
+                        <span>現在登録されているファイル: {{ .Value }}</span>
+
+                        {{ else if eq .Type "checkbox" }}
+                        <input name="{{ .Name }}" type="{{ .Type }}" value="{{ .Value }}" checked>
+
                         {{ end }}
                         </div>
                     {{ end }}

@@ -101,7 +101,7 @@ func (lc *lectureController) AdminGetByID(id int) (*FieldsResponse, error) {
 	res.Fields = append(res.Fields,
 		&Field{Key: "ID", Value: data.ID},
 		&Field{Key: "タイトル", Value: data.Title},
-		&Field{Key: "投稿者", Value: data.Author},
+		&Field{Key: "投稿者", Value: data.Author.Name},
 		&Field{Key: "ファイル名", Value: data.File},
 		&Field{Key: "コメント", Value: data.Comment},
 		&Field{Key: "公開", Value: data.Activation},

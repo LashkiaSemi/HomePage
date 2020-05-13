@@ -126,7 +126,7 @@ func (ui *userInteractor) AdminUpdate(userID int, name, studentID, role, departm
 	}
 
 	newUser := user.AdminUpdate(name, studentID, department, comment, role, grade)
-	err = ui.UserRepository.AdminUpdate(newUser)
+	err = ui.UserRepository.AdminUpdateByID(newUser)
 	if err != nil {
 		err = errors.Wrap(err, "failed to update db")
 		return err

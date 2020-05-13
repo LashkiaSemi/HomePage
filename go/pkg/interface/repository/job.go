@@ -53,3 +53,33 @@ func (jr *jobRepository) FindByID(id int) (*entity.Job, error) {
 	}
 	return &data, nil
 }
+
+func (jr *jobRepository) Create(data *entity.Job) (int, error) {
+	result, err := jr.SQLHandler.Execute(`
+		INSERT INTO jobs(company, job, created_at, updated_at)
+		VALUES (?,?,?,?)
+	`, data.Company, data.Job, data.CreatedAt, data.UpdatedAt)
+	if err != nil {
+		err = errors.Wrap(err, "create error")
+		return 0, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		err = errors.Wrap(err, "can't get id")
+		return 0, err
+	}
+	return int(id), nil
+}
+
+func (jr *jobRepository) UpdateByID(data *entity.Job) error {
+	_, err := jr.SQLHandler.Execute(`
+		UPDATE jobs
+		SET company=?, job=?, updated_at=?
+		WHERE id=?
+	`, data.Company, data.Job, data.UpdatedAt, data.ID)
+	if err != nil {
+		err = errors.Wrap(err, "can't update db")
+		return err
+	}
+	return nil
+}
