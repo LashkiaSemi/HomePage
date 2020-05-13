@@ -1,0 +1,44 @@
+{{ template "admin_header" .Info }}
+<div class="container-wrapper">
+    <div class="container">
+        <div class="content-wrapper">
+
+            <div class="content" style="display: flex; justify-content: center;">
+                <div class="card" style="width: 500px;">
+                    <div class="card-header">
+                        <h2 class="h2">管理者ページにログイン</h2>
+                    </div>
+                    <div class="card-content">
+                        <form method="POST" class="form">
+                            {{ if .Info.Errors }}
+                            <div class="notify-bar notify-bar-danger mb-20">
+                                {{ range .Info.Errors }}
+                                <div>{{ . }}</div>
+                                {{ end }}
+                            </div>
+                            {{ end }}
+
+                            <div>
+                                <label>学籍番号</label>
+                                <input type="text" class="form-text" name="studentID">
+                            </div>
+
+                            <div>
+                                <label>パスワード</label>
+                                <input type="password" class="form-text" name="password">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">ログイン</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-wrapper -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END contaienr-wrapper -->
+{{ template "admin_footer" }}

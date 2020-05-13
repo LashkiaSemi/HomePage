@@ -26,6 +26,7 @@ type UserController interface {
 	Login(studentID, password string) error
 
 	// admin
+	AdminLogin(studentID, password string) error
 	AdminGetAll() ([]map[string]string, error)
 	AdminGetByID(userID int) (*FieldsResponse, error)
 	AdminCreate(name, studentID, department, comment, password, role string, grade int) (int, error)
@@ -99,6 +100,10 @@ func (uc *userController) DeleteByID(id int) error {
 // session
 func (uc *userController) Login(studentID, password string) error {
 	return uc.UserInteractor.AuthenticationByStudentID(studentID, password)
+}
+
+func (uc *userController) AdminLogin(studentID, password string) error {
+	return uc.UserInteractor.AdminAuthorizationByStudentID(studentID, password)
 }
 
 // admin

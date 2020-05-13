@@ -25,7 +25,7 @@ type UserInteractor interface {
 	AuthenticationByStudentID(studentID, password string) error
 
 	// AuthorizationByStudentID 学籍番号からadminの認可
-	// AuthorizationByStudentID()
+	AdminAuthorizationByStudentID(studentID, password string) error
 
 	// roleのことがあるので...
 	AdminCreate(name, studentID, password, role, department, comment string, grade int) (int, error)
@@ -149,6 +149,24 @@ func (ui *userInteractor) AuthenticationByStudentID(studentID, password string) 
 
 	err = ui.VerifyHandler.PasswordVerify(user.Password, password)
 	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ui *userInteractor) AdminAuthorizationByStudentID(studentID, password string) error {
+	user, err := ui.UserRepository.FindAuthInfoByStudentID(studentID)
+	if err != nil {
+		err = errors.Wrap(err, "failed to get auth info")
+		return err
+	}
+	if user.Role != "admin" && user.Role != "owner" {
+		err = errors.New("failed to authorized permission")
+		return err
+	}
+	err = ui.VerifyHandler.PasswordVerify(user.Password, password)
+	if err != nil {
+		err = errors.Wrap(err, "failed to verify password")
 		return err
 	}
 	return nil

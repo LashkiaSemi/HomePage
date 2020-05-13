@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"homepage/pkg/configs"
 	"homepage/pkg/usecase/interactor"
 	"log"
@@ -9,11 +10,21 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// CheckIsLogin 認証部分のチェック
-// func CheckIsLogin(r *http.Request) bool {
-// 	_, err := r.Cookie(configs.CookieName)
-// 	return (err == nil)
-// }
+// adminSessions studentID: tokenString?
+var adminSessions = make(map[string]string)
+
+// SetAdminSession adminログインしたときに、サーバに保存しておく
+func SetAdminSession(studentID, token string) {
+	adminSessions[studentID] = token
+}
+
+// CheckIsAdminSession 学籍番号からadminログインしたときのJWTを取得
+func CheckIsAdminSession(studentID, token string) error {
+	if adminSessions[studentID] != token {
+		return errors.New("failed to check admin session")
+	}
+	return nil
+}
 
 // GetStudentIDFromCookie cookieから学籍番号の取得
 func GetStudentIDFromCookie(r *http.Request) string {

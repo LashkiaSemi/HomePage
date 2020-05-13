@@ -30,6 +30,7 @@ type UserHandler interface {
 	Logout(w http.ResponseWriter, r *http.Request)
 
 	// admin
+	AdminLogin(w http.ResponseWriter, r *http.Request)
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
 	AdminCreate(w http.ResponseWriter, r *http.Request)
@@ -205,6 +206,51 @@ func (uh *userHandler) Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 // admin
+func (uh *userHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
+	info := createInfo(r, "login", auth.GetStudentIDFromCookie(r))
+	var body interface{}
+
+	if r.Method == "POST" {
+		studentID := r.PostFormValue("studentID")
+		password := r.PostFormValue("password")
+
+		if studentID == "" || password == "" {
+			info.Errors = append(info.Errors, "全フィールドが必須です")
+			response.AdminRender(w, "login.html", info, body)
+			return
+		}
+
+		err := uh.UserController.AdminLogin(studentID, password)
+		if err != nil {
+			log.Println("failed to login: ", err)
+			info.Errors = append(info.Errors, "ログイン失敗")
+			response.AdminRender(w, "login.html", info, body)
+			return
+		}
+
+		// jwtの作成
+		token, err := auth.CreateToken(studentID)
+		if err != nil {
+			log.Println("failed to create token: ", err)
+			response.InternalServerError(w, info)
+			return
+		}
+
+		cookie := &http.Cookie{
+			Name:  configs.CookieName,
+			Value: token,
+		}
+		http.SetCookie(w, cookie)
+
+		// AdminSessionsに登録
+		auth.SetAdminSession(studentID, token)
+		log.Println("adminLogin: studentID is", studentID)
+
+		http.Redirect(w, r, "/admin", http.StatusSeeOther)
+	}
+	response.AdminRender(w, "login.html", info, body)
+}
+
 func (uh *userHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
 	res, err := uh.UserController.AdminGetAll()
