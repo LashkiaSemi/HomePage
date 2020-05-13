@@ -29,16 +29,11 @@ func NewSocietyInteractor(sr SocietyRepository) SocietyInteractor {
 }
 
 func (si *societyInteractor) GetAll() ([]*entity.Society, error) {
-	datas, err := si.SocietyRepository.FindAll()
-	return datas, err
+	return si.SocietyRepository.FindAll()
 }
 
 func (si *societyInteractor) GetByID(id int) (*entity.Society, error) {
-	data, err := si.SocietyRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "GetByID")
-	}
-	return data, err
+	return si.SocietyRepository.FindByID(id)
 }
 
 func (si *societyInteractor) Create(title, author, society, award, date string) (int, error) {
@@ -49,7 +44,7 @@ func (si *societyInteractor) Create(title, author, society, award, date string) 
 	// insert db
 	id, err := si.SocietyRepository.Create(&data)
 	if err != nil {
-		err = errors.Wrap(err, "interactor: failed to insert db")
+		err = errors.Wrap(err, "failed to insert db")
 		return 0, err
 	}
 	return id, nil
@@ -58,7 +53,7 @@ func (si *societyInteractor) Create(title, author, society, award, date string) 
 func (si *societyInteractor) UpdateByID(id int, title, author, society, award, date string) error {
 	data, err := si.SocietyRepository.FindByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "can't find target data")
+		err = errors.Wrap(err, "failed to get original data")
 		return err
 	}
 	newData := data.Update(title, author, society, award, date)

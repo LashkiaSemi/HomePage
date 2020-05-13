@@ -2,7 +2,8 @@ package interactor
 
 import (
 	"homepage/pkg/entity"
-	"log"
+
+	"github.com/pkg/errors"
 )
 
 type lectureInteractor struct {
@@ -36,7 +37,7 @@ func (li *lectureInteractor) GetByID(id int) (*entity.Lecture, error) {
 func (li *lectureInteractor) Create(studentID, title, file, comment string, activation int) (*entity.Lecture, error) {
 	author, err := li.LectureRepository.FindAuthorByStudentID(studentID)
 	if err != nil {
-		log.Println("lectureInteractor: Create: ", err)
+		err = errors.Wrap(err, "failed to get author")
 		return &entity.Lecture{}, err
 	}
 
@@ -45,7 +46,7 @@ func (li *lectureInteractor) Create(studentID, title, file, comment string, acti
 
 	id, err := li.LectureRepository.Create(&lecture)
 	if err != nil {
-		log.Println("lectureInteractor: Create: ", err)
+		err = errors.Wrap(err, "failed to insert db")
 		return &entity.Lecture{}, err
 	}
 	lecture.ID = id
@@ -55,12 +56,12 @@ func (li *lectureInteractor) Create(studentID, title, file, comment string, acti
 func (li *lectureInteractor) UpdateByID(id int, studentID, title, file, comment string, activation int) (*entity.Lecture, error) {
 	author, err := li.LectureRepository.FindAuthorByStudentID(studentID)
 	if err != nil {
-		log.Println("lectureInteractor: Create: ", err)
+		err = errors.Wrap(err, "failed to get autho")
 		return &entity.Lecture{}, err
 	}
-
 	lecture, err := li.LectureRepository.FindByID(id)
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data")
 		return &entity.Lecture{}, err
 	}
 
@@ -69,6 +70,7 @@ func (li *lectureInteractor) UpdateByID(id int, studentID, title, file, comment 
 	// 永続化
 	err = li.LectureRepository.UpdateByID(newLecture)
 	if err != nil {
+		err = errors.Wrap(err, "failed to update db")
 		return &entity.Lecture{}, err
 	}
 	return newLecture, nil

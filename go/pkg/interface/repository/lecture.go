@@ -4,6 +4,8 @@ import (
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
+
+	"github.com/pkg/errors"
 )
 
 type lectureRepository struct {
@@ -24,16 +26,20 @@ func (lr *lectureRepository) FindAll() ([]*entity.Lecture, error) {
 		INNER JOIN users
 		ON user_id = users.id;
 	`)
-	if err != nil {
-		log.Println("lectureRepository: FindAll: ", err)
-		return []*entity.Lecture{}, err
-	}
 	lectures := []*entity.Lecture{}
+	if err != nil {
+		if err == lr.SQLHandler.ErrNoRows() {
+			log.Printf("hit no data: %v", err)
+			return lectures, nil
+		}
+		err = errors.Wrap(err, "failed to execute query")
+		return lectures, err
+	}
 	for rows.Next() {
 		var lecture entity.Lecture
 		var user entity.User
 		if err = rows.Scan(&lecture.ID, &lecture.Title, &lecture.File, &lecture.Comment, &lecture.Activation, &lecture.CreatedAt, &user.Name, &user.StudentID); err != nil {
-			log.Println("lectureRepository: FindAll: ", err)
+			log.Printf("rows.Scan skip: %v", err)
 			continue
 		}
 		lecture.Author = &user
@@ -51,11 +57,10 @@ func (lr *lectureRepository) FindByID(id int) (*entity.Lecture, error) {
 		ON user_id = users.id
 		WHERE l.id = ?
 	`, id)
-
 	var lec entity.Lecture
 	var user entity.User
 	if err := row.Scan(&lec.ID, &lec.Title, &lec.File, &lec.Comment, &lec.Activation, &lec.CreatedAt, &user.ID, &user.Name, &user.StudentID); err != nil {
-		log.Println("lectureRepository: FindByID: ", err)
+		err = errors.Wrap(err, "failed to bind data")
 		return &entity.Lecture{}, err
 	}
 	lec.Author = &user
@@ -72,7 +77,7 @@ func (lr *lectureRepository) FindAuthorByStudentID(studentID string) (*entity.Us
 	`, studentID)
 	var user entity.User
 	if err := row.Scan(&user.ID, &user.Name, &user.StudentID, &user.Department, &user.Grade, &user.Comment); err != nil {
-		log.Println("userRepository: FindByID: ", err)
+		err = errors.Wrap(err, "failed to bind data")
 		return &entity.User{}, err
 	}
 	return &user, nil
@@ -84,12 +89,12 @@ func (lr *lectureRepository) Create(lec *entity.Lecture) (int, error) {
 		VALUES (?,?,?,?,?,?,?)
 	`, lec.Author.ID, lec.Title, lec.File, lec.Comment, lec.Activation, lec.CreatedAt, lec.UpdatedAt)
 	if err != nil {
-		log.Println("lectureRepository: Create: insertDB: ", err)
+		err = errors.Wrap(err, "failed to execute query")
 		return 0, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		log.Println("lectureRepository: Create: getID: ", err)
+		err = errors.Wrap(err, "failed to get id")
 		return 0, err
 	}
 	return int(id), err
@@ -102,7 +107,7 @@ func (lr *lectureRepository) UpdateByID(lec *entity.Lecture) error {
 		WHERE id=?
 	`, lec.Title, lec.File, lec.Comment, lec.Activation, lec.Author.ID, lec.ID)
 	if err != nil {
-		log.Println("lectureRepository: UpdateByID: ", err)
+		err = errors.Wrap(err, "failed to execute query")
 		return err
 	}
 	return nil
@@ -113,7 +118,7 @@ func (lr *lectureRepository) DeleteByID(id int) error {
 		DELETE FROM lectures WHERE id = ?
 	`, id)
 	if err != nil {
-		log.Println("lectureRepository: DeleteByID: ", err)
+		err = errors.Wrap(err, "failed to execute query")
 		return err
 	}
 	return nil

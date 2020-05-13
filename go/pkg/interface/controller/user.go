@@ -43,6 +43,7 @@ func NewUserController(ui interactor.UserInteractor) UserController {
 func (uc *userController) GetAll() (*UsersResponse, error) {
 	users, err := uc.UserInteractor.GetAll()
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &UsersResponse{}, err
 	}
 	var res UsersResponse
@@ -55,6 +56,7 @@ func (uc *userController) GetAll() (*UsersResponse, error) {
 func (uc *userController) GetAllGroupByGrade() (*UsersGroupByGradeResponse, error) {
 	users, err := uc.UserInteractor.GetAll()
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &UsersGroupByGradeResponse{}, err
 	}
 	var res = make(map[int][]*UserResponse)
@@ -68,6 +70,7 @@ func (uc *userController) GetAllGroupByGrade() (*UsersGroupByGradeResponse, erro
 func (uc *userController) GetByID(userID int) (*UserResponse, error) {
 	user, err := uc.UserInteractor.GetByID(userID)
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &UserResponse{}, err
 	}
 	return convertToUserResponse(user), err
@@ -76,6 +79,7 @@ func (uc *userController) GetByID(userID int) (*UserResponse, error) {
 func (uc *userController) GetByStudentID(studentID string) (*UserResponse, error) {
 	user, err := uc.UserInteractor.GetByStudentID(studentID)
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &UserResponse{}, err
 	}
 	return convertToUserResponse(user), err
@@ -84,6 +88,7 @@ func (uc *userController) GetByStudentID(studentID string) (*UserResponse, error
 func (uc *userController) UpdateByID(userID int, name, studentID, department, comment string, grade int) (*UserResponse, error) {
 	user, err := uc.UserInteractor.UpdateByID(userID, name, studentID, department, comment, grade)
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &UserResponse{}, err
 	}
 	return convertToUserResponse(user), err
@@ -111,7 +116,7 @@ func (uc *userController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	users, err := uc.UserInteractor.GetAll()
 	if err != nil {
-		err = errors.Wrap(err, "AdminGetAll")
+		err = errors.Wrap(err, "failed to original data for response")
 		return res, err
 	}
 	for _, user := range users {
@@ -129,7 +134,7 @@ func (uc *userController) AdminGetByID(userID int) (*FieldsResponse, error) {
 
 	user, err := uc.UserInteractor.GetByID(userID)
 	if err != nil {
-		err = errors.Wrap(err, "AdminGetByID")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &res, err
 	}
 

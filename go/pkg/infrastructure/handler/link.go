@@ -62,7 +62,7 @@ func LinkHandler(w http.ResponseWriter, r *http.Request) {
 		LabLinks:  labLinks,
 		TechLinks: techLinks,
 	}
-	response.Success(w, "link/index.html", header, &body)
+	response.Render(w, "link/index.html", header, &body)
 }
 
 type link struct {

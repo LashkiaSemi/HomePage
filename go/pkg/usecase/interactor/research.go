@@ -32,11 +32,8 @@ func (ri *researchInteractor) GetAll() ([]*entity.Research, error) {
 }
 
 func (ri *researchInteractor) GetByID(id int) (*entity.Research, error) {
-	data, err := ri.ResearchRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "researchInteractor: GetByID")
-	}
-	return data, err
+	return ri.ResearchRepository.FindByID(id)
+
 }
 
 func (ri *researchInteractor) Create(title, author, file, comment string, activation int) (int, error) {
@@ -47,7 +44,7 @@ func (ri *researchInteractor) Create(title, author, file, comment string, activa
 	// insert db
 	id, err := ri.ResearchRepository.Create(&data)
 	if err != nil {
-		err = errors.Wrap(err, "interactor: failed to insert db")
+		err = errors.Wrap(err, "failed to insert db")
 		return 0, err
 	}
 	return id, nil
@@ -56,7 +53,7 @@ func (ri *researchInteractor) Create(title, author, file, comment string, activa
 func (ri *researchInteractor) UpdateByID(id int, title, author, file, comment string, activation int) error {
 	data, err := ri.ResearchRepository.FindByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "can't find target data")
+		err = errors.Wrap(err, "failed to get original data")
 		return err
 	}
 	newData := data.Update(title, author, file, comment, activation)

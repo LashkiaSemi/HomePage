@@ -39,6 +39,7 @@ func NewResearchController(ri interactor.ResearchInteractor) ResearchController 
 func (rc *researchController) GetAll() (*ResearchesResponse, error) {
 	datas, err := rc.ResearchInteractor.GetAll()
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &ResearchesResponse{}, err
 	}
 	var res ResearchesResponse
@@ -51,26 +52,18 @@ func (rc *researchController) GetAll() (*ResearchesResponse, error) {
 func (rc *researchController) GetByID(id int) (*ResearchResponse, error) {
 	data, err := rc.ResearchInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "failed to find data")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &ResearchResponse{}, err
 	}
 	return convertToResearchResponse(data), nil
 }
 
 func (rc *researchController) Create(title, author, file, comment string, activation int) (int, error) {
-	id, err := rc.ResearchInteractor.Create(title, author, file, comment, activation)
-	if err != nil {
-		err = errors.Wrap(err, "controller")
-	}
-	return id, err
+	return rc.ResearchInteractor.Create(title, author, file, comment, activation)
 }
 
 func (rc *researchController) UpdateByID(id int, title, author, file, comment string, activation int) error {
-	err := rc.ResearchInteractor.UpdateByID(id, title, author, file, comment, activation)
-	if err != nil {
-		err = errors.Wrap(err, "controller")
-	}
-	return err
+	return rc.ResearchInteractor.UpdateByID(id, title, author, file, comment, activation)
 }
 
 func (rc *researchController) DeleteByID(id int) error {
@@ -82,7 +75,7 @@ func (rc *researchController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	datas, err := rc.ResearchInteractor.GetAll()
 	if err != nil {
-		err = errors.Wrap(err, "AdminGetAll")
+		err = errors.Wrap(err, "failed to original data for response")
 		return res, err
 	}
 	for _, data := range datas {
@@ -98,7 +91,7 @@ func (rc *researchController) AdminGetByID(id int) (*FieldsResponse, error) {
 	var res FieldsResponse
 	data, err := rc.ResearchInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "researchController: AdminGetByID")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &res, err
 	}
 	res.Fields = append(res.Fields,

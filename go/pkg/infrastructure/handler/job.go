@@ -18,8 +18,8 @@ import (
 type JobHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
 
-	Create(w http.ResponseWriter, r *http.Request)
-	UpdateByID(w http.ResponseWriter, r *http.Request)
+	AdminCreate(w http.ResponseWriter, r *http.Request)
+	AdminUpdateByID(w http.ResponseWriter, r *http.Request)
 
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
@@ -47,14 +47,14 @@ func (jh *jobHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	res, err := jh.JobController.GetAll()
 	if err != nil {
-		log.Println("jobHandler: GetAll: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
-	response.Success(w, "job/index.html", info, res)
+	response.Render(w, "job/index.html", info, res)
 }
 
-func (jh *jobHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (jh *jobHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "jobs", auth.GetStudentIDFromCookie(r))
 
 	body := []*FormField{
@@ -63,7 +63,7 @@ func (jh *jobHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("job create: post request")
+		// log.Println("job create: post request")
 		company := r.PostFormValue("company")
 		job := r.PostFormValue("job")
 		if company == "" {
@@ -74,28 +74,28 @@ func (jh *jobHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 		id, err := jh.JobController.Create(company, job)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to create: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success create job")
+		// log.Println("success create job")
 		http.Redirect(w, r, fmt.Sprintf("/admin/jobs/%d", id), http.StatusSeeOther)
 	}
 
 	response.AdminRender(w, "edit.html", info, body)
 }
 
-func (jh *jobHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
+func (jh *jobHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "jobs", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	data, err := jh.JobController.GetByID(id)
 	if err != nil {
-		log.Println("failed to get target: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -105,7 +105,7 @@ func (jh *jobHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("job update: post request")
+		// log.Println("job update: post request")
 		company := r.PostFormValue("company")
 		job := r.PostFormValue("job")
 		if company == "" {
@@ -116,14 +116,13 @@ func (jh *jobHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 
 		err = jh.JobController.UpdateByID(id, company, job)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to update: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success update job")
+		// log.Println("success update job")
 		http.Redirect(w, r, fmt.Sprintf("/admin/jobs/%d", id), http.StatusSeeOther)
 	}
-
 	response.AdminRender(w, "edit.html", info, body)
 }
 
@@ -132,7 +131,7 @@ func (jh *jobHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "jobs", auth.GetStudentIDFromCookie(r))
 	res, err := jh.JobController.AdminGetAll()
 	if err != nil {
-		log.Println("jobHandler: AdminGetAll: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -143,13 +142,13 @@ func (jh *jobHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "jobs", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("jobHandler: AdminGetByID: failed to parse path param: ", err)
+		log.Printf("failed to parse path param: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	res, err := jh.JobController.AdminGetByID(id)
 	if err != nil {
-		log.Println("jobHandler: AdminGetByID: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -161,27 +160,27 @@ func (jh *jobHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "jobs", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := jh.JobController.AdminGetByID(id)
 	if err != nil {
-		log.Println("AdminDeleteByID: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 
 	if r.Method == "POST" {
-		log.Println("post request: delete job")
+		// log.Println("post request: delete job")
 		err = jh.JobController.DeleteByID(id)
 		if err != nil {
-			log.Println("failed to delete")
+			log.Printf("failed to delete: %v", err)
 			info.Errors = append(info.Errors, "削除に失敗しました")
 			response.AdminRender(w, "delete.html", info, body)
 			return
 		}
-		log.Println("success to delete job")
+		// log.Println("success to delete job")
 		http.Redirect(w, r, "/admin/jobs", http.StatusSeeOther)
 	}
 	response.AdminRender(w, "delete.html", info, body)

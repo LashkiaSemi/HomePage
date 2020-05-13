@@ -24,15 +24,19 @@ func (tr *tagRepository) FindAll() ([]*entity.Tag, error) {
 		SELECT id, name
 		FROM tags
 	`)
-	if err != nil {
-		err = errors.Wrap(err, "find All")
-		return []*entity.Tag{}, err
-	}
 	var res []*entity.Tag
+	if err != nil {
+		if err == tr.SQLHandler.ErrNoRows() {
+			log.Printf("hit no data: %v", err)
+			return res, nil
+		}
+		err = errors.Wrap(err, "failed to execute query")
+		return res, err
+	}
 	for rows.Next() {
 		var tag entity.Tag
 		if err = rows.Scan(&tag.ID, &tag.Name); err != nil {
-			log.Println("tagRepository: findAll: scan skip: ", err)
+			log.Printf("rows.Scan skip: %v", err)
 			continue
 		}
 		res = append(res, &tag)
@@ -48,7 +52,7 @@ func (tr *tagRepository) FindByID(id int) (*entity.Tag, error) {
 	`, id)
 	var tag entity.Tag
 	if err := row.Scan(&tag.ID, &tag.Name); err != nil {
-		err = errors.Wrap(err, "findByID: failed to find data")
+		err = errors.Wrap(err, "failed to bind data")
 		return &tag, err
 	}
 	return &tag, nil
@@ -60,12 +64,12 @@ func (tr *tagRepository) Create(data *entity.Tag) (int, error) {
 		VALUES (?,?,?)
 	`, data.Name, data.CreatedAt, data.UpdatedAt)
 	if err != nil {
-		err = errors.Wrap(err, "Create: failed to insert db")
+		err = errors.Wrap(err, "failed to execute query")
 		return 0, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		err = errors.Wrap(err, "Create: failed to get id")
+		err = errors.Wrap(err, "failed to get id")
 		return 0, err
 	}
 	return int(id), err
@@ -78,7 +82,7 @@ func (tr *tagRepository) UpdateByID(data *entity.Tag) error {
 		WHERE id=?
 	`, data.Name, data.UpdatedAt, data.ID)
 	if err != nil {
-		err = errors.Wrap(err, "Update: failed to update db")
+		err = errors.Wrap(err, "failed to execute query")
 	}
 	return err
 }
@@ -89,7 +93,7 @@ func (tr *tagRepository) DeleteByID(id int) error {
 		WHERE id=?
 	`, id)
 	if err != nil {
-		err = errors.Wrap(err, "DeleteByID")
+		err = errors.Wrap(err, "failed to execute query")
 	}
 	return err
 }

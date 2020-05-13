@@ -23,12 +23,11 @@ type equipmentHandler struct {
 type EquipmentHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
 
-	Create(w http.ResponseWriter, r *http.Request)
-	UpdateByID(w http.ResponseWriter, r *http.Request)
-
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
+	AdminCreate(w http.ResponseWriter, r *http.Request)
+	AdminUpdateByID(w http.ResponseWriter, r *http.Request)
 	AdminDeleteByID(w http.ResponseWriter, r *http.Request)
 }
 
@@ -52,19 +51,20 @@ func (eh *equipmentHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "equipment", auth.GetStudentIDFromCookie(r))
 	res, err := eh.EquipmentController.GetAll()
 	if err != nil {
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
-	response.Success(w, "equipment/index.html", info, res)
+	response.Render(w, "equipment/index.html", info, res)
 }
 
-func (eh *equipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (eh *equipmentHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
 
 	// tagmap
 	tags, err := eh.TagController.GetAll()
 	if err != nil {
-		log.Println("failed to get tags")
+		log.Printf("failed to get tags: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -80,7 +80,7 @@ func (eh *equipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 		createFormField("tagID", "", "タグ", "select", tagsMap),
 	}
 	if r.Method == "POST" {
-		log.Println("equipment create: post request")
+		// log.Println("equipment create: post request")
 		name := r.PostFormValue("name")
 		comment := r.PostFormValue("comment")
 		stock, err := strconv.Atoi(r.PostFormValue("stock"))
@@ -95,8 +95,8 @@ func (eh *equipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 			// TODO: 然るべき処理
 			log.Println("tagID: failed to parse string to int")
 			tagID = 6
-			// response.AdminRender(w, "edit.html", info, body)
-			// return
+			response.AdminRender(w, "edit.html", info, body)
+			return
 		}
 		if name == "" {
 			info.Errors = append(info.Errors, "品名は必須です")
@@ -105,29 +105,28 @@ func (eh *equipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 		}
 		id, err := eh.EquipmentController.Create(name, comment, stock, tagID)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to create: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success create!")
+		// log.Println("success create!")
 		http.Redirect(w, r, fmt.Sprintf("/admin/equipments/%d", id), http.StatusSeeOther)
-
 	}
 	response.AdminRender(w, "edit.html", info, body)
 }
 
-func (eh *equipmentHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
+func (eh *equipmentHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	// get initial value
 	data, err := eh.EquipmentController.GetByID(id)
 	if err != nil {
-		log.Println("failed to get target: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -135,7 +134,7 @@ func (eh *equipmentHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	// tagmap
 	tags, err := eh.TagController.GetAll()
 	if err != nil {
-		log.Println("failed to get tags")
+		log.Printf("failed to get tags: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -152,7 +151,7 @@ func (eh *equipmentHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		createFormField("tagID", strconv.Itoa(data.Tag.ID), "タグ", "select", tagsMap), // TODO; 選択肢
 	}
 	if r.Method == "POST" {
-		log.Println("equipment update: post request")
+		// log.Println("equipment update: post request")
 		name := r.PostFormValue("name")
 		comment := r.PostFormValue("comment")
 		stock, err := strconv.Atoi(r.PostFormValue("stock"))
@@ -167,8 +166,8 @@ func (eh *equipmentHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 			// TODO: 然るべき処理
 			log.Println("tagID: failed to parse string to int")
 			tagID = 6
-			// response.AdminRender(w, "edit.html", info, body)
-			// return
+			response.AdminRender(w, "edit.html", info, body)
+			return
 		}
 		if name == "" {
 			info.Errors = append(info.Errors, "品名は必須です")
@@ -178,11 +177,11 @@ func (eh *equipmentHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 
 		err = eh.EquipmentController.UpdateByID(id, name, comment, stock, tagID)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to update: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success update!")
+		// log.Println("success update!")
 		http.Redirect(w, r, fmt.Sprintf("/admin/equipments/%d", id), http.StatusSeeOther)
 
 	}
@@ -193,7 +192,7 @@ func (eh *equipmentHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) 
 	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
 	res, err := eh.EquipmentController.AdminGetAll()
 	if err != nil {
-		log.Println("EquipmentHandler: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -204,13 +203,13 @@ func (eh *equipmentHandler) AdminGetByID(w http.ResponseWriter, r *http.Request)
 	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("equipmentHandler: AdminGetByID: failed to parse path param: ", err)
+		log.Printf("failed to parse path param: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	res, err := eh.EquipmentController.AdminGetByID(id)
 	if err != nil {
-		log.Println("equipmentHandler: AdminGetByID: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -222,27 +221,27 @@ func (eh *equipmentHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Reque
 	info := createInfo(r, "equipments", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := eh.EquipmentController.AdminGetByID(id)
 	if err != nil {
-		log.Println("AdminDeleteByID: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 
 	if r.Method == "POST" {
-		log.Println("post request: delete equipment")
+		// log.Println("post request: delete equipment")
 		err = eh.EquipmentController.DeleteByID(id)
 		if err != nil {
-			log.Println("failed to delete")
+			log.Printf("failed to delete: %v", err)
 			info.Errors = append(info.Errors, "削除に失敗しました")
 			response.AdminRender(w, "delete.html", info, body)
 			return
 		}
-		log.Println("success to delete equipment")
+		// log.Println("success to delete equipment")
 		http.Redirect(w, r, "/admin/equipments", http.StatusSeeOther)
 	}
 	response.AdminRender(w, "delete.html", info, body)

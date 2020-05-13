@@ -38,6 +38,7 @@ func (s *server) Serve() {
 	// r.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
 	r.HandleFunc("/health", healthHandler)
 
+	// web site
 	r.HandleFunc("/", handler.IndexHandler)
 	r.HandleFunc("/login", s.Handler.UserHandler.Login)
 	r.HandleFunc("/logout", middleware.Authorized(s.Handler.UserHandler.Logout))
@@ -82,35 +83,36 @@ func (s *server) Serve() {
 	r.HandleFunc("/admin/members/{id}/edit", middleware.AdminAuthorized(s.Handler.UserHandler.AdminUpdateByID))
 	r.HandleFunc("/admin/members/{id}/delete", middleware.AdminAuthorized(s.Handler.UserHandler.AdminDeleteByID))
 
-	r.HandleFunc("/admin/activities/new", middleware.AdminAuthorized(s.Handler.ActivityHandler.Create))
-	r.HandleFunc("/admin/activities/{id}/edit", middleware.AdminAuthorized(s.Handler.ActivityHandler.UpdateByID))
+	r.HandleFunc("/admin/activities/new", middleware.AdminAuthorized(s.Handler.ActivityHandler.AdminCreate))
+	r.HandleFunc("/admin/activities/{id}/edit", middleware.AdminAuthorized(s.Handler.ActivityHandler.AdminUpdateByID))
 	r.HandleFunc("/admin/activities/{id}/delete", middleware.AdminAuthorized(s.Handler.ActivityHandler.AdminDeleteByID))
 
-	r.HandleFunc("/admin/societies/new", middleware.AdminAuthorized(s.Handler.SocietyHandler.Create))
-	r.HandleFunc("/admin/societies/{id}/edit", middleware.AdminAuthorized(s.Handler.SocietyHandler.UpdateByID))
+	r.HandleFunc("/admin/societies/new", middleware.AdminAuthorized(s.Handler.SocietyHandler.AdminCreate))
+	r.HandleFunc("/admin/societies/{id}/edit", middleware.AdminAuthorized(s.Handler.SocietyHandler.AdminUpdateByID))
 	r.HandleFunc("/admin/societies/{id}/delete", middleware.AdminAuthorized(s.Handler.SocietyHandler.AdminDeleteByID))
 
-	r.HandleFunc("/admin/jobs/new", middleware.AdminAuthorized(s.Handler.JobHandler.Create))
-	r.HandleFunc("/admin/jobs/{id}/edit", middleware.AdminAuthorized(s.Handler.JobHandler.UpdateByID))
+	r.HandleFunc("/admin/jobs/new", middleware.AdminAuthorized(s.Handler.JobHandler.AdminCreate))
+	r.HandleFunc("/admin/jobs/{id}/edit", middleware.AdminAuthorized(s.Handler.JobHandler.AdminUpdateByID))
 	r.HandleFunc("/admin/jobs/{id}/delete", middleware.AdminAuthorized(s.Handler.JobHandler.AdminDeleteByID))
 
 	r.HandleFunc("/admin/lectures/new", middleware.AdminAuthorized(s.Handler.LectureHandler.AdminCreate))
 	r.HandleFunc("/admin/lectures/{id}/edit", middleware.AdminAuthorized(s.Handler.LectureHandler.AdminUpdateByID))
 	r.HandleFunc("/admin/lectures/{id}/delete", middleware.AdminAuthorized(s.Handler.LectureHandler.AdminDeleteByID))
 
-	r.HandleFunc("/admin/researches/new", middleware.AdminAuthorized(s.Handler.ResearchHandler.Create))
-	r.HandleFunc("/admin/researches/{id}/edit", middleware.AdminAuthorized(s.Handler.ResearchHandler.UpdateByID))
+	r.HandleFunc("/admin/researches/new", middleware.AdminAuthorized(s.Handler.ResearchHandler.AdminCreate))
+	r.HandleFunc("/admin/researches/{id}/edit", middleware.AdminAuthorized(s.Handler.ResearchHandler.AdminUpdateByID))
 	r.HandleFunc("/admin/researches/{id}/delete", middleware.AdminAuthorized(s.Handler.ResearchHandler.AdminDeleteByID))
 
-	r.HandleFunc("/admin/equipments/new", middleware.AdminAuthorized(s.Handler.EquipmentHandler.Create))
-	r.HandleFunc("/admin/equipments/{id}/edit", middleware.AdminAuthorized(s.Handler.EquipmentHandler.UpdateByID))
+	r.HandleFunc("/admin/equipments/new", middleware.AdminAuthorized(s.Handler.EquipmentHandler.AdminCreate))
+	r.HandleFunc("/admin/equipments/{id}/edit", middleware.AdminAuthorized(s.Handler.EquipmentHandler.AdminUpdateByID))
 	r.HandleFunc("/admin/equipments/{id}/delete", middleware.AdminAuthorized(s.Handler.EquipmentHandler.AdminDeleteByID))
 
-	r.HandleFunc("/admin/tags/new", middleware.AdminAuthorized(s.Handler.TagHandler.Create))
-	r.HandleFunc("/admin/tags/{id}/edit", middleware.AdminAuthorized(s.Handler.TagHandler.UpdateByID))
+	r.HandleFunc("/admin/tags/new", middleware.AdminAuthorized(s.Handler.TagHandler.AdminCreate))
+	r.HandleFunc("/admin/tags/{id}/edit", middleware.AdminAuthorized(s.Handler.TagHandler.AdminUpdateByID))
 	r.HandleFunc("/admin/tags/{id}/delete", middleware.AdminAuthorized(s.Handler.TagHandler.AdminDeleteByID))
 
-	log.Println("server running http://localhost:8080")
+	// TODO: 固定値すぎる
+	log.Println("[info] server running http://localhost:8080")
 	http.ListenAndServe(":"+s.Port, r)
 }
 
@@ -118,6 +120,7 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("health")
 }
 
+// dummyHandler web site用のダミーハンドラ
 func dummyHandler(templateFile string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		t, err := template.ParseFiles(
@@ -127,20 +130,23 @@ func dummyHandler(templateFile string) http.HandlerFunc {
 		)
 		if err != nil {
 			log.Printf("failed to parse template: %v", err)
+			return
 		}
 		if err = t.Execute(w, struct {
 			Info *dummyInfo
 		}{
 			Info: &dummyInfo{
 				StudentID: "dummy",
-				PageType:  "",
+				PageType:  "dummy",
 			},
 		}); err != nil {
 			log.Printf("failed to execute template: %v", err)
+			return
 		}
 	}
 }
 
+// adminDummyHandler admin site用のダミーハンドラ
 func adminDummyHandler(templateFile string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		funcMap := template.FuncMap{"convPageType": func(p string) string { return "dummy" }}
@@ -152,16 +158,18 @@ func adminDummyHandler(templateFile string) http.HandlerFunc {
 		)
 		if err != nil {
 			log.Printf("failed to parse template: %v", err)
+			return
 		}
 		if err = t.Execute(w, struct {
 			Info *dummyInfo
 		}{
 			Info: &dummyInfo{
 				StudentID: "dummy",
-				PageType:  "",
+				PageType:  "dummy",
 			},
 		}); err != nil {
 			log.Printf("failed to execute template: %v", err)
+			return
 		}
 	}
 }

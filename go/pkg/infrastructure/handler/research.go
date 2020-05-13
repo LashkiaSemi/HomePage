@@ -25,8 +25,8 @@ type researchHandler struct {
 type ResearchHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
 
-	Create(w http.ResponseWriter, r *http.Request)
-	UpdateByID(w http.ResponseWriter, r *http.Request)
+	AdminCreate(w http.ResponseWriter, r *http.Request)
+	AdminUpdateByID(w http.ResponseWriter, r *http.Request)
 
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
@@ -50,13 +50,13 @@ func (rh *researchHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	res, err := rh.ResearchController.GetAll()
 	if err != nil {
-		// log.Println("researchHandler: GetAll: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 	}
-	response.Success(w, "research/index.html", info, res)
+	response.Render(w, "research/index.html", info, res)
 }
 
-func (rh *researchHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (rh *researchHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "researches", auth.GetStudentIDFromCookie(r))
 
 	body := []*FormField{
@@ -68,7 +68,7 @@ func (rh *researchHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("research update: post request")
+		// log.Println("research update: post request")
 		title := r.PostFormValue("title")
 		author := r.PostFormValue("author")
 		comment := r.PostFormValue("comment")
@@ -88,7 +88,7 @@ func (rh *researchHandler) Create(w http.ResponseWriter, r *http.Request) {
 		var fileName string
 		file, fileHeader, err := r.FormFile("file")
 		if err != nil {
-			log.Println("empty file", err)
+			log.Printf("request empty file: %v", err)
 			fileName = ""
 		} else {
 			// TODO: funcにしたい
@@ -96,7 +96,7 @@ func (rh *researchHandler) Create(w http.ResponseWriter, r *http.Request) {
 			var saveImage *os.File
 			saveImage, err = os.Create(fmt.Sprintf("%s/%s", configs.SaveResearchFileDir, fileName))
 			if err != nil {
-				log.Println("failed to create file: ", err)
+				log.Printf("failed to reserve file: %v", err)
 				// TODO: 驚き最小じゃない気がする
 				response.InternalServerError(w, info)
 				return
@@ -105,38 +105,38 @@ func (rh *researchHandler) Create(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 			_, err = io.Copy(saveImage, file)
 			if err != nil {
-				log.Println("failed to save file: ", err)
+				log.Printf("failed to copy to reserve file: %v", err)
 				// 驚き最小じゃない気がする
 				response.InternalServerError(w, info)
 				return
 			}
-			log.Println("complete to save file")
+			// log.Println("complete to save file")
 		}
 		id, err := rh.ResearchController.Create(title, author, fileName, comment, activation)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to create: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success create research")
+		// log.Println("success create research")
 		http.Redirect(w, r, fmt.Sprintf("/admin/researches/%d", id), http.StatusSeeOther)
 	}
 
 	response.AdminRender(w, "edit.html", info, body)
 }
 
-func (rh *researchHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
+func (rh *researchHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "researches", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	// 初期値の取得
 	data, err := rh.ResearchController.GetByID(id)
 	if err != nil {
-		log.Println("failed to get target: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -149,7 +149,7 @@ func (rh *researchHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("research update: post request")
+		// log.Println("research update: post request")
 		title := r.PostFormValue("title")
 		author := r.PostFormValue("author")
 		comment := r.PostFormValue("comment")
@@ -169,7 +169,7 @@ func (rh *researchHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		var fileName string
 		file, fileHeader, err := r.FormFile("file")
 		if err != nil {
-			log.Println("empty file", err)
+			log.Printf("request empty file: %v", err)
 			fileName = data.FileName
 		} else {
 			// TODO: funcにしたい
@@ -177,7 +177,7 @@ func (rh *researchHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 			var saveImage *os.File
 			saveImage, err = os.Create(fmt.Sprintf("%s/%s", configs.SaveResearchFileDir, fileName))
 			if err != nil {
-				log.Println("failed to create file: ", err)
+				log.Printf("failed to reserve file: %v", err)
 				// TODO: 驚き最小じゃない気がする
 				response.InternalServerError(w, info)
 				return
@@ -186,7 +186,7 @@ func (rh *researchHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 			_, err = io.Copy(saveImage, file)
 			if err != nil {
-				log.Println("failed to save file: ", err)
+				log.Printf("failed to copy to reserve file: %v", err)
 				// 驚き最小じゃない気がする
 				response.InternalServerError(w, info)
 				return
@@ -194,11 +194,11 @@ func (rh *researchHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		}
 		err = rh.ResearchController.UpdateByID(id, title, author, fileName, comment, activation)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to update: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success update research")
+		// log.Println("success update research")
 		http.Redirect(w, r, fmt.Sprintf("/admin/researches/%d", id), http.StatusSeeOther)
 	}
 
@@ -211,7 +211,7 @@ func (rh *researchHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "researches", auth.GetStudentIDFromCookie(r))
 	res, err := rh.ResearchController.AdminGetAll()
 	if err != nil {
-		log.Println("jobHandler: AdminGetAll: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -222,13 +222,13 @@ func (rh *researchHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) 
 	info := createInfo(r, "researches", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("researchHandler: AdminGetByID: failed to parse path param: ", err)
+		log.Printf("failed to parse path param: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	res, err := rh.ResearchController.AdminGetByID(id)
 	if err != nil {
-		log.Println("researchHandler: AdminGetByID: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -240,27 +240,27 @@ func (rh *researchHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Reques
 	info := createInfo(r, "researches", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := rh.ResearchController.AdminGetByID(id)
 	if err != nil {
-		log.Println("AdminDeleteByID: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 
 	if r.Method == "POST" {
-		log.Println("post request: delete research")
+		// log.Println("post request: delete research")
 		err = rh.ResearchController.DeleteByID(id)
 		if err != nil {
-			log.Println("failed to delete")
+			log.Printf("failed to delete: %v", err)
 			info.Errors = append(info.Errors, "削除に失敗しました")
 			response.AdminRender(w, "delete.html", info, body)
 			return
 		}
-		log.Println("success to delete research")
+		// log.Println("success to delete research")
 		http.Redirect(w, r, "/admin/researches", http.StatusSeeOther)
 	}
 	response.AdminRender(w, "delete.html", info, body)

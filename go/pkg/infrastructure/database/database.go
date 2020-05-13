@@ -2,6 +2,8 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
+	"homepage/pkg/configs"
 	"homepage/pkg/interface/repository"
 	"log"
 
@@ -12,10 +14,14 @@ type sqlHandler struct {
 	DB *sql.DB
 }
 
+// NewSQLHandler dbのコネクションを作成
 func NewSQLHandler() repository.SQLHandler {
-	conn, err := sql.Open("mysql", "root:password@tcp(localhost:3307)/homepage")
+	conn, err := sql.Open(
+		configs.DBDriver,
+		fmt.Sprintf("%s:%s@%s(%s)/%s", configs.DBUser, configs.DBPassword, configs.DBProtocol, configs.DBTarget, configs.DBName),
+	)
 	if err != nil {
-		log.Fatal("DB connection error: ", err)
+		log.Fatalf("failed to open sql: %v", err)
 	}
 
 	return &sqlHandler{DB: conn}
@@ -28,7 +34,6 @@ func (sh *sqlHandler) ErrNoRows() error {
 func (sh *sqlHandler) Execute(query string, args ...interface{}) (repository.Result, error) {
 	res, err := sh.DB.Exec(query, args...)
 	if err != nil {
-		log.Println("")
 		return &sqlResult{}, err
 	}
 	return &sqlResult{Result: res}, nil
@@ -49,7 +54,6 @@ func (r *sqlResult) RowsAffected() (int64, error) {
 func (sh *sqlHandler) Query(query string, args ...interface{}) (repository.Rows, error) {
 	rows, err := sh.DB.Query(query, args...)
 	if err != nil {
-		log.Println("")
 		return &sqlRows{}, err
 	}
 	return &sqlRows{Rows: rows}, nil

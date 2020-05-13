@@ -25,15 +25,19 @@ func (rr *researchRepository) FindAll() ([]*entity.Research, error) {
 		FROM researches
 		ORDER BY created_at DESC
 	`)
-	if err != nil {
-		log.Println("researchRepository: FindAll: ", err)
-		return []*entity.Research{}, err
-	}
 	var res []*entity.Research
+	if err != nil {
+		if err == rr.SQLHandler.ErrNoRows() {
+			log.Printf("no hit data: %v", err)
+			return res, nil
+		}
+		err = errors.Wrap(err, "failed to execute query")
+		return res, err
+	}
 	for rows.Next() {
 		var data entity.Research
 		if err = rows.Scan(&data.ID, &data.Title, &data.Author, &data.File, &data.Comment, &data.Activation, &data.CreatedAt); err != nil {
-			log.Println("researchRepository: FindAll: ", err)
+			log.Printf("rows.Scan skip: %v", err)
 			continue
 		}
 		res = append(res, &data)
@@ -49,7 +53,7 @@ func (rr *researchRepository) FindByID(id int) (*entity.Research, error) {
 	`, id)
 	var data entity.Research
 	if err := row.Scan(&data.ID, &data.Title, &data.Author, &data.File, &data.Comment, &data.Activation); err != nil {
-		err = errors.Wrap(err, "researchRepository: FindByID")
+		err = errors.Wrap(err, "failed to bind data")
 		return &data, err
 	}
 	return &data, nil
@@ -61,12 +65,12 @@ func (rr *researchRepository) Create(data *entity.Research) (int, error) {
 		VALUES (?,?,?,?,?,?,?)
 	`, data.Title, data.Author, data.File, data.Comment, data.Activation, data.CreatedAt, data.UpdatedAt)
 	if err != nil {
-		err = errors.Wrap(err, "create error")
+		err = errors.Wrap(err, "failed to execute query")
 		return 0, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		err = errors.Wrap(err, "can't get id")
+		err = errors.Wrap(err, "failed to get id")
 		return 0, err
 	}
 	return int(id), nil
@@ -79,7 +83,7 @@ func (rr *researchRepository) UpdateByID(data *entity.Research) error {
 		WHERE id=?
 	`, data.Title, data.Author, data.File, data.Comment, data.Activation, data.UpdatedAt, data.ID)
 	if err != nil {
-		err = errors.Wrap(err, "can't update db")
+		err = errors.Wrap(err, "failed to execute query")
 		return err
 	}
 	return nil
@@ -92,7 +96,7 @@ func (rr *researchRepository) DeleteByID(id int) error {
 		WHERE id=?
 	`, id)
 	if err != nil {
-		err = errors.Wrap(err, "DeleteByID")
+		err = errors.Wrap(err, "failed to execute query")
 	}
 	return err
 }

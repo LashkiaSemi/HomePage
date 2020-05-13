@@ -24,15 +24,19 @@ func (jr *jobRepository) FindAll() ([]*entity.Job, error) {
 		SELECT id, company, job
 		FROM jobs
 	`)
-	if err != nil {
-		log.Println("job: FindAll: ", err)
-		return []*entity.Job{}, err
-	}
 	var jobs []*entity.Job
+	if err != nil {
+		if err == jr.SQLHandler.ErrNoRows() {
+			log.Printf("hit no data: %v", err)
+			return jobs, nil
+		}
+		err = errors.Wrap(err, "failed to execute query")
+		return jobs, err
+	}
 	for rows.Next() {
 		var job entity.Job
 		if err = rows.Scan(&job.ID, &job.Company, &job.Job); err != nil {
-			log.Println("job: FindAll: ", err)
+			log.Println("rows.Scan skip: ", err)
 			continue
 		}
 		jobs = append(jobs, &job)
@@ -48,7 +52,7 @@ func (jr *jobRepository) FindByID(id int) (*entity.Job, error) {
 	`, id)
 	var data entity.Job
 	if err := row.Scan(&data.ID, &data.Company, &data.Job); err != nil {
-		err = errors.Wrap(err, "jobRepository: FindByID")
+		err = errors.Wrap(err, "failed to bind data")
 		return &data, err
 	}
 	return &data, nil
@@ -60,12 +64,12 @@ func (jr *jobRepository) Create(data *entity.Job) (int, error) {
 		VALUES (?,?,?,?)
 	`, data.Company, data.Job, data.CreatedAt, data.UpdatedAt)
 	if err != nil {
-		err = errors.Wrap(err, "create error")
+		err = errors.Wrap(err, "failed to execute query")
 		return 0, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		err = errors.Wrap(err, "can't get id")
+		err = errors.Wrap(err, "failed to get id")
 		return 0, err
 	}
 	return int(id), nil
@@ -78,7 +82,7 @@ func (jr *jobRepository) UpdateByID(data *entity.Job) error {
 		WHERE id=?
 	`, data.Company, data.Job, data.UpdatedAt, data.ID)
 	if err != nil {
-		err = errors.Wrap(err, "can't update db")
+		err = errors.Wrap(err, "failed to execute query")
 		return err
 	}
 	return nil
@@ -90,7 +94,7 @@ func (jr *jobRepository) DeleteByID(id int) error {
 		WHERE id=?
 	`, id)
 	if err != nil {
-		err = errors.Wrap(err, "DeleteByID")
+		err = errors.Wrap(err, "failed to execute query")
 	}
 	return err
 }

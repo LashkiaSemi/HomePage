@@ -32,15 +32,11 @@ func (ei *equipmentInteractor) GetAll() ([]*entity.Equipment, error) {
 }
 
 func (ei *equipmentInteractor) GetByID(id int) (*entity.Equipment, error) {
-	data, err := ei.EquipmentRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "equipmentInteractor: getByID")
-	}
-	return data, err
+	return ei.EquipmentRepository.FindByID(id)
+
 }
 
 func (ei *equipmentInteractor) Create(name, comment string, stock, tagID int) (int, error) {
-
 	// create obj
 	equ := entity.Equipment{}
 	equ.Create(name, comment, stock, tagID)
@@ -48,7 +44,7 @@ func (ei *equipmentInteractor) Create(name, comment string, stock, tagID int) (i
 	// insert db
 	id, err := ei.EquipmentRepository.Create(&equ)
 	if err != nil {
-		err = errors.Wrap(err, "interactor: failed to insert db")
+		err = errors.Wrap(err, "failed to insert db")
 		return 0, err
 	}
 	return id, nil
@@ -57,7 +53,7 @@ func (ei *equipmentInteractor) Create(name, comment string, stock, tagID int) (i
 func (ei *equipmentInteractor) UpdateByID(id int, name, comment string, stock, tagID int) error {
 	data, err := ei.EquipmentRepository.FindByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "can't find target data")
+		err = errors.Wrap(err, "failed to get original data")
 		return err
 	}
 	newData := data.Update(name, comment, stock, tagID)

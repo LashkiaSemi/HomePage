@@ -33,11 +33,7 @@ func (ji *jobInteractor) GetAll() ([]*entity.Job, error) {
 }
 
 func (ji *jobInteractor) GetByID(id int) (*entity.Job, error) {
-	data, err := ji.JobRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "jobInteractor: GetByID")
-	}
-	return data, err
+	return ji.JobRepository.FindByID(id)
 }
 
 func (ji *jobInteractor) Create(company, job string) (int, error) {
@@ -48,7 +44,7 @@ func (ji *jobInteractor) Create(company, job string) (int, error) {
 	// insert db
 	id, err := ji.JobRepository.Create(&data)
 	if err != nil {
-		err = errors.Wrap(err, "interactor: failed to insert db")
+		err = errors.Wrap(err, "failed to insert db")
 		return 0, err
 	}
 	return id, nil
@@ -57,7 +53,7 @@ func (ji *jobInteractor) Create(company, job string) (int, error) {
 func (ji *jobInteractor) UpdateByID(id int, company, job string) error {
 	data, err := ji.JobRepository.FindByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "can't find target data")
+		err = errors.Wrap(err, "failed to get original data")
 		return err
 	}
 	newData := data.Update(company, job)

@@ -5,7 +5,6 @@ import (
 
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
-	"log"
 	"strconv"
 
 	"github.com/pkg/errors"
@@ -38,10 +37,10 @@ func NewSocietyController(si interactor.SocietyInteractor) SocietyController {
 }
 
 func (sc *societyController) GetAll() (*SocietiesResponse, error) {
-
 	datas, err := sc.SocietyInteractor.GetAll()
 	if err != nil {
-		log.Println("err", err)
+		err = errors.Wrap(err, "failed to original data for response")
+		return &SocietiesResponse{}, err
 	}
 
 	var res SocietiesResponse
@@ -54,26 +53,18 @@ func (sc *societyController) GetAll() (*SocietiesResponse, error) {
 func (sc *societyController) GetByID(id int) (*SocietyResponse, error) {
 	data, err := sc.SocietyInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "failed to find data")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &SocietyResponse{}, err
 	}
 	return convertToSocietyResponse(data), nil
 }
 
 func (sc *societyController) Create(title, author, society, award, date string) (int, error) {
-	id, err := sc.SocietyInteractor.Create(title, author, society, award, date)
-	if err != nil {
-		err = errors.Wrap(err, "controller")
-	}
-	return id, err
+	return sc.SocietyInteractor.Create(title, author, society, award, date)
 }
 
 func (sc *societyController) UpdateByID(id int, title, author, society, award, date string) error {
-	err := sc.SocietyInteractor.UpdateByID(id, title, author, society, award, date)
-	if err != nil {
-		err = errors.Wrap(err, "controller")
-	}
-	return err
+	return sc.SocietyInteractor.UpdateByID(id, title, author, society, award, date)
 }
 
 func (sc *societyController) DeleteByID(id int) error {
@@ -85,7 +76,7 @@ func (sc *societyController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	socs, err := sc.SocietyInteractor.GetAll()
 	if err != nil {
-		err = errors.Wrap(err, "AdminGetAll")
+		err = errors.Wrap(err, "failed to original data for response")
 		return res, err
 	}
 	for _, soc := range socs {
@@ -102,7 +93,7 @@ func (sc *societyController) AdminGetByID(id int) (*FieldsResponse, error) {
 	var res FieldsResponse
 	data, err := sc.SocietyInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "societyController: AdminGetByID")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &res, err
 	}
 	res.Fields = append(res.Fields,

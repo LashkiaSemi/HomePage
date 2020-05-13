@@ -26,16 +26,20 @@ func (er *equipmentRepository) FindAll() ([]*entity.Equipment, error) {
 		JOIN tags ON tags.id = tag_id
 		ORDER BY created_at DESC
 	`)
-	if err != nil {
-		log.Println("equipmentRepository: FindAll: ", err)
-		return []*entity.Equipment{}, err
-	}
 	var res []*entity.Equipment
+	if err != nil {
+		if err == er.SQLHandler.ErrNoRows() {
+			log.Printf("not data hit: %v", err)
+			return res, nil
+		}
+		err = errors.Wrap(err, "failed to execute query")
+		return res, err
+	}
 	for rows.Next() {
 		var data entity.Equipment
 		var tag entity.Tag
 		if err = rows.Scan(&data.ID, &data.Name, &data.Stock, &data.Comment, &tag.Name, &data.CreatedAt); err != nil {
-			log.Println("equipmentRepository: FindAll: ", err)
+			log.Printf("rows.Scan skip: %v", err)
 			continue
 		}
 		data.Tag = &tag
@@ -54,7 +58,7 @@ func (er *equipmentRepository) FindByID(id int) (*entity.Equipment, error) {
 	var data entity.Equipment
 	var tag entity.Tag
 	if err := row.Scan(&data.ID, &data.Name, &data.Stock, &data.Comment, &tag.ID, &tag.Name); err != nil {
-		err = errors.Wrap(err, "equipmentRepository: FindByID")
+		err = errors.Wrap(err, "failed to bind data")
 		return &data, err
 	}
 	data.Tag = &tag
@@ -67,12 +71,12 @@ func (er *equipmentRepository) Create(data *entity.Equipment) (int, error) {
 		VALUES (?,?,?,?,?,?)
 	`, data.Name, data.Stock, data.Comment, data.Tag.ID, data.CreatedAt, data.UpdatedAt)
 	if err != nil {
-		err = errors.Wrap(err, "create error")
+		err = errors.Wrap(err, "failed to execute query")
 		return 0, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		err = errors.Wrap(err, "can't get id")
+		err = errors.Wrap(err, "failed to get new id")
 		return 0, err
 	}
 	return int(id), nil
@@ -85,7 +89,7 @@ func (er *equipmentRepository) UpdateByID(data *entity.Equipment) error {
 		WHERE id=?
 	`, data.Name, data.Stock, data.Comment, data.Tag.ID, data.UpdatedAt, data.ID)
 	if err != nil {
-		err = errors.Wrap(err, "can't update db")
+		err = errors.Wrap(err, "failed to execute query")
 		return err
 	}
 	return nil
@@ -97,7 +101,7 @@ func (er *equipmentRepository) DeleteByID(id int) error {
 		WHERE id=?
 	`, id)
 	if err != nil {
-		err = errors.Wrap(err, "DeleteByID")
+		err = errors.Wrap(err, "failed to execute query")
 	}
 	return err
 }

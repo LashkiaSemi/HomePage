@@ -22,8 +22,8 @@ type societyHandler struct {
 type SocietyHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
 
-	Create(w http.ResponseWriter, r *http.Request)
-	UpdateByID(w http.ResponseWriter, r *http.Request)
+	AdminCreate(w http.ResponseWriter, r *http.Request)
+	AdminUpdateByID(w http.ResponseWriter, r *http.Request)
 
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
@@ -33,7 +33,6 @@ type SocietyHandler interface {
 
 // NewSocietyHandler ハンドラの作成
 func NewSocietyHandler(sh repository.SQLHandler) SocietyHandler {
-	// TODO;!!!!
 	return &societyHandler{
 		controller.NewSocietyController(
 			interactor.NewSocietyInteractor(
@@ -49,14 +48,15 @@ func (sh *societyHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	// get data
 	res, err := sh.SocietyController.GetAll()
 	if err != nil {
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	// response
-	response.Success(w, "society/index.html", info, res)
+	response.Render(w, "society/index.html", info, res)
 }
 
-func (sh *societyHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (sh *societyHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
 
 	body := []*FormField{
@@ -68,7 +68,7 @@ func (sh *societyHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("society create: post request")
+		// log.Println("society create: post request")
 		title := r.PostFormValue("title")
 		author := r.PostFormValue("author")
 		society := r.PostFormValue("society")
@@ -82,29 +82,29 @@ func (sh *societyHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 		id, err := sh.SocietyController.Create(title, author, society, award, date)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to create: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success create society")
+		// log.Println("success create society")
 		http.Redirect(w, r, fmt.Sprintf("/admin/societies/%d", id), http.StatusSeeOther)
 	}
 
 	response.AdminRender(w, "edit.html", info, body)
 }
 
-func (sh *societyHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
+func (sh *societyHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	// 初期値の取得
 	data, err := sh.SocietyController.GetByID(id)
 	if err != nil {
-		log.Println("failed to get target: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -117,7 +117,7 @@ func (sh *societyHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("society update: post request")
+		// log.Println("society update: post request")
 		title := r.PostFormValue("title")
 		author := r.PostFormValue("author")
 		society := r.PostFormValue("society")
@@ -131,11 +131,11 @@ func (sh *societyHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 
 		err = sh.SocietyController.UpdateByID(id, title, author, society, award, date)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to update: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success update society")
+		// log.Println("success update society")
 		http.Redirect(w, r, fmt.Sprintf("/admin/societies/%d", id), http.StatusSeeOther)
 	}
 
@@ -147,7 +147,7 @@ func (sh *societyHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
 	res, err := sh.SocietyController.AdminGetAll()
 	if err != nil {
-		log.Println("societyHandler: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -158,13 +158,13 @@ func (sh *societyHandler) AdminGeByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("societyHandler: AdminGetByID: failed to parse path param: ", err)
+		log.Printf("failed to parse path param: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	res, err := sh.SocietyController.AdminGetByID(id)
 	if err != nil {
-		log.Println("societyHandler: AdminGetByID: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -177,27 +177,27 @@ func (sh *societyHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request
 	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := sh.SocietyController.AdminGetByID(id)
 	if err != nil {
-		log.Println("AdminDeleteByID: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 
 	if r.Method == "POST" {
-		log.Println("post request: delete society")
+		// log.Println("post request: delete society")
 		err = sh.SocietyController.DeleteByID(id)
 		if err != nil {
-			log.Println("failed to delete")
+			log.Printf("failed to delete: %v", err)
 			info.Errors = append(info.Errors, "削除に失敗しました")
 			response.AdminRender(w, "delete.html", info, body)
 			return
 		}
-		log.Println("success to delete society")
+		// log.Println("success to delete society")
 		http.Redirect(w, r, "/admin/societies", http.StatusSeeOther)
 	}
 	response.AdminRender(w, "delete.html", info, body)

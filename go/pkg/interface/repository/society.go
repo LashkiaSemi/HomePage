@@ -27,17 +27,19 @@ func (sr *societyRepository) FindAll() ([]*entity.Society, error) {
 		FROM societies
 		ORDER BY date DESC
 	`)
+	var datas []*entity.Society
 	if err != nil {
 		if err != sr.SQLHandler.ErrNoRows() {
-			log.Println("sql error: ", err)
-			return []*entity.Society{}, err
+			log.Printf("hit no data: %v", err)
+			return datas, nil
 		}
+		err = errors.Wrap(err, "failed to execute query")
+		return datas, err
 	}
-	var datas []*entity.Society
 	for rows.Next() {
 		var data entity.Society
 		if err = rows.Scan(&data.ID, &data.Title, &data.Author, &data.Society, &data.Award, &data.Date); err != nil {
-			log.Println(err)
+			log.Printf("rows.Scan skip: %v", err)
 			continue
 		}
 		datas = append(datas, &data)
@@ -53,7 +55,7 @@ func (sr *societyRepository) FindByID(id int) (*entity.Society, error) {
 	`, id)
 	var data entity.Society
 	if err := row.Scan(&data.ID, &data.Title, &data.Author, &data.Society, &data.Award, &data.Date); err != nil {
-		err = errors.Wrap(err, "FindByID: scan error: ")
+		err = errors.Wrap(err, "failed to bind data")
 		return &data, err
 	}
 	return &data, nil
@@ -65,12 +67,12 @@ func (sr *societyRepository) Create(data *entity.Society) (int, error) {
 		VALUES (?,?,?,?,?,?,?)
 	`, data.Title, data.Author, data.Society, data.Award, data.Date, data.CreatedAt, data.UpdatedAt)
 	if err != nil {
-		err = errors.Wrap(err, "create error")
+		err = errors.Wrap(err, "failed to execute query")
 		return 0, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		err = errors.Wrap(err, "can't get id")
+		err = errors.Wrap(err, "failed to get id")
 		return 0, err
 	}
 	return int(id), nil
@@ -83,10 +85,9 @@ func (sr *societyRepository) UpdateByID(data *entity.Society) error {
 		WHERE id=?
 	`, data.Title, data.Author, data.Society, data.Award, data.Date, data.UpdatedAt, data.ID)
 	if err != nil {
-		err = errors.Wrap(err, "can't update db")
-		return err
+		err = errors.Wrap(err, "failed to execute query")
 	}
-	return nil
+	return err
 }
 
 func (sr *societyRepository) DeleteByID(id int) error {
@@ -95,7 +96,7 @@ func (sr *societyRepository) DeleteByID(id int) error {
 		WHERE id=?
 	`, id)
 	if err != nil {
-		err = errors.Wrap(err, "DeleteByID")
+		err = errors.Wrap(err, "failed to execute query")
 	}
 	return err
 }

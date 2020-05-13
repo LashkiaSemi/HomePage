@@ -6,16 +6,16 @@ import (
 	"text/template"
 )
 
-// Success テンプレートファイルを指定して描画
-func Success(w http.ResponseWriter, templateFile string, info *Info, body interface{}) {
+// Render テンプレートファイルを指定して描画
+func Render(w http.ResponseWriter, templateFile string, info *Info, body interface{}) {
 	t, err := template.ParseFiles(
 		"template/"+templateFile,
 		"template/_footer.html",
 		"template/_header.html",
 	)
 	if err != nil {
-		// TODO: redirect internal server error
-		log.Printf("failed to parse template: %v", err)
+		InternalServerError(w, info)
+		return
 	}
 
 	if err = t.Execute(w, struct {
@@ -25,8 +25,9 @@ func Success(w http.ResponseWriter, templateFile string, info *Info, body interf
 		Info: info,
 		Data: body,
 	}); err != nil {
-		// TODO: redirect internal server error
 		log.Printf("failed to execute template: %v", err)
+		InternalServerError(w, info)
+		return
 	}
 }
 
@@ -80,8 +81,9 @@ func AdminRender(w http.ResponseWriter, templateFile string, info *Info, body in
 		"template/admin/_header.html",
 	)
 	if err != nil {
-		// TODO: redirect internal server error
 		log.Printf("failed to parse template: %v", err)
+		InternalServerError(w, info)
+		return
 	}
 
 	if err = t.Execute(w, struct {
@@ -91,8 +93,9 @@ func AdminRender(w http.ResponseWriter, templateFile string, info *Info, body in
 		Info: info,
 		Data: body,
 	}); err != nil {
-		// TODO: redirect internal server error
 		log.Printf("failed to execute template: %v", err)
+		InternalServerError(w, info)
+		return
 	}
 }
 

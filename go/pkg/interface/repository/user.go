@@ -25,16 +25,19 @@ func (ur *userRepository) FindAll() ([]*entity.User, error) {
 		FROM users
 		INNER JOIN introductions ON users.id = user_id
 	`)
-	if err != nil {
-		log.Println("userRepository: FindAll: ", err)
-		return []*entity.User{}, err
-	}
-
 	var users []*entity.User
+	if err != nil {
+		if err == ur.SQLHandler.ErrNoRows() {
+			log.Printf("hit no data: %v", err)
+			return users, nil
+		}
+		err = errors.Wrap(err, "failed to execute query")
+		return users, err
+	}
 	for rows.Next() {
 		var user entity.User
 		if err = rows.Scan(&user.ID, &user.Name, &user.StudentID, &user.Grade); err != nil {
-			log.Println("userRepository: FindAll: ", err)
+			log.Printf("rows.Scan skip: %v", err)
 			continue
 		}
 		users = append(users, &user)
@@ -52,7 +55,7 @@ func (ur *userRepository) FindByID(userID int) (*entity.User, error) {
 	`, userID)
 	var user entity.User
 	if err := row.Scan(&user.ID, &user.Name, &user.StudentID, &user.Role, &user.Department, &user.Grade, &user.Comment); err != nil {
-		log.Println("userRepository: FindByID: ", err)
+		err = errors.Wrap(err, "failed to bind data")
 		return &entity.User{}, err
 	}
 	return &user, nil
@@ -68,7 +71,7 @@ func (ur *userRepository) FindByStudentID(studentID string) (*entity.User, error
 	`, studentID)
 	var user entity.User
 	if err := row.Scan(&user.ID, &user.Name, &user.StudentID, &user.Department, &user.Grade, &user.Comment); err != nil {
-		log.Println("userRepository: FindByID: ", err)
+		err = errors.Wrap(err, "failed to bind data")
 		return &entity.User{}, err
 	}
 	return &user, nil
@@ -83,7 +86,7 @@ func (ur *userRepository) FindAuthInfoByStudentID(studentID string) (*entity.Use
 	)
 	var user entity.User
 	if err := row.Scan(&user.ID, &user.StudentID, &user.Password, &user.Role); err != nil {
-		log.Println("userRepository: findAuthInfoByStudentID: ", err)
+		err = errors.Wrap(err, "failed to bind data")
 		return &user, err
 	}
 	return &user, nil
@@ -97,17 +100,16 @@ func (ur *userRepository) UpdateByID(user *entity.User) error {
 		WHERE id=?
 	`, user.Name, user.StudentID, user.UpdatedAt, user.ID)
 	if err != nil {
-		log.Println("userRepository: UpdateByID: ", err)
+		err = errors.Wrap(err, "failed to execute update users query")
 		return err
 	}
-
 	_, err = ur.SQLHandler.Execute(`
 		UPDATE introductions
 		SET department=?, comments=?, grade=?, updated_at=?
 		WHERE user_id=?
 	`, user.Department, user.Comment, user.Grade, user.UpdatedAt, user.ID)
 	if err != nil {
-		log.Println("userRepository: UpdateByID: ", err)
+		err = errors.Wrap(err, "failed to execute update introductions query")
 		return err
 	}
 	return nil
@@ -120,7 +122,7 @@ func (ur *userRepository) UpdatePasswordByStudentID(studentID, password string) 
 		WHERE student_id = ?
 	`, password, studentID)
 	if err != nil {
-		log.Println("userRepository: UpdatePassword: ", err)
+		err = errors.Wrap(err, "failed to execute query")
 		return err
 	}
 	return nil
@@ -133,12 +135,12 @@ func (ur *userRepository) AdminCreate(user *entity.User) (int, error) {
 		VALUES (?,?,?,?,?,?)
 	`, user.Name, user.Password, user.Role, user.CreatedAt, user.UpdatedAt, user.StudentID)
 	if err != nil {
-		err = errors.Wrap(err, "can't create users")
+		err = errors.Wrap(err, "failed to execute insert-users query")
 		return 0, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		err = errors.Wrap(err, "can't get id")
+		err = errors.Wrap(err, "failed to get id")
 		return 0, err
 	}
 	_, err = ur.SQLHandler.Execute(`
@@ -146,7 +148,7 @@ func (ur *userRepository) AdminCreate(user *entity.User) (int, error) {
 		VALUES (?,?,?,?,?,?)
 	`, id, user.Department, user.Grade, user.Comment, user.CreatedAt, user.UpdatedAt)
 	if err != nil {
-		err = errors.Wrap(err, "can't create introductions")
+		err = errors.Wrap(err, "failed to execute insert-introdutions query")
 		return 0, err
 	}
 	return int(id), nil
@@ -160,7 +162,7 @@ func (ur *userRepository) AdminUpdateByID(user *entity.User) error {
 		WHERE id=?
 	`, user.Name, user.Role, user.UpdatedAt, user.StudentID, user.ID)
 	if err != nil {
-		err = errors.Wrap(err, "can't create users")
+		err = errors.Wrap(err, "failed to execute update-users query")
 		return err
 	}
 	_, err = ur.SQLHandler.Execute(`
@@ -169,7 +171,7 @@ func (ur *userRepository) AdminUpdateByID(user *entity.User) error {
 		WHERE user_id=?
 	`, user.Department, user.Grade, user.Comment, user.UpdatedAt, user.ID)
 	if err != nil {
-		err = errors.Wrap(err, "can't create introductions")
+		err = errors.Wrap(err, "failed to execute update-introductions query")
 		return err
 	}
 	return nil
@@ -181,7 +183,7 @@ func (ur *userRepository) DeleteByID(id int) error {
 		WHERE id=?
 	`, id)
 	if err != nil {
-		err = errors.Wrap(err, "DeleteByID: failed to delete from users")
+		err = errors.Wrap(err, "failed to execute delete-users query")
 		return err
 	}
 	_, err = ur.SQLHandler.Execute(`
@@ -189,7 +191,7 @@ func (ur *userRepository) DeleteByID(id int) error {
 		WHERE user_id=?
 	`, id)
 	if err != nil {
-		err = errors.Wrap(err, "DeleteByID: failed to delete from introductions")
+		err = errors.Wrap(err, "failed to execute delete-introductions qeury")
 	}
 	return err
 }

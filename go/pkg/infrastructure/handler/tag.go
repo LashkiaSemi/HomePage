@@ -23,8 +23,8 @@ type TagHandler interface {
 	// GetAll(w http.ResponseWriter, r *http.Request)
 	// GetByID(w http.ResponseWriter, r *http.Request)
 
-	Create(w http.ResponseWriter, r *http.Request)
-	UpdateByID(w http.ResponseWriter, r *http.Request)
+	AdminCreate(w http.ResponseWriter, r *http.Request)
+	AdminUpdateByID(w http.ResponseWriter, r *http.Request)
 
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
@@ -46,7 +46,7 @@ func (th *tagHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "tags", auth.GetStudentIDFromCookie(r))
 	body, err := th.TagController.AdminGetAll()
 	if err != nil {
-		log.Println("tagHandler: AdminGetAll: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -57,13 +57,13 @@ func (th *tagHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "tags", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("tagHandler: AdminGetByID: failed to parse path param: ", err)
+		log.Printf("failed to parse path param: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := th.TagController.AdminGetByID(id)
 	if err != nil {
-		log.Println("tagHandler: AdminGetByID: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -71,7 +71,7 @@ func (th *tagHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (th *tagHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (th *tagHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "tags", auth.GetStudentIDFromCookie(r))
 
 	body := []*FormField{
@@ -79,7 +79,7 @@ func (th *tagHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("tag create: post request")
+		// log.Println("tag create: post request")
 		name := r.PostFormValue("name")
 		if name == "" {
 			info.Errors = append(info.Errors, "名前は必須です")
@@ -89,28 +89,28 @@ func (th *tagHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 		id, err := th.TagController.Create(name)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to create: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success to create tag")
+		// log.Println("success to create tag")
 		http.Redirect(w, r, fmt.Sprintf("/admin/tags/%d", id), http.StatusSeeOther)
 	}
 
 	response.AdminRender(w, "edit.html", info, body)
 }
 
-func (th *tagHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
+func (th *tagHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "tags", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	data, err := th.TagController.GetByID(id)
 	if err != nil {
-		log.Println("failed to get target: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -119,7 +119,7 @@ func (th *tagHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("tag update: post request")
+		// log.Println("tag update: post request")
 		name := r.PostFormValue("name")
 		if name == "" {
 			info.Errors = append(info.Errors, "名前は必須です")
@@ -129,11 +129,11 @@ func (th *tagHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 
 		err = th.TagController.UpdateByID(id, name)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to update: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success update tag")
+		// log.Println("success update tag")
 		http.Redirect(w, r, fmt.Sprintf("/admin/tags/%d", id), http.StatusSeeOther)
 	}
 
@@ -144,27 +144,27 @@ func (th *tagHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "tags", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := th.TagController.AdminGetByID(id)
 	if err != nil {
-		log.Println("AdminDeleteByID: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 
 	if r.Method == "POST" {
-		log.Println("post request: delete tag")
+		// log.Println("post request: delete tag")
 		err = th.TagController.DeleteByID(id)
 		if err != nil {
-			log.Println("failed to delete")
+			log.Printf("failed to delete: %v", err)
 			info.Errors = append(info.Errors, "削除に失敗しました")
 			response.AdminRender(w, "delete.html", info, body)
 			return
 		}
-		log.Println("success to delete tag")
+		// log.Println("success to delete tag")
 		http.Redirect(w, r, "/admin/tags", http.StatusSeeOther)
 	}
 	response.AdminRender(w, "delete.html", info, body)

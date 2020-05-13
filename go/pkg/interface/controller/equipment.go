@@ -37,6 +37,7 @@ func NewEquipmentController(ei interactor.EquipmentInteractor) EquipmentControll
 func (ec *equipmentController) GetAll() (*EquipmentsResponse, error) {
 	datas, err := ec.EquipmentInteractor.GetAll()
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &EquipmentsResponse{}, err
 	}
 	var res EquipmentsResponse
@@ -49,26 +50,18 @@ func (ec *equipmentController) GetAll() (*EquipmentsResponse, error) {
 func (ec *equipmentController) GetByID(id int) (*EquipmentResponse, error) {
 	data, err := ec.EquipmentInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "failed to find data")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &EquipmentResponse{}, err
 	}
 	return convertToEquipmentResponse(data), nil
 }
 
 func (ec *equipmentController) Create(name, comment string, stock, tagID int) (int, error) {
-	id, err := ec.EquipmentInteractor.Create(name, comment, stock, tagID)
-	if err != nil {
-		err = errors.Wrap(err, "controller")
-	}
-	return id, err
+	return ec.EquipmentInteractor.Create(name, comment, stock, tagID)
 }
 
 func (ec *equipmentController) UpdateByID(id int, name, comment string, stock, tagID int) error {
-	err := ec.EquipmentInteractor.UpdateByID(id, name, comment, stock, tagID)
-	if err != nil {
-		err = errors.Wrap(err, "controller")
-	}
-	return err
+	return ec.EquipmentInteractor.UpdateByID(id, name, comment, stock, tagID)
 }
 
 func (ec *equipmentController) DeleteByID(id int) error {
@@ -80,7 +73,7 @@ func (ec *equipmentController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	datas, err := ec.EquipmentInteractor.GetAll()
 	if err != nil {
-		err = errors.Wrap(err, "AdminGetAll")
+		err = errors.Wrap(err, "failed to original data for response")
 		return res, err
 	}
 	for _, data := range datas {
@@ -96,7 +89,7 @@ func (ec *equipmentController) AdminGetByID(id int) (*FieldsResponse, error) {
 	var res FieldsResponse
 	data, err := ec.EquipmentInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "equipmentController: AdmingetByID")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &res, err
 	}
 	res.Fields = append(res.Fields,

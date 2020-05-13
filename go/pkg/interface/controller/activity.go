@@ -37,11 +37,12 @@ func NewActivityController(ai interactor.ActivityInteractor) ActivityController 
 func (ac *activityController) GetAllGroupByYear() ([]*ActivitiesGroupByYearResponse, error) {
 	acts, err := ac.ActivityInteractor.GetAll()
 	if err != nil {
-		err = errors.Wrap(err, "controller")
+		err = errors.Wrap(err, "failed to original data for response")
 		return []*ActivitiesGroupByYearResponse{}, err
 	}
 
-	// responseづくり...
+	// responseづくり
+	// [{ 年, [活動...] }, ... ]みたいな構造で、日付の若い順に並べてます
 	var res = []*ActivitiesGroupByYearResponse{}
 	var key = ""
 	var tmp = []*ActivityResponse{}
@@ -66,32 +67,24 @@ func (ac *activityController) GetAllGroupByYear() ([]*ActivitiesGroupByYearRespo
 			Activities: tmp,
 		})
 	}
-	return res, err
+	return res, nil
 }
 
 func (ac *activityController) GetByID(id int) (*ActivityResponse, error) {
 	data, err := ac.ActivityInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "failed to find data")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &ActivityResponse{}, err
 	}
 	return convertToActivityResponse(data), nil
 }
 
 func (ac *activityController) Create(activity, date string) (int, error) {
-	id, err := ac.ActivityInteractor.Create(activity, date)
-	if err != nil {
-		err = errors.Wrap(err, "controller")
-	}
-	return id, err
+	return ac.ActivityInteractor.Create(activity, date)
 }
 
 func (ac *activityController) UpdateByID(id int, activity, date string) error {
-	err := ac.ActivityInteractor.UpdateByID(id, activity, date)
-	if err != nil {
-		err = errors.Wrap(err, "controller")
-	}
-	return err
+	return ac.ActivityInteractor.UpdateByID(id, activity, date)
 }
 
 func (ac *activityController) DeleteByID(id int) error {
@@ -103,7 +96,7 @@ func (ac *activityController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	acts, err := ac.ActivityInteractor.GetAll()
 	if err != nil {
-		err = errors.Wrap(err, "AdminGetAll")
+		err = errors.Wrap(err, "failed to original data for response")
 		return res, err
 	}
 	for _, act := range acts {
@@ -119,7 +112,7 @@ func (ac *activityController) AdminGetByID(id int) (*FieldsResponse, error) {
 	var res FieldsResponse
 	data, err := ac.ActivityInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "AdminGetByID")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &res, err
 	}
 	res.Fields = append(res.Fields,

@@ -1,11 +1,11 @@
 package auth
 
 import (
+	"homepage/pkg/configs"
 	"time"
 
-	"homepage/pkg/configs"
-
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/pkg/errors"
 )
 
 // CreateToken create jwt
@@ -14,12 +14,13 @@ func CreateToken(studentID string) (string, error) {
 
 	token.Claims = jwt.MapClaims{
 		configs.JWTStudentIDClaim: studentID,
-		"exp":                     time.Now().Add(time.Hour * 1).Unix(),
+		"exp":                     time.Now().Add(configs.JWTExpire).Unix(),
 	}
 
 	var secretKey = configs.JWTSecret
 	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
+		err = errors.Wrap(err, "failed to signed jwt")
 		return "", err
 	}
 	return tokenString, nil
@@ -32,6 +33,7 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 		return []byte(configs.JWTSecret), nil
 	})
 	if err != nil {
+		err = errors.Wrap(err, "failed to parse jwt")
 		return token, err
 	}
 

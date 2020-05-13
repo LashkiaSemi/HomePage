@@ -38,6 +38,7 @@ func NewJobController(ji interactor.JobInteractor) JobController {
 func (jc *jobController) GetAll() (*JobsResponse, error) {
 	jobs, err := jc.JobInteractor.GetAll()
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &JobsResponse{}, err
 	}
 	var res JobsResponse
@@ -50,26 +51,18 @@ func (jc *jobController) GetAll() (*JobsResponse, error) {
 func (jc *jobController) GetByID(id int) (*JobResponse, error) {
 	data, err := jc.JobInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "failed to find data")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &JobResponse{}, err
 	}
 	return convertToJobResponse(data), nil
 }
 
 func (jc *jobController) Create(company, job string) (int, error) {
-	id, err := jc.JobInteractor.Create(company, job)
-	if err != nil {
-		err = errors.Wrap(err, "controller")
-	}
-	return id, err
+	return jc.JobInteractor.Create(company, job)
 }
 
 func (jc *jobController) UpdateByID(id int, company, job string) error {
-	err := jc.JobInteractor.UpdateByID(id, company, job)
-	if err != nil {
-		err = errors.Wrap(err, "controller")
-	}
-	return err
+	return jc.JobInteractor.UpdateByID(id, company, job)
 }
 
 func (jc *jobController) DeleteByID(id int) error {
@@ -81,7 +74,7 @@ func (jc *jobController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	datas, err := jc.JobInteractor.GetAll()
 	if err != nil {
-		err = errors.Wrap(err, "AdminGetAll")
+		err = errors.Wrap(err, "failed to original data for response")
 		return res, err
 	}
 	for _, data := range datas {
@@ -97,7 +90,7 @@ func (jc *jobController) AdminGetByID(id int) (*FieldsResponse, error) {
 	var res FieldsResponse
 	data, err := jc.JobInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "jobController: AdminGetByID")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &res, err
 	}
 	res.Fields = append(res.Fields,

@@ -25,15 +25,19 @@ func (ar *activityRepository) FindAll() ([]*entity.Activity, error) {
 		FROM activities
 		ORDER BY date DESC
 	`)
-	if err != nil {
-		err = errors.Wrap(err, "can't get activities from db")
-		return []*entity.Activity{}, err
-	}
 	var acts []*entity.Activity
+	if err != nil {
+		if err == ar.SQLHandler.ErrNoRows() {
+			log.Printf("not data hit: %v", err)
+			return acts, nil
+		}
+		err = errors.Wrap(err, "failed to execute query")
+		return acts, err
+	}
 	for rows.Next() {
 		var act entity.Activity
 		if err = rows.Scan(&act.ID, &act.Activity, &act.Date); err != nil {
-			log.Println("activityRepository: findAll: skip scan: ", err)
+			log.Printf("rows.Scan skip: %v", err)
 			continue
 		}
 		acts = append(acts, &act)
@@ -49,7 +53,7 @@ func (ar *activityRepository) FindByID(id int) (*entity.Activity, error) {
 	`, id)
 	var data entity.Activity
 	if err := row.Scan(&data.ID, &data.Activity, &data.Date); err != nil {
-		errors.Wrap(err, "FindByID")
+		err = errors.Wrap(err, "failed to bind data")
 		return &data, err
 	}
 	return &data, nil
@@ -61,12 +65,12 @@ func (ar *activityRepository) Create(data *entity.Activity) (int, error) {
 		VALUES (?,?,?,?)
 	`, data.Date, data.Activity, data.CreatedAt, data.UpdatedAt)
 	if err != nil {
-		err = errors.Wrap(err, "create error")
+		err = errors.Wrap(err, "failed to execute query")
 		return 0, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		err = errors.Wrap(err, "can't get id")
+		err = errors.Wrap(err, "failed to id new data")
 		return 0, err
 	}
 	return int(id), nil
@@ -79,7 +83,7 @@ func (ar *activityRepository) UpdateByID(data *entity.Activity) error {
 		WHERE id=?
 	`, data.Date, data.Activity, data.UpdatedAt, data.ID)
 	if err != nil {
-		err = errors.Wrap(err, "can't update db")
+		err = errors.Wrap(err, "failed to execute query")
 		return err
 	}
 	return nil
@@ -91,7 +95,7 @@ func (ar *activityRepository) DeleteByID(id int) error {
 		WHERE id=?
 	`, id)
 	if err != nil {
-		err = errors.Wrap(err, "DeleteByID")
+		err = errors.Wrap(err, "failed to execute query")
 	}
 	return err
 }

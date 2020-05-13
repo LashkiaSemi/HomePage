@@ -1,17 +1,47 @@
 package configs
 
+import "time"
+
+// db config
 const (
-	JWTSecret         = "secret"
-	JWTStudentIDClaim = "student_id"
-	CookieName        = "_l_semi_homepage_session"
+	DBDriver   = "mysql"
+	DBUser     = "root"
+	DBPassword = "password"
+	DBProtocol = "tcp"
+	DBTarget   = "localhost:3307"
+	DBName     = "homepage"
 )
 
-const (
-	DateTimeFormat = "2006-01-02 15:4:5"
-)
-
+// file upload先
 const (
 	// TODO: 環境変数にした方がいい。絶対パスなら任意の場所に突っ込める
-	SaveLectureFileDir  = "./public/lectures"
+
+	// SaveLectureFileDir レクチャー資料のアップロード先
+	SaveLectureFileDir = "./public/lectures"
+
+	// SaveResearchFileDir 卒業研究資料のアップロード先
 	SaveResearchFileDir = "./public/researches"
+)
+
+// Session系
+const (
+	// JWTSecret jwtのシークレットキー
+	// TODO: 環境変数とか...
+	JWTSecret = "secret"
+
+	// JWTStudentIDClaim 学籍番号のクレームのキー
+	JWTStudentIDClaim = "student_id"
+
+	// JWTExpire jwtの有効期限
+	// TODO: 短すぎん？
+	JWTExpire = time.Hour * 1
+
+	// CookieName cookieのキー
+	CookieName = "_l_semi_homepage_session"
+)
+
+// ほか
+const (
+	// DateTimeFormat 日付のフォーマット
+	DateTimeFormat = "2006-01-02 15:4:5"
 )

@@ -10,7 +10,7 @@ import (
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "", auth.GetStudentIDFromCookie(r))
 	var body interface{}
-	response.Success(w, "index.html", info, body)
+	response.Render(w, "index.html", info, body)
 }
 
 // AdminIndexHandler adminのトップページ

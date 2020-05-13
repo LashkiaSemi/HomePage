@@ -37,6 +37,7 @@ func NewLectureController(li interactor.LectureInteractor) LectureController {
 func (lc *lectureController) GetAll() (*LecturesResponse, error) {
 	lecs, err := lc.LectureInteractor.GetAll()
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &LecturesResponse{}, err
 	}
 	var res LecturesResponse
@@ -49,22 +50,27 @@ func (lc *lectureController) GetAll() (*LecturesResponse, error) {
 func (lc *lectureController) GetByID(id int) (*LectureResponse, error) {
 	lec, err := lc.LectureInteractor.GetByID(id)
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &LectureResponse{}, err
 	}
 	return convertToLectureResponse(lec), err
 }
 
 func (lc *lectureController) Create(studentID, title, file, comment string, activation int) (*LectureResponse, error) {
+	// TODO; return int, err でいいかも
 	lecture, err := lc.LectureInteractor.Create(studentID, title, file, comment, activation)
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &LectureResponse{}, err
 	}
 	return convertToLectureResponse(lecture), nil
 }
 
 func (lc *lectureController) UpdateByID(id int, studentID, title, file, comment string, activation int) (*LectureResponse, error) {
+	// TODO: return errでいいかも
 	lec, err := lc.LectureInteractor.UpdateByID(id, studentID, title, file, comment, activation)
 	if err != nil {
+		err = errors.Wrap(err, "failed to original data for response")
 		return &LectureResponse{}, err
 	}
 	return convertToLectureResponse(lec), nil
@@ -79,7 +85,7 @@ func (lc *lectureController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	datas, err := lc.LectureInteractor.GetAll()
 	if err != nil {
-		err = errors.Wrap(err, "AdminGetAll")
+		err = errors.Wrap(err, "failed to original data for response")
 		return res, err
 	}
 	for _, data := range datas {
@@ -95,7 +101,7 @@ func (lc *lectureController) AdminGetByID(id int) (*FieldsResponse, error) {
 	var res FieldsResponse
 	data, err := lc.LectureInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "lectureController: AdminGetByID")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &res, err
 	}
 	res.Fields = append(res.Fields,

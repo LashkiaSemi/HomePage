@@ -29,20 +29,11 @@ func NewActivityInteractor(ar ActivityRepository) ActivityInteractor {
 }
 
 func (ai *activityInteractor) GetAll() ([]*entity.Activity, error) {
-	acts, err := ai.ActivityRepository.FindAll()
-	if err != nil {
-		// TODO: いらんくね?
-		err = errors.Wrap(err, "GetAll")
-	}
-	return acts, err
+	return ai.ActivityRepository.FindAll()
 }
 
 func (ai *activityInteractor) GetByID(id int) (*entity.Activity, error) {
-	data, err := ai.ActivityRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "GetByID")
-	}
-	return data, nil
+	return ai.ActivityRepository.FindByID(id)
 }
 
 func (ai *activityInteractor) Create(activity, date string) (int, error) {
@@ -53,7 +44,7 @@ func (ai *activityInteractor) Create(activity, date string) (int, error) {
 	// insert db
 	id, err := ai.ActivityRepository.Create(&act)
 	if err != nil {
-		err = errors.Wrap(err, "interactor")
+		err = errors.Wrap(err, "failed to insert db")
 		return 0, err
 	}
 	return id, nil
@@ -62,7 +53,7 @@ func (ai *activityInteractor) Create(activity, date string) (int, error) {
 func (ai *activityInteractor) UpdateByID(id int, activity, date string) error {
 	data, err := ai.ActivityRepository.FindByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "can't find target data")
+		err = errors.Wrap(err, "failed to get original data")
 		return err
 	}
 	newData := data.Update(activity, date)
@@ -71,9 +62,8 @@ func (ai *activityInteractor) UpdateByID(id int, activity, date string) error {
 	err = ai.ActivityRepository.UpdateByID(newData)
 	if err != nil {
 		err = errors.Wrap(err, "failed to update db")
-		return err
 	}
-	return nil
+	return err
 }
 
 func (ai *activityInteractor) DeleteByID(id int) error {

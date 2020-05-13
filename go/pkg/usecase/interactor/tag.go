@@ -42,7 +42,7 @@ func (ti *tagInteractor) Create(name string) (int, error) {
 
 	id, err := ti.TagRepository.Create(&tag)
 	if err != nil {
-		err = errors.Wrap(err, "failed to create in repo")
+		err = errors.Wrap(err, "failed to insert db")
 	}
 	return id, err
 }
@@ -50,14 +50,14 @@ func (ti *tagInteractor) Create(name string) (int, error) {
 func (ti *tagInteractor) UpdateByID(id int, name string) error {
 	tag, err := ti.TagRepository.FindByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "failed to target for update")
+		err = errors.Wrap(err, "failed to get original data")
 		return err
 	}
 	newTag := tag.Update(name)
 
 	err = ti.TagRepository.UpdateByID(newTag)
 	if err != nil {
-		err = errors.Wrap(err, "failed to update in repo")
+		err = errors.Wrap(err, "failed to update db")
 	}
 	return err
 }

@@ -55,11 +55,12 @@ func (uh *userHandler) GetAllGroupByGrade(w http.ResponseWriter, r *http.Request
 
 	res, err := uh.UserController.GetAllGroupByGrade()
 	if err != nil {
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 
-	response.Success(w, "member/index.html", info, res)
+	response.Render(w, "member/index.html", info, res)
 }
 
 func (uh *userHandler) GetByID(w http.ResponseWriter, r *http.Request) {
@@ -67,28 +68,30 @@ func (uh *userHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("userHandler: GetByID: path param parse error: ", err)
+		log.Printf("failed to parse path param: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 
 	res, err := uh.UserController.GetByID(userID)
 	if err != nil {
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
-	response.Success(w, "member/detail.html", info, res)
+	response.Render(w, "member/detail.html", info, res)
 }
 
 func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "user", auth.GetStudentIDFromCookie(r))
 	body, err := uh.UserController.GetByStudentID(info.StudentID)
 	if err != nil {
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	if r.Method == "POST" {
-		log.Println("user update: post")
+		// log.Println("user update: post")
 		name := r.PostFormValue("name")
 		studentID := r.PostFormValue("studentID")
 		department := r.PostFormValue("department")
@@ -96,56 +99,60 @@ func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		grade, err := strconv.Atoi(r.PostFormValue("grade"))
 		if err != nil {
 			// TODO: handling
-			log.Println("int parse error")
+			log.Printf("failed to parse grade: %v", err)
+			response.InternalServerError(w, info)
+			return
 		}
 		// TODO: バリデーション!
 		if name == "" || studentID == "" {
 			info.Errors = append(info.Errors, "名前、学籍番号は必須")
-			response.Success(w, "member/edit.html", info, body)
+			response.Render(w, "member/edit.html", info, body)
 			return
 		}
 
-		user, err := uh.UserController.UpdateByID(body.ID, name, studentID, department, comment, grade)
+		_, err = uh.UserController.UpdateByID(body.ID, name, studentID, department, comment, grade)
 		if err != nil {
+			log.Printf("failed to update: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("user update: ", user)
+		// log.Println("user update: ", user)
 		http.Redirect(w, r, fmt.Sprintf("/members/%d", body.ID), http.StatusSeeOther)
 	}
-	response.Success(w, "member/edit.html", info, body)
+	response.Render(w, "member/edit.html", info, body)
 }
 
 func (uh *userHandler) UpdatePasswordByStudentID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "", auth.GetStudentIDFromCookie(r))
 	var body interface{}
 	if r.Method == "POST" {
-		log.Println("password update!")
+		// log.Println("password update!")
 		oldPassword := r.PostFormValue("oldPassword")
 		newPassword := r.PostFormValue("newPassword")
 		confirmPassword := r.PostFormValue("confirmPassword")
 		// バリデーション
 		if oldPassword == "" || newPassword == "" || confirmPassword == "" {
 			info.Errors = append(info.Errors, "全フィールドが必須です")
-			response.Success(w, "member/password_edit.html", info, body)
+			response.Render(w, "member/password_edit.html", info, body)
 			return
 		}
 		if newPassword != confirmPassword {
 			info.Errors = append(info.Errors, "新しいパスワードと確認用パスワードが一致しませんでした")
-			response.Success(w, "member/password_edit.html", info, body)
+			response.Render(w, "member/password_edit.html", info, body)
 			return
 		}
 
 		err := uh.UserController.UpdatePasswordByStudentID(info.StudentID, oldPassword, newPassword)
 		if err != nil {
+			log.Printf("failed to update password: %v", err)
 			info.Errors = append(info.Errors, "更新失敗")
-			response.Success(w, "member/password_edit.html", info, body)
+			response.Render(w, "member/password_edit.html", info, body)
 			return
 		}
-		log.Println("success update password")
+		// log.Println("success update password")
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
-	response.Success(w, "member/password_edit.html", info, body)
+	response.Render(w, "member/password_edit.html", info, body)
 }
 
 func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -158,22 +165,22 @@ func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 		if studentID == "" || password == "" {
 			info.Errors = append(info.Errors, "全フィールドが必須です")
-			response.Success(w, "login.html", info, body)
+			response.Render(w, "login.html", info, body)
 			return
 		}
 
 		err := uh.UserController.Login(studentID, password)
 		if err != nil {
-			log.Println("failed to login: ", err)
+			log.Printf("failed to login: studentID = %s: %v", studentID, err)
 			info.Errors = append(info.Errors, "ログイン失敗")
-			response.Success(w, "login.html", info, body)
+			response.Render(w, "login.html", info, body)
 			return
 		}
 
 		// jwtの作成
 		token, err := auth.CreateToken(studentID)
 		if err != nil {
-			log.Println("failed to create token: ", err)
+			log.Printf("failed to create token: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
@@ -183,10 +190,10 @@ func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
 			Value: token,
 		}
 		http.SetCookie(w, cookie)
-		log.Println("redirect")
+		// log.Println("redirect")
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
-	response.Success(w, "login.html", info, body)
+	response.Render(w, "login.html", info, body)
 }
 
 func (uh *userHandler) Logout(w http.ResponseWriter, r *http.Request) {
@@ -195,7 +202,7 @@ func (uh *userHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	// cookieの取得
 	cookie, err := r.Cookie(configs.CookieName)
 	if err != nil {
-		log.Println("Cookie: ", err)
+		log.Printf("failed to get cookie: %v", err)
 		// TODO: ?こここれでいいのか？
 		response.InternalServerError(w, info)
 		return
@@ -222,7 +229,7 @@ func (uh *userHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
 
 		err := uh.UserController.AdminLogin(studentID, password)
 		if err != nil {
-			log.Println("failed to login: ", err)
+			log.Printf("failed to login: studentID = %s: %v", studentID, err)
 			info.Errors = append(info.Errors, "ログイン失敗")
 			response.AdminRender(w, "login.html", info, body)
 			return
@@ -231,7 +238,7 @@ func (uh *userHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
 		// jwtの作成
 		token, err := auth.CreateToken(studentID)
 		if err != nil {
-			log.Println("failed to create token: ", err)
+			log.Printf("failed to create token: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
@@ -244,7 +251,7 @@ func (uh *userHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
 
 		// AdminSessionsに登録
 		auth.SetAdminSession(studentID, token)
-		log.Println("adminLogin: studentID is", studentID)
+		log.Printf("[info] adminLogin: studentID = %v", studentID)
 
 		http.Redirect(w, r, "/admin", http.StatusSeeOther)
 	}
@@ -255,7 +262,7 @@ func (uh *userHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
 	res, err := uh.UserController.AdminGetAll()
 	if err != nil {
-		log.Println("userHandler: AdminGetAll:", err)
+		log.Printf("failed to get data for response: %v", err)
 		// TODO: ?
 		response.InternalServerError(w, info)
 		return
@@ -268,13 +275,13 @@ func (uh *userHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
 	userID, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("userHandler: AdminGetByID: failed to parse path param: ", err)
+		log.Printf("failed to parse path param: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	res, err := uh.UserController.AdminGetByID(userID)
 	if err != nil {
-		log.Println("userHandler: AdminGetByID: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -283,7 +290,7 @@ func (uh *userHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 
 func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
-	// createform行こう
+
 	gradeMap := map[string]string{
 		"2": "学部2年",
 		"3": "学部3年",
@@ -310,7 +317,7 @@ func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("user update: post")
+		// log.Println("user update: post")
 		name := r.PostFormValue("name")
 		studentID := r.PostFormValue("studentID")
 		department := r.PostFormValue("department")
@@ -321,7 +328,10 @@ func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		grade, err := strconv.Atoi(r.PostFormValue("grade"))
 		if err != nil {
 			// TODO: handling
-			log.Println("int parse error")
+			log.Printf("failed to parse grade: %v", err)
+			// log.Println("int parse error")
+			response.InternalServerError(w, info)
+			return
 		}
 		// TODO: バリデーション!
 		if name == "" || studentID == "" || password == "" || confPassword == "" || role == "" {
@@ -337,10 +347,11 @@ func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 
 		id, err := uh.UserController.AdminCreate(name, studentID, department, comment, password, role, grade)
 		if err != nil {
+			log.Printf("failed to create: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success create!")
+		// log.Println("success create!")
 		http.Redirect(w, r, fmt.Sprintf("/admin/members/%d", id), http.StatusSeeOther)
 	}
 	response.AdminRender(w, "edit.html", info, body)
@@ -350,15 +361,14 @@ func (uh *userHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
 	userID, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		// TODO: ?
-		log.Println("userHandler: AdminUpdateByID: failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	// 初期値の獲得
 	user, err := uh.UserController.GetByID(userID)
 	if err != nil {
-		log.Println("userHandler: AdminUpdateByID: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -395,7 +405,9 @@ func (uh *userHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 		grade, err := strconv.Atoi(r.PostFormValue("grade"))
 		if err != nil {
 			// TODO: handling
-			log.Println("int parse error")
+			log.Printf("failed to get parse grade: %v", err)
+			response.InternalServerError(w, info)
+			return
 		}
 		// TODO: バリデーション!
 		if name == "" || studentID == "" || role == "" {
@@ -406,10 +418,11 @@ func (uh *userHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 
 		err = uh.UserController.AdminUpdateByID(userID, name, studentID, department, comment, role, grade)
 		if err != nil {
+			log.Printf("failed to update: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success update!")
+		// log.Println("success update!")
 		http.Redirect(w, r, fmt.Sprintf("/admin/members/%d", userID), http.StatusSeeOther)
 	}
 	response.AdminRender(w, "edit.html", info, body)
@@ -419,27 +432,27 @@ func (uh *userHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := uh.UserController.AdminGetByID(id)
 	if err != nil {
-		log.Println("AdminDeleteByID: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 
 	if r.Method == "POST" {
-		log.Println("post request: delete user")
+		// log.Println("post request: delete user")
 		err = uh.UserController.DeleteByID(id)
 		if err != nil {
-			log.Println("failed to delete")
+			log.Printf("failed to delete: %v", err)
 			info.Errors = append(info.Errors, "削除に失敗しました")
 			response.AdminRender(w, "delete.html", info, body)
 			return
 		}
-		log.Println("success to delete user")
+		// log.Println("success to delete user")
 		http.Redirect(w, r, "/admin/members", http.StatusSeeOther)
 	}
 	response.AdminRender(w, "delete.html", info, body)

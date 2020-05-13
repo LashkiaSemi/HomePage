@@ -34,7 +34,7 @@ func NewTagController(ti interactor.TagInteractor) TagController {
 func (tc *tagController) GetAll() (*TagsResponse, error) {
 	tags, err := tc.TagInteractor.GetAll()
 	if err != nil {
-		err = errors.Wrap(err, "failed to get datas in interactor")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &TagsResponse{}, err
 	}
 	var res TagsResponse
@@ -47,7 +47,7 @@ func (tc *tagController) GetAll() (*TagsResponse, error) {
 func (tc *tagController) GetByID(id int) (*TagResponse, error) {
 	tag, err := tc.TagInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "failed to get data in interactor")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &TagResponse{}, err
 	}
 	return convertToTagResponse(tag), nil
@@ -70,7 +70,7 @@ func (tc *tagController) AdminGetAll() ([]map[string]string, error) {
 	var res []map[string]string
 	tags, err := tc.TagInteractor.GetAll()
 	if err != nil {
-		err = errors.Wrap(err, "failed to get datas in interactor")
+		err = errors.Wrap(err, "failed to original data for response")
 		return res, err
 	}
 	for _, tag := range tags {
@@ -86,7 +86,7 @@ func (tc *tagController) AdminGetByID(id int) (*FieldsResponse, error) {
 	var res FieldsResponse
 	tag, err := tc.TagInteractor.GetByID(id)
 	if err != nil {
-		err = errors.Wrap(err, "failed to get data in interactor")
+		err = errors.Wrap(err, "failed to original data for response")
 		return &res, err
 	}
 	res.Fields = append(res.Fields,

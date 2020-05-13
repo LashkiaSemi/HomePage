@@ -8,7 +8,6 @@ import (
 // createInfo 描画時の必須データを作成
 func createInfo(r *http.Request, pageType, studentID string) *response.Info {
 	return &response.Info{
-		// IsLogin:   auth.CheckIsLogin(r),
 		PageType:  pageType,
 		StudentID: studentID,
 	}
@@ -27,9 +26,9 @@ func createFormField(name, value, label, formType string, props map[string]strin
 
 // FormField adminサイトのフォーム
 type FormField struct {
-	Name  string
-	Value string
-	Label string
-	Type  string
+	Name  string            // htmlのname
+	Value string            // 初期値
+	Label string            // フォームの表示名
+	Type  string            // htmlのtype
 	Props map[string]string // select用
 }

@@ -22,12 +22,11 @@ type activityHandler struct {
 type ActivityHandler interface {
 	GetActivities(w http.ResponseWriter, r *http.Request)
 
-	Create(w http.ResponseWriter, r *http.Request)
-	UpdateByID(w http.ResponseWriter, r *http.Request)
-
 	// admin
 	AdminGetAll(w http.ResponseWriter, r *http.Request)
 	AdminGetByID(w http.ResponseWriter, r *http.Request)
+	AdminCreate(w http.ResponseWriter, r *http.Request)
+	AdminUpdateByID(w http.ResponseWriter, r *http.Request)
 	AdminDeleteByID(w http.ResponseWriter, r *http.Request)
 }
 
@@ -43,18 +42,18 @@ func NewActivityHandler(sh repository.SQLHandler) ActivityHandler {
 }
 
 func (ah *activityHandler) GetActivities(w http.ResponseWriter, r *http.Request) {
-	info := createInfo(r, "activity", auth.GetStudentIDFromCookie(r))
+	info := createInfo(r, "activities", auth.GetStudentIDFromCookie(r))
 
 	res, err := ah.ActivityController.GetAllGroupByYear()
 	if err != nil {
-		log.Println(err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
-	response.Success(w, "activity/index.html", info, res)
+	response.Render(w, "activity/index.html", info, res)
 }
 
-func (ah *activityHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (ah *activityHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "activities", auth.GetStudentIDFromCookie(r))
 
 	body := []*FormField{
@@ -63,7 +62,7 @@ func (ah *activityHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("activity create: post request")
+		// log.Println("activity create: post request")
 		activity := r.PostFormValue("activity")
 		date := r.PostFormValue("date")
 		if activity == "" || date == "" {
@@ -74,29 +73,29 @@ func (ah *activityHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 		id, err := ah.ActivityController.Create(activity, date)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to create: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success update activity")
+		// log.Println("success update activity")
 		http.Redirect(w, r, fmt.Sprintf("/admin/activities/%d", id), http.StatusSeeOther)
 	}
 
 	response.AdminRender(w, "edit.html", info, body)
 }
 
-func (ah *activityHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
+func (ah *activityHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "activities", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	// 初期値の取得
 	data, err := ah.ActivityController.GetByID(id)
 	if err != nil {
-		log.Println("failed to get target: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -106,7 +105,7 @@ func (ah *activityHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		log.Println("activity update: post request")
+		// log.Println("activity update: post request")
 		activity := r.PostFormValue("activity")
 		date := r.PostFormValue("date")
 		if activity == "" || date == "" {
@@ -117,11 +116,11 @@ func (ah *activityHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 
 		err = ah.ActivityController.UpdateByID(id, activity, date)
 		if err != nil {
-			log.Println(err)
+			log.Printf("failed to update: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
-		log.Println("success update activity")
+		// log.Println("success update activity")
 		http.Redirect(w, r, fmt.Sprintf("/admin/activities/%d", id), http.StatusSeeOther)
 	}
 
@@ -132,26 +131,25 @@ func (ah *activityHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "activities", auth.GetStudentIDFromCookie(r))
 	res, err := ah.ActivityController.AdminGetAll()
 	if err != nil {
-		log.Println(err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 
 	response.AdminRender(w, "list.html", info, res)
-
 }
 
 func (ah *activityHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "activities", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("activityHandler: AdminGetByID: failed to parse path param: ", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	res, err := ah.ActivityController.AdminGetByID(id)
 	if err != nil {
-		log.Println("activityHandler: AdminGetByID: ", err)
+		log.Printf("failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -163,27 +161,27 @@ func (ah *activityHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Reques
 	info := createInfo(r, "activities", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to parse path parameter", err)
+		log.Printf("failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := ah.ActivityController.AdminGetByID(id)
 	if err != nil {
-		log.Println("AdminDeleteByID: ", err)
+		log.Printf("failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 
 	if r.Method == "POST" {
-		log.Println("post request: delete activity")
+		// log.Println("post request: delete activity")
 		err = ah.ActivityController.DeleteByID(id)
 		if err != nil {
-			log.Println("failed to delete")
+			log.Printf("failed to delete: %v", err)
 			info.Errors = append(info.Errors, "削除に失敗しました")
 			response.AdminRender(w, "delete.html", info, body)
 			return
 		}
-		log.Println("success to delete activity")
+		// log.Println("success to delete activity")
 		http.Redirect(w, r, "/admin/activities", http.StatusSeeOther)
 	}
 	response.AdminRender(w, "delete.html", info, body)
