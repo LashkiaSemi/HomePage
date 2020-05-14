@@ -168,7 +168,7 @@ func (lh *lectureHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 			response.Render(w, "lecture/edit.html", info, body)
 			return
 		}
-		_, err := lh.LectureController.UpdateByID(lectureID, info.StudentID, title, body.FileName, comment, activation)
+		err = lh.LectureController.UpdateByID(lectureID, info.StudentID, title, body.FileName, comment, activation)
 		if err != nil {
 			log.Printf("failed to update: %v", err)
 			info.Errors = append(info.Errors, "更新失敗")
@@ -311,14 +311,14 @@ func (lh *lectureHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 			// log.Println("complete to save file")
 		}
 
-		res, err := lh.LectureController.Create(studentID, title, fileName, comment, activation)
+		id, err := lh.LectureController.Create(studentID, title, fileName, comment, activation)
 		if err != nil {
 			log.Printf("failed to create: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
 		// log.Println("success create lecture")
-		http.Redirect(w, r, fmt.Sprintf("/admin/lectures/%d", res.ID), http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/admin/lectures/%d", id), http.StatusSeeOther)
 	}
 
 	response.AdminRender(w, "edit.html", info, body)
@@ -404,7 +404,7 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 			// log.Println("complete to save file")
 		}
 
-		_, err = lh.LectureController.UpdateByID(id, studentID, title, fileName, comment, activation)
+		err = lh.LectureController.UpdateByID(id, studentID, title, fileName, comment, activation)
 		if err != nil {
 			log.Printf("failed to update: %v", err)
 			response.InternalServerError(w, info)

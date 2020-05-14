@@ -18,8 +18,9 @@ type lectureController struct {
 type LectureController interface {
 	GetAll() (*LecturesResponse, error)
 	GetByID(id int) (*LectureResponse, error)
-	Create(studentID, title, file, comment string, activation int) (*LectureResponse, error)
-	UpdateByID(id int, studentID, title, file, comment string, activation int) (*LectureResponse, error)
+
+	Create(studentID, title, file, comment string, activation int) (int, error)
+	UpdateByID(id int, studentID, title, file, comment string, activation int) error
 	DeleteByID(id int) error
 
 	// admin
@@ -56,24 +57,12 @@ func (lc *lectureController) GetByID(id int) (*LectureResponse, error) {
 	return convertToLectureResponse(lec), err
 }
 
-func (lc *lectureController) Create(studentID, title, file, comment string, activation int) (*LectureResponse, error) {
-	// TODO; return int, err でいいかも
-	lecture, err := lc.LectureInteractor.Create(studentID, title, file, comment, activation)
-	if err != nil {
-		err = errors.Wrap(err, "failed to original data for response")
-		return &LectureResponse{}, err
-	}
-	return convertToLectureResponse(lecture), nil
+func (lc *lectureController) Create(studentID, title, file, comment string, activation int) (int, error) {
+	return lc.LectureInteractor.Create(studentID, title, file, comment, activation)
 }
 
-func (lc *lectureController) UpdateByID(id int, studentID, title, file, comment string, activation int) (*LectureResponse, error) {
-	// TODO: return errでいいかも
-	lec, err := lc.LectureInteractor.UpdateByID(id, studentID, title, file, comment, activation)
-	if err != nil {
-		err = errors.Wrap(err, "failed to original data for response")
-		return &LectureResponse{}, err
-	}
-	return convertToLectureResponse(lec), nil
+func (lc *lectureController) UpdateByID(id int, studentID, title, file, comment string, activation int) error {
+	return lc.LectureInteractor.UpdateByID(id, studentID, title, file, comment, activation)
 }
 
 func (lc *lectureController) DeleteByID(id int) error {

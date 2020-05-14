@@ -14,8 +14,8 @@ type lectureInteractor struct {
 type LectureInteractor interface {
 	GetAll() ([]*entity.Lecture, error)
 	GetByID(id int) (*entity.Lecture, error)
-	Create(studentID, title, file, comment string, activation int) (*entity.Lecture, error)
-	UpdateByID(id int, studentID, title, file, comment string, activation int) (*entity.Lecture, error)
+	Create(studentID, title, file, comment string, activation int) (int, error)
+	UpdateByID(id int, studentID, title, file, comment string, activation int) error
 	DeleteByID(id int) error
 }
 
@@ -34,11 +34,11 @@ func (li *lectureInteractor) GetByID(id int) (*entity.Lecture, error) {
 	return li.LectureRepository.FindByID(id)
 }
 
-func (li *lectureInteractor) Create(studentID, title, file, comment string, activation int) (*entity.Lecture, error) {
+func (li *lectureInteractor) Create(studentID, title, file, comment string, activation int) (int, error) {
 	author, err := li.LectureRepository.FindAuthorByStudentID(studentID)
 	if err != nil {
 		err = errors.Wrap(err, "failed to get author")
-		return &entity.Lecture{}, err
+		return 0, err
 	}
 
 	lecture := entity.Lecture{}
@@ -47,22 +47,21 @@ func (li *lectureInteractor) Create(studentID, title, file, comment string, acti
 	id, err := li.LectureRepository.Create(&lecture)
 	if err != nil {
 		err = errors.Wrap(err, "failed to insert db")
-		return &entity.Lecture{}, err
+		return 0, err
 	}
-	lecture.ID = id
-	return &lecture, nil
+	return id, nil
 }
 
-func (li *lectureInteractor) UpdateByID(id int, studentID, title, file, comment string, activation int) (*entity.Lecture, error) {
+func (li *lectureInteractor) UpdateByID(id int, studentID, title, file, comment string, activation int) error {
 	author, err := li.LectureRepository.FindAuthorByStudentID(studentID)
 	if err != nil {
 		err = errors.Wrap(err, "failed to get autho")
-		return &entity.Lecture{}, err
+		return err
 	}
 	lecture, err := li.LectureRepository.FindByID(id)
 	if err != nil {
 		err = errors.Wrap(err, "failed to original data")
-		return &entity.Lecture{}, err
+		return err
 	}
 
 	newLecture := lecture.Update(title, file, comment, activation, author)
@@ -71,9 +70,9 @@ func (li *lectureInteractor) UpdateByID(id int, studentID, title, file, comment 
 	err = li.LectureRepository.UpdateByID(newLecture)
 	if err != nil {
 		err = errors.Wrap(err, "failed to update db")
-		return &entity.Lecture{}, err
+		return err
 	}
-	return newLecture, nil
+	return nil
 
 }
 

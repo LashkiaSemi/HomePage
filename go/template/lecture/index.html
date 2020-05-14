@@ -17,6 +17,7 @@
                             <th>コメント</th>
                             <th>投稿日</th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,11 +35,15 @@
                                 <a href="{{ .FilePath }}" download="{{ .FileName }}"><button class="btn btn-primary">download</button></a>
                                 {{ end }}
                                 
-                                {{ if eq $studentID .Author.StudentID }}
+                            </td>
+                            {{ if eq $studentID .Author.StudentID }}
+                            <td style="min-width: 9rem;">
                                 <a href="/lectures/{{ .ID }}/edit"><button class="btn btn-success">編集</button></a>
                                 <a href="/lectures/{{ .ID }}/delete"><button class="btn btn-danger">削除</button></a>
-                                {{ end }}
                             </td>
+                            {{ else }}
+                            <td></td>
+                            {{ end }}
                         </tr>
                         {{ end }}
                     </tbody>
