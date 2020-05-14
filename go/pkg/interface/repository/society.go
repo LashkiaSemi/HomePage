@@ -30,7 +30,7 @@ func (sr *societyRepository) FindAll() ([]*entity.Society, error) {
 	var datas []*entity.Society
 	if err != nil {
 		if err != sr.SQLHandler.ErrNoRows() {
-			log.Printf("hit no data: %v", err)
+			log.Printf("[warn] hit no data: %v", err)
 			return datas, nil
 		}
 		err = errors.Wrap(err, "failed to execute query")
@@ -39,7 +39,7 @@ func (sr *societyRepository) FindAll() ([]*entity.Society, error) {
 	for rows.Next() {
 		var data entity.Society
 		if err = rows.Scan(&data.ID, &data.Title, &data.Author, &data.Society, &data.Award, &data.Date); err != nil {
-			log.Printf("rows.Scan skip: %v", err)
+			log.Printf("[warn] rows.Scan skip: %v", err)
 			continue
 		}
 		datas = append(datas, &data)

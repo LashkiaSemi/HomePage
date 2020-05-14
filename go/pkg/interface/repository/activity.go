@@ -28,7 +28,7 @@ func (ar *activityRepository) FindAll() ([]*entity.Activity, error) {
 	var acts []*entity.Activity
 	if err != nil {
 		if err == ar.SQLHandler.ErrNoRows() {
-			log.Printf("not data hit: %v", err)
+			log.Printf("[warn] not data hit: %v", err)
 			return acts, nil
 		}
 		err = errors.Wrap(err, "failed to execute query")
@@ -37,7 +37,7 @@ func (ar *activityRepository) FindAll() ([]*entity.Activity, error) {
 	for rows.Next() {
 		var act entity.Activity
 		if err = rows.Scan(&act.ID, &act.Activity, &act.Date); err != nil {
-			log.Printf("rows.Scan skip: %v", err)
+			log.Printf("[warn] rows.Scan skip: %v", err)
 			continue
 		}
 		acts = append(acts, &act)

@@ -28,7 +28,7 @@ func (rr *researchRepository) FindAll() ([]*entity.Research, error) {
 	var res []*entity.Research
 	if err != nil {
 		if err == rr.SQLHandler.ErrNoRows() {
-			log.Printf("no hit data: %v", err)
+			log.Printf("[warn] no hit data: %v", err)
 			return res, nil
 		}
 		err = errors.Wrap(err, "failed to execute query")
@@ -37,7 +37,7 @@ func (rr *researchRepository) FindAll() ([]*entity.Research, error) {
 	for rows.Next() {
 		var data entity.Research
 		if err = rows.Scan(&data.ID, &data.Title, &data.Author, &data.File, &data.Comment, &data.Activation, &data.CreatedAt); err != nil {
-			log.Printf("rows.Scan skip: %v", err)
+			log.Printf("[warn] rows.Scan skip: %v", err)
 			continue
 		}
 		res = append(res, &data)

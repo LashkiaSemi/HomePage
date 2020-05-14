@@ -129,7 +129,7 @@ func dummyHandler(templateFile string) http.HandlerFunc {
 			"template/_header.html",
 		)
 		if err != nil {
-			log.Printf("failed to parse template: %v", err)
+			log.Printf("[error] failed to parse template: %v", err)
 			return
 		}
 		if err = t.Execute(w, struct {
@@ -140,7 +140,7 @@ func dummyHandler(templateFile string) http.HandlerFunc {
 				PageType:  "dummy",
 			},
 		}); err != nil {
-			log.Printf("failed to execute template: %v", err)
+			log.Printf("[error] failed to execute template: %v", err)
 			return
 		}
 	}
@@ -157,7 +157,7 @@ func adminDummyHandler(templateFile string) http.HandlerFunc {
 			"template/admin/_header.html",
 		)
 		if err != nil {
-			log.Printf("failed to parse template: %v", err)
+			log.Printf("[error] failed to parse template: %v", err)
 			return
 		}
 		if err = t.Execute(w, struct {
@@ -168,7 +168,7 @@ func adminDummyHandler(templateFile string) http.HandlerFunc {
 				PageType:  "dummy",
 			},
 		}); err != nil {
-			log.Printf("failed to execute template: %v", err)
+			log.Printf("[error] failed to execute template: %v", err)
 			return
 		}
 	}

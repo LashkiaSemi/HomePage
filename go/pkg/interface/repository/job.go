@@ -27,7 +27,7 @@ func (jr *jobRepository) FindAll() ([]*entity.Job, error) {
 	var jobs []*entity.Job
 	if err != nil {
 		if err == jr.SQLHandler.ErrNoRows() {
-			log.Printf("hit no data: %v", err)
+			log.Printf("[warn] hit no data: %v", err)
 			return jobs, nil
 		}
 		err = errors.Wrap(err, "failed to execute query")
@@ -36,7 +36,7 @@ func (jr *jobRepository) FindAll() ([]*entity.Job, error) {
 	for rows.Next() {
 		var job entity.Job
 		if err = rows.Scan(&job.ID, &job.Company, &job.Job); err != nil {
-			log.Println("rows.Scan skip: ", err)
+			log.Println("[warn] rows.Scan skip: ", err)
 			continue
 		}
 		jobs = append(jobs, &job)

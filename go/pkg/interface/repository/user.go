@@ -28,7 +28,7 @@ func (ur *userRepository) FindAll() ([]*entity.User, error) {
 	var users []*entity.User
 	if err != nil {
 		if err == ur.SQLHandler.ErrNoRows() {
-			log.Printf("hit no data: %v", err)
+			log.Printf("[warn] hit no data: %v", err)
 			return users, nil
 		}
 		err = errors.Wrap(err, "failed to execute query")
@@ -37,7 +37,7 @@ func (ur *userRepository) FindAll() ([]*entity.User, error) {
 	for rows.Next() {
 		var user entity.User
 		if err = rows.Scan(&user.ID, &user.Name, &user.StudentID, &user.Grade); err != nil {
-			log.Printf("rows.Scan skip: %v", err)
+			log.Printf("[warn] rows.Scan skip: %v", err)
 			continue
 		}
 		users = append(users, &user)

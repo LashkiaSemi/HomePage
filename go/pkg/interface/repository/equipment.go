@@ -29,7 +29,7 @@ func (er *equipmentRepository) FindAll() ([]*entity.Equipment, error) {
 	var res []*entity.Equipment
 	if err != nil {
 		if err == er.SQLHandler.ErrNoRows() {
-			log.Printf("not data hit: %v", err)
+			log.Printf("[warn] not data hit: %v", err)
 			return res, nil
 		}
 		err = errors.Wrap(err, "failed to execute query")
@@ -39,7 +39,7 @@ func (er *equipmentRepository) FindAll() ([]*entity.Equipment, error) {
 		var data entity.Equipment
 		var tag entity.Tag
 		if err = rows.Scan(&data.ID, &data.Name, &data.Stock, &data.Comment, &tag.Name, &data.CreatedAt); err != nil {
-			log.Printf("rows.Scan skip: %v", err)
+			log.Printf("[warn] rows.Scan skip: %v", err)
 			continue
 		}
 		data.Tag = &tag

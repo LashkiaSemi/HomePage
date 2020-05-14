@@ -48,7 +48,7 @@ func (sh *societyHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	// get data
 	res, err := sh.SocietyController.GetAll()
 	if err != nil {
-		log.Printf("failed to get data for response: %v", err)
+		log.Printf("[error] failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -82,7 +82,7 @@ func (sh *societyHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 
 		id, err := sh.SocietyController.Create(title, author, society, award, date)
 		if err != nil {
-			log.Printf("failed to create: %v", err)
+			log.Printf("[error] failed to create: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
@@ -97,14 +97,14 @@ func (sh *societyHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Printf("failed to parse path parameter: %v", err)
+		log.Printf("[error] failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	// 初期値の取得
 	data, err := sh.SocietyController.GetByID(id)
 	if err != nil {
-		log.Printf("failed to get original data: %v", err)
+		log.Printf("[error] failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -131,7 +131,7 @@ func (sh *societyHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 
 		err = sh.SocietyController.UpdateByID(id, title, author, society, award, date)
 		if err != nil {
-			log.Printf("failed to update: %v", err)
+			log.Printf("[error] failed to update: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
@@ -147,7 +147,7 @@ func (sh *societyHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
 	res, err := sh.SocietyController.AdminGetAll()
 	if err != nil {
-		log.Printf("failed to get data for response: %v", err)
+		log.Printf("[error] failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -158,13 +158,13 @@ func (sh *societyHandler) AdminGeByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Printf("failed to parse path param: %v", err)
+		log.Printf("[error] failed to parse path param: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	res, err := sh.SocietyController.AdminGetByID(id)
 	if err != nil {
-		log.Printf("failed to get data for response: %v", err)
+		log.Printf("[error] failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -177,13 +177,13 @@ func (sh *societyHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request
 	info := createInfo(r, "societies", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Printf("failed to parse path parameter: %v", err)
+		log.Printf("[error] failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := sh.SocietyController.AdminGetByID(id)
 	if err != nil {
-		log.Printf("failed to get original data: %v", err)
+		log.Printf("[error] failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -192,7 +192,7 @@ func (sh *societyHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request
 		// log.Println("post request: delete society")
 		err = sh.SocietyController.DeleteByID(id)
 		if err != nil {
-			log.Printf("failed to delete: %v", err)
+			log.Printf("[error] failed to delete: %v", err)
 			info.Errors = append(info.Errors, "削除に失敗しました")
 			response.AdminRender(w, "delete.html", info, body)
 			return

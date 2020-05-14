@@ -29,7 +29,7 @@ func (lr *lectureRepository) FindAll() ([]*entity.Lecture, error) {
 	lectures := []*entity.Lecture{}
 	if err != nil {
 		if err == lr.SQLHandler.ErrNoRows() {
-			log.Printf("hit no data: %v", err)
+			log.Printf("[warn] hit no data: %v", err)
 			return lectures, nil
 		}
 		err = errors.Wrap(err, "failed to execute query")
@@ -39,7 +39,7 @@ func (lr *lectureRepository) FindAll() ([]*entity.Lecture, error) {
 		var lecture entity.Lecture
 		var user entity.User
 		if err = rows.Scan(&lecture.ID, &lecture.Title, &lecture.File, &lecture.Comment, &lecture.Activation, &lecture.CreatedAt, &user.Name, &user.StudentID); err != nil {
-			log.Printf("rows.Scan skip: %v", err)
+			log.Printf("[warn] rows.Scan skip: %v", err)
 			continue
 		}
 		lecture.Author = &user

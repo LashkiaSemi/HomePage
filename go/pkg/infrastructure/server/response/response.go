@@ -25,7 +25,7 @@ func Render(w http.ResponseWriter, templateFile string, info *Info, body interfa
 		Info: info,
 		Data: body,
 	}); err != nil {
-		log.Printf("failed to execute template: %v", err)
+		log.Printf("[error] failed to execute template: %v", err)
 		InternalServerError(w, info)
 		return
 	}
@@ -81,7 +81,7 @@ func AdminRender(w http.ResponseWriter, templateFile string, info *Info, body in
 		"template/admin/_header.html",
 	)
 	if err != nil {
-		log.Printf("failed to parse template: %v", err)
+		log.Printf("[error] failed to parse template: %v", err)
 		InternalServerError(w, info)
 		return
 	}
@@ -93,7 +93,7 @@ func AdminRender(w http.ResponseWriter, templateFile string, info *Info, body in
 		Info: info,
 		Data: body,
 	}); err != nil {
-		log.Printf("failed to execute template: %v", err)
+		log.Printf("[error] failed to execute template: %v", err)
 		InternalServerError(w, info)
 		return
 	}

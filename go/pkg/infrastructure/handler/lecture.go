@@ -58,7 +58,7 @@ func (lh *lectureHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "lecture", auth.GetStudentIDFromCookie(r))
 	res, err := lh.LectureController.GetAll()
 	if err != nil {
-		log.Printf("failed to get data for response: %v", err)
+		log.Printf("[error] failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -104,7 +104,7 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 		var saveImage *os.File
 		saveImage, err = os.Create(fmt.Sprintf("%s/%s", configs.SaveLectureFileDir, fileName))
 		if err != nil {
-			log.Printf("failed to reserve save file: %v", err)
+			log.Printf("[error] failed to reserve save file: %v", err)
 			// TODO: 驚き最小じゃない気がする
 			response.InternalServerError(w, info)
 			return
@@ -113,7 +113,7 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 		defer file.Close()
 		_, err = io.Copy(saveImage, file)
 		if err != nil {
-			log.Printf("failed to copy to reserve file: %v", err)
+			log.Printf("[error] failed to copy to reserve file: %v", err)
 			// 驚き最小じゃない気がする
 			response.InternalServerError(w, info)
 			return
@@ -122,7 +122,7 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 		_, err = lh.LectureController.Create(info.StudentID, title, fileName, comment, activation)
 		if err != nil {
-			log.Printf("failed to create: %v", err)
+			log.Printf("[error] failed to create: %v", err)
 			info.Errors = append(info.Errors, "作成失敗")
 			response.Render(w, "lecture/edit.html", info, body)
 			return
@@ -136,13 +136,13 @@ func (lh *lectureHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "lecture", auth.GetStudentIDFromCookie(r))
 	lectureID, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Printf("failed to parse path parameter: %v", err)
+		log.Printf("[error] failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := lh.LectureController.GetByID(lectureID)
 	if err != nil {
-		log.Printf("failed to get original data: %v", err)
+		log.Printf("[error] failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -170,7 +170,7 @@ func (lh *lectureHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		}
 		err = lh.LectureController.UpdateByID(lectureID, info.StudentID, title, body.FileName, comment, activation)
 		if err != nil {
-			log.Printf("failed to update: %v", err)
+			log.Printf("[error] failed to update: %v", err)
 			info.Errors = append(info.Errors, "更新失敗")
 			response.Render(w, "lecture/edit.html", info, body)
 			return
@@ -184,13 +184,13 @@ func (lh *lectureHandler) DeleteByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "lecture", auth.GetStudentIDFromCookie(r))
 	lectureID, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Printf("failed to parse path parameter: %v", err)
+		log.Printf("[error] failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := lh.LectureController.GetByID(lectureID)
 	if err != nil {
-		log.Printf("failed to get original data: %v", err)
+		log.Printf("[error] failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -204,7 +204,7 @@ func (lh *lectureHandler) DeleteByID(w http.ResponseWriter, r *http.Request) {
 		// log.Println("lectureHandler: DeleteByID: post")
 		err = lh.LectureController.DeleteByID(lectureID)
 		if err != nil {
-			log.Printf("failed to delete: %v", err)
+			log.Printf("[error] failed to delete: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
@@ -218,7 +218,7 @@ func (lh *lectureHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "lectures", auth.GetStudentIDFromCookie(r))
 	res, err := lh.LectureController.AdminGetAll()
 	if err != nil {
-		log.Printf("failed to get data for response: %v", err)
+		log.Printf("[error] failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -229,13 +229,13 @@ func (lh *lectureHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "lectures", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Printf("failed to parse path param: %v", err)
+		log.Printf("[error] failed to parse path param: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	res, err := lh.LectureController.AdminGetByID(id)
 	if err != nil {
-		log.Printf("failed to get data for response: %v", err)
+		log.Printf("[error] failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -249,7 +249,7 @@ func (lh *lectureHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	// create user map
 	users, err := lh.UserController.GetAll()
 	if err != nil {
-		log.Printf("failed to get data for select's options: %v", err)
+		log.Printf("[error] failed to get data for select's options: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -294,7 +294,7 @@ func (lh *lectureHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 			var saveImage *os.File
 			saveImage, err = os.Create(fmt.Sprintf("%s/%s", configs.SaveResearchFileDir, fileName))
 			if err != nil {
-				log.Printf("failed to reserve file: %v", err)
+				log.Printf("[error] failed to reserve file: %v", err)
 				// TODO: 驚き最小じゃない気がする
 				response.InternalServerError(w, info)
 				return
@@ -303,7 +303,7 @@ func (lh *lectureHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 			_, err = io.Copy(saveImage, file)
 			if err != nil {
-				log.Printf("failed to copy to reserve file: %v", err)
+				log.Printf("[error] failed to copy to reserve file: %v", err)
 				// 驚き最小じゃない気がする
 				response.InternalServerError(w, info)
 				return
@@ -313,7 +313,7 @@ func (lh *lectureHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 
 		id, err := lh.LectureController.Create(studentID, title, fileName, comment, activation)
 		if err != nil {
-			log.Printf("failed to create: %v", err)
+			log.Printf("[error] failed to create: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
@@ -328,13 +328,13 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 	info := createInfo(r, "lectures", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Printf("failed to parse path parameter: %v", err)
+		log.Printf("[error] failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	data, err := lh.LectureController.GetByID(id)
 	if err != nil {
-		log.Printf("failed to get data for response: %v", err)
+		log.Printf("[error] failed to get data for response: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -342,7 +342,7 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 	// create user map
 	users, err := lh.UserController.GetAll()
 	if err != nil {
-		log.Printf("failed to get author for select's options: %v", err)
+		log.Printf("[error] failed to get author for select's options: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -387,7 +387,7 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 			var saveImage *os.File
 			saveImage, err = os.Create(fmt.Sprintf("%s/%s", configs.SaveResearchFileDir, fileName))
 			if err != nil {
-				log.Printf("failed to researve file: %v", err)
+				log.Printf("[error] failed to researve file: %v", err)
 				// TODO: 驚き最小じゃない気がする
 				response.InternalServerError(w, info)
 				return
@@ -396,7 +396,7 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 			defer file.Close()
 			_, err = io.Copy(saveImage, file)
 			if err != nil {
-				log.Printf("failed to copy to reserve file: %v", err)
+				log.Printf("[error] failed to copy to reserve file: %v", err)
 				// 驚き最小じゃない気がする
 				response.InternalServerError(w, info)
 				return
@@ -406,7 +406,7 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 
 		err = lh.LectureController.UpdateByID(id, studentID, title, fileName, comment, activation)
 		if err != nil {
-			log.Printf("failed to update: %v", err)
+			log.Printf("[error] failed to update: %v", err)
 			response.InternalServerError(w, info)
 			return
 		}
@@ -421,13 +421,13 @@ func (lh *lectureHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request
 	info := createInfo(r, "lectures", auth.GetStudentIDFromCookie(r))
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		log.Printf("failed to parse path parameter: %v", err)
+		log.Printf("[error] failed to parse path parameter: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
 	body, err := lh.LectureController.AdminGetByID(id)
 	if err != nil {
-		log.Printf("failed to get original data: %v", err)
+		log.Printf("[error] failed to get original data: %v", err)
 		response.InternalServerError(w, info)
 		return
 	}
@@ -436,7 +436,7 @@ func (lh *lectureHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request
 		// log.Println("post request: delete lecture")
 		err = lh.LectureController.DeleteByID(id)
 		if err != nil {
-			log.Printf("failed to delete: %v", err)
+			log.Printf("[error] failed to delete: %v", err)
 			info.Errors = append(info.Errors, "削除に失敗しました")
 			response.AdminRender(w, "delete.html", info, body)
 			return

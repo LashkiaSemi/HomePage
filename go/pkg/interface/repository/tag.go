@@ -27,7 +27,7 @@ func (tr *tagRepository) FindAll() ([]*entity.Tag, error) {
 	var res []*entity.Tag
 	if err != nil {
 		if err == tr.SQLHandler.ErrNoRows() {
-			log.Printf("hit no data: %v", err)
+			log.Printf("[warn] hit no data: %v", err)
 			return res, nil
 		}
 		err = errors.Wrap(err, "failed to execute query")
@@ -36,7 +36,7 @@ func (tr *tagRepository) FindAll() ([]*entity.Tag, error) {
 	for rows.Next() {
 		var tag entity.Tag
 		if err = rows.Scan(&tag.ID, &tag.Name); err != nil {
-			log.Printf("rows.Scan skip: %v", err)
+			log.Printf("[warn] rows.Scan skip: %v", err)
 			continue
 		}
 		res = append(res, &tag)
