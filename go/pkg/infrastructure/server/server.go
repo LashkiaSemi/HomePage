@@ -11,6 +11,7 @@ import (
 )
 
 type server struct {
+	Host    string
 	Port    string
 	Handler *handler.AppHandler
 }
@@ -21,8 +22,9 @@ type Server interface {
 }
 
 // NewServer サーバを作るぞ！
-func NewServer(port string, ah *handler.AppHandler) Server {
+func NewServer(host, port string, ah *handler.AppHandler) Server {
 	return &server{
+		Host:    host,
 		Port:    port,
 		Handler: ah,
 	}
@@ -113,7 +115,7 @@ func (s *server) Serve() {
 
 	// TODO: 固定値すぎる
 	log.Printf("[info] server running http://localhost:%v", s.Port)
-	http.ListenAndServe(":"+s.Port, r)
+	http.ListenAndServe(s.Host+":"+s.Port, r)
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {

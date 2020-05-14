@@ -2,6 +2,12 @@ package configs
 
 import "time"
 
+// applicationのconfig
+const (
+	AppHost = "localhost"
+	AppPort = "8080"
+)
+
 // db config
 const (
 	DBDriver   = "mysql"

@@ -18,8 +18,7 @@ func init() {
 	mode := flag.String("mode", configs.DefaultMode, "run mode. value=[admin, release]")
 	flag.Parse()
 	if *mode != "release" && *mode != "admin" {
-		// TODO: ひでえ英語だ
-		log.Printf("[info] mode of '%v' is nothing. set mode '%v'.", *mode, configs.DefaultMode)
+		log.Printf("[info] the specified mode '%v' is invalid. set mode '%v'.", *mode, configs.DefaultMode)
 	} else {
 		configs.ModePtr = *mode
 	}
@@ -27,7 +26,8 @@ func init() {
 }
 
 func main() {
-	port := "8080"
+	host := configs.AppHost
+	port := configs.AppPort
 
 	// connection db
 	sh := database.NewSQLHandler()
@@ -36,7 +36,7 @@ func main() {
 	ah := handler.NewAppHandler(sh)
 
 	// make server
-	serv := server.NewServer(port, ah)
+	serv := server.NewServer(host, port, ah)
 
 	// listen
 	serv.Serve()
