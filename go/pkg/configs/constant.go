@@ -47,3 +47,6 @@ const (
 	// デフォルトのモード[release, admin]とかから？
 	DefaultMode = "release"
 )
+
+// Mode
+var ModePtr = "release"

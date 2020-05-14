@@ -9,24 +9,21 @@ import (
 	"log"
 )
 
-// ModePtr 実行モード。デバッグするときに使うやつ
-var ModePtr *string
-
 func init() {
 	// logのカスタム
-	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	log.Printf("[info] finish setting log")
 
 	// run modeの設定
-	ModePtr = flag.String("mode", configs.DefaultMode, "run mode. value=[admin, release]")
+	mode := flag.String("mode", configs.DefaultMode, "run mode. value=[admin, release]")
 	flag.Parse()
-	if *ModePtr != "release" && *ModePtr != "admin" {
+	if *mode != "release" && *mode != "admin" {
 		// TODO: ひでえ英語だ
-		log.Printf("[info] mode of '%v' is nothing. set mode '%v'.", *ModePtr, configs.DefaultMode)
-		*ModePtr = configs.DefaultMode
+		log.Printf("[info] mode of '%v' is nothing. set mode '%v'.", *mode, configs.DefaultMode)
+	} else {
+		configs.ModePtr = *mode
 	}
-	log.Printf("[info] running mode: %v", *ModePtr)
-
+	log.Printf("[info] running mode: %v", configs.ModePtr)
 }
 
 func main() {

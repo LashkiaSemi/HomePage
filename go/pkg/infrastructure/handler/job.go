@@ -68,6 +68,8 @@ func (jh *jobHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		job := r.PostFormValue("job")
 		if company == "" {
 			info.Errors = append(info.Errors, "企業名は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
@@ -110,6 +112,8 @@ func (jh *jobHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 		job := r.PostFormValue("job")
 		if company == "" {
 			info.Errors = append(info.Errors, "企業名は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}

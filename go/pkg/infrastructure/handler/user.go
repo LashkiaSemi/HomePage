@@ -98,14 +98,14 @@ func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		comment := r.PostFormValue("comment")
 		grade, err := strconv.Atoi(r.PostFormValue("grade"))
 		if err != nil {
-			// TODO: handling
 			log.Printf("[error] failed to parse grade: %v", err)
-			response.InternalServerError(w, info)
-			return
+			info.Errors = append(info.Errors, "学年の入力が不正です")
 		}
 		// TODO: バリデーション!
 		if name == "" || studentID == "" {
-			info.Errors = append(info.Errors, "名前、学籍番号は必須")
+			info.Errors = append(info.Errors, "名前、学籍番号は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.Render(w, "member/edit.html", info, body)
 			return
 		}
@@ -133,11 +133,11 @@ func (uh *userHandler) UpdatePasswordByStudentID(w http.ResponseWriter, r *http.
 		// バリデーション
 		if oldPassword == "" || newPassword == "" || confirmPassword == "" {
 			info.Errors = append(info.Errors, "全フィールドが必須です")
-			response.Render(w, "member/password_edit.html", info, body)
-			return
 		}
 		if newPassword != confirmPassword {
 			info.Errors = append(info.Errors, "新しいパスワードと確認用パスワードが一致しませんでした")
+		}
+		if len(info.Errors) > 0 {
 			response.Render(w, "member/password_edit.html", info, body)
 			return
 		}
@@ -165,6 +165,8 @@ func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 		if studentID == "" || password == "" {
 			info.Errors = append(info.Errors, "全フィールドが必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.Render(w, "login.html", info, body)
 			return
 		}
@@ -223,6 +225,8 @@ func (uh *userHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
 
 		if studentID == "" || password == "" {
 			info.Errors = append(info.Errors, "全フィールドが必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "login.html", info, body)
 			return
 		}
@@ -327,20 +331,17 @@ func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		role := r.PostFormValue("role")
 		grade, err := strconv.Atoi(r.PostFormValue("grade"))
 		if err != nil {
-			// TODO: handling
 			log.Printf("[error] failed to parse grade: %v", err)
-			// log.Println("int parse error")
-			response.InternalServerError(w, info)
-			return
+			info.Errors = append(info.Errors, "学年の入力が不正です")
 		}
 		// TODO: バリデーション!
 		if name == "" || studentID == "" || password == "" || confPassword == "" || role == "" {
 			info.Errors = append(info.Errors, "名前、学籍番号、パスワード、権限は必須")
-			response.AdminRender(w, "edit.html", info, body)
-			return
 		}
 		if password != confPassword {
-			info.Errors = append(info.Errors, "パスワードが一致しません")
+			info.Errors = append(info.Errors, "パスワードと確認用パスワードが一致しません")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
@@ -404,14 +405,14 @@ func (uh *userHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 		role := r.PostFormValue("role")
 		grade, err := strconv.Atoi(r.PostFormValue("grade"))
 		if err != nil {
-			// TODO: handling
 			log.Printf("[error] failed to get parse grade: %v", err)
-			response.InternalServerError(w, info)
-			return
+			info.Errors = append(info.Errors, "学年の入力が不正です")
 		}
 		// TODO: バリデーション!
 		if name == "" || studentID == "" || role == "" {
 			info.Errors = append(info.Errors, "名前、学籍番号、権限は必須")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}

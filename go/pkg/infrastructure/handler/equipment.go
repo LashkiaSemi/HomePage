@@ -85,24 +85,23 @@ func (eh *equipmentHandler) AdminCreate(w http.ResponseWriter, r *http.Request) 
 		comment := r.PostFormValue("comment")
 		stock, err := strconv.Atoi(r.PostFormValue("stock"))
 		if err != nil {
-			// TODO: 然るべき処理
-			log.Println("stock: failed to parse string to int")
-			response.AdminRender(w, "edit.html", info, body)
-			return
+			info.Errors = append(info.Errors, "在庫の入力が不正です")
+			log.Printf("[error] failed to parse stock value. string to int: %v", err)
+
 		}
 		tagID, err := strconv.Atoi(r.PostFormValue("tagID"))
 		if err != nil {
-			// TODO: 然るべき処理
-			log.Println("tagID: failed to parse string to int")
-			tagID = 6
-			response.AdminRender(w, "edit.html", info, body)
-			return
+			info.Errors = append(info.Errors, "タグの入力が不正です")
+			log.Printf("tagID: failed to parse tagID value. string to int: %v", err)
 		}
 		if name == "" {
 			info.Errors = append(info.Errors, "品名は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
+
 		id, err := eh.EquipmentController.Create(name, comment, stock, tagID)
 		if err != nil {
 			log.Printf("[error] failed to create: %v", err)
@@ -156,21 +155,19 @@ func (eh *equipmentHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reque
 		comment := r.PostFormValue("comment")
 		stock, err := strconv.Atoi(r.PostFormValue("stock"))
 		if err != nil {
-			// TODO: 然るべき処理
-			log.Println("stock: failed to parse string to int")
-			response.AdminRender(w, "edit.html", info, body)
-			return
+			info.Errors = append(info.Errors, "在庫の入力が不正です")
+			log.Printf("[error] failed to parse stock value. string to int: %v", err)
+
 		}
 		tagID, err := strconv.Atoi(r.PostFormValue("tagID"))
 		if err != nil {
-			// TODO: 然るべき処理
-			log.Println("tagID: failed to parse string to int")
-			tagID = 6
-			response.AdminRender(w, "edit.html", info, body)
-			return
+			info.Errors = append(info.Errors, "タグの入力が不正です")
+			log.Printf("tagID: failed to parse tagID value. string to int: %v", err)
 		}
 		if name == "" {
 			info.Errors = append(info.Errors, "品名は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}

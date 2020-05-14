@@ -76,6 +76,8 @@ func (sh *societyHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		date := r.PostFormValue("date")
 		if title == "" || author == "" || society == "" || date == "" {
 			info.Errors = append(info.Errors, "タイトル、著者、学会、日付は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
@@ -125,6 +127,8 @@ func (sh *societyHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 		date := r.PostFormValue("date")
 		if title == "" || author == "" || society == "" || date == "" {
 			info.Errors = append(info.Errors, "タイトル、著者、学会、日付は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}

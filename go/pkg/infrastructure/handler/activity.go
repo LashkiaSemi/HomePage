@@ -67,6 +67,8 @@ func (ah *activityHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		date := r.PostFormValue("date")
 		if activity == "" || date == "" {
 			info.Errors = append(info.Errors, "活動内容、日付は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
@@ -80,7 +82,6 @@ func (ah *activityHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		// log.Println("success update activity")
 		http.Redirect(w, r, fmt.Sprintf("/admin/activities/%d", id), http.StatusSeeOther)
 	}
-
 	response.AdminRender(w, "edit.html", info, body)
 }
 
@@ -110,6 +111,8 @@ func (ah *activityHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 		date := r.PostFormValue("date")
 		if activity == "" || date == "" {
 			info.Errors = append(info.Errors, "活動内容、日付は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}

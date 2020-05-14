@@ -82,20 +82,20 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 		file, fileHeader, err := r.FormFile("file")
 		if title == "" {
 			info.Errors = append(info.Errors, "タイトルは必須です")
-			response.Render(w, "lecture/edit.html", info, body)
-			return
 		}
 		if err != nil {
 			// log.Printf("lectureHandler: Create: ", err)
 			info.Errors = append(info.Errors, "ファイルは必須です")
-			response.Render(w, "lecture/edit.html", info, body)
-			return
 		}
 		var activation int
 		if r.PostFormValue("activation") == "public" {
 			activation = 1
 		} else {
 			activation = 0
+		}
+		if len(info.Errors) > 0 {
+			response.Render(w, "lecture/edit.html", info, body)
+			return
 		}
 
 		// TODO: savefile
@@ -148,7 +148,7 @@ func (lh *lectureHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	}
 	// レクチャーの作者じゃないとき
 	if body.Author.StudentID != info.StudentID {
-		log.Printf("permission denied to update: studentID = %s", info.StudentID)
+		log.Printf("[warn] permission denied to update: studentID = %s", info.StudentID)
 		http.Redirect(w, r, "/lectures", http.StatusSeeOther)
 		return
 	}
@@ -165,6 +165,8 @@ func (lh *lectureHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		}
 		if title == "" {
 			info.Errors = append(info.Errors, "タイトルは必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.Render(w, "lecture/edit.html", info, body)
 			return
 		}
@@ -195,7 +197,7 @@ func (lh *lectureHandler) DeleteByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if body.Author.StudentID != info.StudentID {
-		log.Printf("permission denied to delete: studentID = %v", info.StudentID)
+		log.Printf("[warn] permission denied to delete: studentID = %v", info.StudentID)
 		http.Redirect(w, r, "/lectures", http.StatusSeeOther)
 		return
 	}
@@ -279,6 +281,8 @@ func (lh *lectureHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		}
 		if title == "" || studentID == "" {
 			info.Errors = append(info.Errors, "タイトル、投稿者は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
@@ -372,6 +376,8 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 		}
 		if title == "" || studentID == "" {
 			info.Errors = append(info.Errors, "タイトル、投稿者は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}

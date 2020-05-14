@@ -80,6 +80,8 @@ func (rh *researchHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		}
 		if title == "" || author == "" {
 			info.Errors = append(info.Errors, "タイトル、著者は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
@@ -161,6 +163,8 @@ func (rh *researchHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 		}
 		if title == "" || author == "" {
 			info.Errors = append(info.Errors, "タイトル、著者は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}

@@ -14,6 +14,12 @@ import (
 // Authorized ログイン済みを検証する
 func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		//TODO: modeのやつ。消したほうがいいかも
+		if configs.ModePtr == "admin" {
+			nextFunc(w, r)
+			return
+		}
+
 		// TODO: nextでredirectできるといいよね
 
 		ctx := r.Context()
@@ -25,7 +31,7 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		cookie, err := r.Cookie(configs.CookieName)
 		if err != nil {
 			err = errors.New(err.Error())
-			log.Printf("[error] failed to get cookie: %v", err)
+			log.Printf("[warn] failed to get cookie. redirect '/login': %v", err)
 			// cookieがない時
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
@@ -35,7 +41,7 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		// jwtの検証
 		token, err := auth.VerifyToken(tokenString)
 		if err != nil {
-			log.Printf("[error] failed to verify token: %v", err)
+			log.Printf("[warn] failed to verify token. redirect '/login': %v", err)
 			// log.Println("delete cookie")
 			cookie.MaxAge = -1
 			http.SetCookie(w, cookie)
@@ -54,6 +60,12 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 // AdminAuthorized adminのログイン済みを検証
 func AdminAuthorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		//TODO: modeのやつ。消したほうがいいかも
+		if configs.ModePtr == "admin" {
+			nextFunc(w, r)
+			return
+		}
+
 		// TODO: nextでredirectできるといいよね
 
 		ctx := r.Context()
@@ -64,7 +76,7 @@ func AdminAuthorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		// cookieからjwtを取得
 		cookie, err := r.Cookie(configs.CookieName)
 		if err != nil {
-			log.Printf("[error] failed to get cookie: %v", err)
+			log.Printf("[warn] failed to get cookie. redirect '/admin/login': %v", err)
 			// cookieがない時
 			http.Redirect(w, r, "/admin/login", http.StatusSeeOther)
 			return
@@ -74,7 +86,7 @@ func AdminAuthorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		// jwtの検証
 		token, err := auth.VerifyToken(tokenString)
 		if err != nil {
-			log.Printf("[error] failed to verify token: %v", err)
+			log.Printf("[warn] failed to verify token. redirect '/admin/login': %v", err)
 			// log.Println("delete cookie")
 			cookie.MaxAge = -1
 			http.SetCookie(w, cookie)
@@ -84,7 +96,7 @@ func AdminAuthorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 
 		err = auth.CheckIsAdminSession(auth.GetStudentIDFromJWT(token), tokenString)
 		if err != nil {
-			log.Printf("[error] failed to check is-admin: %v", err)
+			log.Printf("[warn] failed to check is-admin: %v", err)
 			http.Redirect(w, r, "/admin/login", http.StatusSeeOther)
 			return
 		}

@@ -83,6 +83,8 @@ func (th *tagHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		name := r.PostFormValue("name")
 		if name == "" {
 			info.Errors = append(info.Errors, "名前は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
@@ -123,6 +125,8 @@ func (th *tagHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 		name := r.PostFormValue("name")
 		if name == "" {
 			info.Errors = append(info.Errors, "名前は必須です")
+		}
+		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
