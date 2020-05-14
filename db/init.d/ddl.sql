@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `homepage`.`jobs` (
 CREATE TABLE IF NOT EXISTS `homepage`.`activities` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `show_date` varchar(255) DEFAULT NULL COMMENT '表示用',
-  `first_date` datetime NOT NULL COMMENT '並び替え、年度の取得に使う',
+  `last_date` datetime NOT NULL COMMENT '並び替え、年度の取得に使う',
   `activity` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,

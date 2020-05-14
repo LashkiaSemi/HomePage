@@ -6,6 +6,7 @@ import (
 
 // AppHandler アプリケーション全体のハンドラ
 type AppHandler struct {
+	StaticPageHandler
 	UserHandler
 	ActivityHandler
 	SocietyHandler
@@ -19,13 +20,14 @@ type AppHandler struct {
 // NewAppHandler ハンドラの作成
 func NewAppHandler(sh repository.SQLHandler) *AppHandler {
 	return &AppHandler{
-		UserHandler:      NewUserHandler(sh),
-		ActivityHandler:  NewActivityHandler(sh),
-		SocietyHandler:   NewSocietyHandler(sh),
-		ResearchHandler:  NewResearchHandler(sh),
-		JobHandler:       NewJobHandler(sh),
-		LectureHandler:   NewLectureHandler(sh),
-		EquipmentHandler: NewEquipmentHandler(sh),
-		TagHandler:       NewTagHandler(sh),
+		StaticPageHandler: NewStaticPageHandler(sh),
+		UserHandler:       NewUserHandler(sh),
+		ActivityHandler:   NewActivityHandler(sh),
+		SocietyHandler:    NewSocietyHandler(sh),
+		ResearchHandler:   NewResearchHandler(sh),
+		JobHandler:        NewJobHandler(sh),
+		LectureHandler:    NewLectureHandler(sh),
+		EquipmentHandler:  NewEquipmentHandler(sh),
+		TagHandler:        NewTagHandler(sh),
 	}
 }

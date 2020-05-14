@@ -41,7 +41,7 @@ func (s *server) Serve() {
 	r.HandleFunc("/health", healthHandler)
 
 	// web site
-	r.HandleFunc("/", handler.IndexHandler)
+	r.HandleFunc("/", s.Handler.StaticPageHandler.IndexHandler)
 	r.HandleFunc("/login", s.Handler.UserHandler.Login)
 	r.HandleFunc("/logout", middleware.Authorized(s.Handler.UserHandler.Logout))
 	r.HandleFunc("/activities", s.Handler.ActivityHandler.GetActivities)
@@ -60,7 +60,7 @@ func (s *server) Serve() {
 	r.HandleFunc("/lectures/{id}/delete", middleware.Authorized(s.Handler.LectureHandler.DeleteByID))
 
 	// admin site
-	r.HandleFunc("/admin", middleware.AdminAuthorized(handler.AdminIndexHandler))
+	r.HandleFunc("/admin", middleware.AdminAuthorized(s.Handler.StaticPageHandler.AdminIndexHandler))
 	// TODO: ログイン限定にするほうがいいねこれ...
 	r.HandleFunc("/admin/login", s.Handler.UserHandler.AdminLogin)
 	r.HandleFunc("/admin/activities", middleware.AdminAuthorized(s.Handler.ActivityHandler.AdminGetAll))

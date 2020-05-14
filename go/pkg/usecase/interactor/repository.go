@@ -25,6 +25,9 @@ type ActivityRepository interface {
 	FindAll() ([]*entity.Activity, error)
 	FindByID(id int) (*entity.Activity, error)
 
+	// FindUpcoming お知らせ欄に乗る。
+	FindUpcoming() ([]*entity.Activity, error)
+
 	Create(*entity.Activity) (int, error)
 	UpdateByID(*entity.Activity) error
 
