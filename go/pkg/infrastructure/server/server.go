@@ -112,7 +112,7 @@ func (s *server) Serve() {
 	r.HandleFunc("/admin/tags/{id}/delete", middleware.AdminAuthorized(s.Handler.TagHandler.AdminDeleteByID))
 
 	// TODO: 固定値すぎる
-	log.Println("[info] server running http://localhost:8080")
+	log.Printf("[info] server running http://localhost:%v", s.Port)
 	http.ListenAndServe(":"+s.Port, r)
 }
 

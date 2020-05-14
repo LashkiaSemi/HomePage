@@ -23,6 +23,11 @@ func NewSQLHandler() repository.SQLHandler {
 	if err != nil {
 		log.Fatalf("failed to open sql: %v", err)
 	}
+	log.Printf("[info] DB connection success: driver='%s', target='@%s:(%s)/%s', user='%s'",
+		configs.DBDriver,
+		configs.DBProtocol, configs.DBTarget, configs.DBName,
+		configs.DBUser,
+	)
 
 	return &sqlHandler{DB: conn}
 }
