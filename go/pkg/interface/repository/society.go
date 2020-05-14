@@ -1,8 +1,6 @@
 package repository
 
 import (
-	// TODO: domainに依存
-
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"

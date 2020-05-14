@@ -17,8 +17,8 @@ type ActivityController interface {
 	GetAllGroupByYear() ([]*ActivitiesGroupByYearResponse, error)
 	GetByID(id int) (*ActivityResponse, error)
 
-	Create(activity, date string) (int, error)
-	UpdateByID(id int, activity, date string) error
+	Create(activity, showDate, firstDate string) (int, error)
+	UpdateByID(id int, activity, showDate, firstDate string) error
 
 	DeleteByID(id int) error
 
@@ -44,10 +44,10 @@ func (ac *activityController) GetAllGroupByYear() ([]*ActivitiesGroupByYearRespo
 	// responseづくり
 	// [{ 年, [活動...] }, ... ]みたいな構造で、日付の若い順に並べてます
 	var res = []*ActivitiesGroupByYearResponse{}
-	var key = ""
+	var key = acts[0].FirstDate[:4]
 	var tmp = []*ActivityResponse{}
 	for _, act := range acts {
-		if key == act.Date[:4] {
+		if key == act.FirstDate[:4] {
 			tmp = append(tmp, convertToActivityResponse(act))
 			continue
 		} else {
@@ -57,8 +57,9 @@ func (ac *activityController) GetAllGroupByYear() ([]*ActivitiesGroupByYearRespo
 					Activities: tmp,
 				})
 			}
-			key = act.Date[:4]
+			key = act.FirstDate[:4]
 			tmp = []*ActivityResponse{}
+			tmp = append(tmp, convertToActivityResponse(act))
 		}
 	}
 	if len(tmp) > 0 {
@@ -79,12 +80,12 @@ func (ac *activityController) GetByID(id int) (*ActivityResponse, error) {
 	return convertToActivityResponse(data), nil
 }
 
-func (ac *activityController) Create(activity, date string) (int, error) {
-	return ac.ActivityInteractor.Create(activity, date)
+func (ac *activityController) Create(activity, showDate, firstDate string) (int, error) {
+	return ac.ActivityInteractor.Create(activity, showDate, firstDate)
 }
 
-func (ac *activityController) UpdateByID(id int, activity, date string) error {
-	return ac.ActivityInteractor.UpdateByID(id, activity, date)
+func (ac *activityController) UpdateByID(id int, activity, showDate, firstDate string) error {
+	return ac.ActivityInteractor.UpdateByID(id, activity, showDate, firstDate)
 }
 
 func (ac *activityController) DeleteByID(id int) error {
@@ -118,7 +119,8 @@ func (ac *activityController) AdminGetByID(id int) (*FieldsResponse, error) {
 	res.Fields = append(res.Fields,
 		&Field{Key: "ID", Value: data.ID},
 		&Field{Key: "活動内容", Value: data.Activity},
-		&Field{Key: "日付", Value: data.Date},
+		&Field{Key: "日付(表示用)", Value: data.ShowDate},
+		&Field{Key: "日付(内部処理用)", Value: data.FirstDate},
 	)
 	res.ID = id
 	return &res, nil
@@ -132,15 +134,17 @@ type ActivitiesGroupByYearResponse struct {
 
 // ActivityResponse 活動内容のレスポンス
 type ActivityResponse struct {
-	ID       int
-	Activity string
-	Date     string
+	ID        int
+	Activity  string
+	ShowDate  string
+	FirstDate string
 }
 
 func convertToActivityResponse(data *entity.Activity) *ActivityResponse {
 	return &ActivityResponse{
-		ID:       data.ID,
-		Activity: data.Activity,
-		Date:     data.Date,
+		ID:        data.ID,
+		Activity:  data.Activity,
+		ShowDate:  data.ShowDate,
+		FirstDate: data.FirstDate,
 	}
 }

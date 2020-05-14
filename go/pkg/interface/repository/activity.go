@@ -21,9 +21,9 @@ func NewActivityRepository(sh SQLHandler) interactor.ActivityRepository {
 
 func (ar *activityRepository) FindAll() ([]*entity.Activity, error) {
 	rows, err := ar.SQLHandler.Query(`
-		SELECT id, activity, date
+		SELECT id, activity, show_date, first_date
 		FROM activities
-		ORDER BY date DESC
+		ORDER BY first_date DESC
 	`)
 	var acts []*entity.Activity
 	if err != nil {
@@ -36,7 +36,7 @@ func (ar *activityRepository) FindAll() ([]*entity.Activity, error) {
 	}
 	for rows.Next() {
 		var act entity.Activity
-		if err = rows.Scan(&act.ID, &act.Activity, &act.Date); err != nil {
+		if err = rows.Scan(&act.ID, &act.Activity, &act.ShowDate, &act.FirstDate); err != nil {
 			log.Printf("[warn] rows.Scan skip: %v", err)
 			continue
 		}
@@ -47,12 +47,12 @@ func (ar *activityRepository) FindAll() ([]*entity.Activity, error) {
 
 func (ar *activityRepository) FindByID(id int) (*entity.Activity, error) {
 	row := ar.SQLHandler.QueryRow(`
-		SELECT id, activity, date
+		SELECT id, activity, show_date, first_date
 		FROM activities
 		WHERE id=?
 	`, id)
 	var data entity.Activity
-	if err := row.Scan(&data.ID, &data.Activity, &data.Date); err != nil {
+	if err := row.Scan(&data.ID, &data.Activity, &data.ShowDate, &data.FirstDate); err != nil {
 		err = errors.Wrap(err, "failed to bind data")
 		return &data, err
 	}
@@ -61,9 +61,9 @@ func (ar *activityRepository) FindByID(id int) (*entity.Activity, error) {
 
 func (ar *activityRepository) Create(data *entity.Activity) (int, error) {
 	result, err := ar.SQLHandler.Execute(`
-		INSERT INTO activities(date, activity, created_at, updated_at)
-		VALUES (?,?,?,?)
-	`, data.Date, data.Activity, data.CreatedAt, data.UpdatedAt)
+		INSERT INTO activities(show_date, first_date, activity, created_at, updated_at)
+		VALUES (?,?,?,?,?)
+	`, data.ShowDate, data.FirstDate, data.Activity, data.CreatedAt, data.UpdatedAt)
 	if err != nil {
 		err = errors.Wrap(err, "failed to execute query")
 		return 0, err
@@ -79,9 +79,9 @@ func (ar *activityRepository) Create(data *entity.Activity) (int, error) {
 func (ar *activityRepository) UpdateByID(data *entity.Activity) error {
 	_, err := ar.SQLHandler.Execute(`
 		UPDATE activities
-		SET date=?, activity=?, updated_at=?
+		SET show_date=?, first_date, activity=?, updated_at=?
 		WHERE id=?
-	`, data.Date, data.Activity, data.UpdatedAt, data.ID)
+	`, data.ShowDate, data.FirstDate, data.Activity, data.UpdatedAt, data.ID)
 	if err != nil {
 		err = errors.Wrap(err, "failed to execute query")
 		return err

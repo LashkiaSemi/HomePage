@@ -14,7 +14,7 @@ import (
 type server struct {
 	Host    string
 	Port    string
-	Handler *handler.AppHandler
+	Handler *handler.AppHandler // アプリケーションハンドラ
 }
 
 // Server ルーティングとか全部やってくれる子

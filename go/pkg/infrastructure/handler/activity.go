@@ -58,22 +58,24 @@ func (ah *activityHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 
 	body := []*FormField{
 		createFormField("activity", "", "活動内容", "text", nil),
-		createFormField("date", "", "日付", "date", nil),
+		createFormField("showDate", "", "日付(表示用)", "text", nil),
+		createFormField("firstDate", "", "日付(ソート、プレフィックス用)", "date", nil),
 	}
 
 	if r.Method == "POST" {
 		// log.Println("activity create: post request")
 		activity := r.PostFormValue("activity")
-		date := r.PostFormValue("date")
-		if activity == "" || date == "" {
-			info.Errors = append(info.Errors, "活動内容、日付は必須です")
+		showDate := r.PostFormValue("showDate")
+		firstDate := r.PostFormValue("firstDate")
+		if activity == "" || firstDate == "" {
+			info.Errors = append(info.Errors, "活動内容、ソート用日付は必須です")
 		}
 		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
 
-		id, err := ah.ActivityController.Create(activity, date)
+		id, err := ah.ActivityController.Create(activity, showDate, firstDate)
 		if err != nil {
 			log.Printf("[error] failed to create: %v", err)
 			response.InternalServerError(w, info)
@@ -102,22 +104,24 @@ func (ah *activityHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 	}
 	body := []*FormField{
 		createFormField("activity", data.Activity, "活動内容", "text", nil),
-		createFormField("date", data.Date, "日付", "date", nil),
+		createFormField("showDate", "", "日付(表示用)", "text", nil),
+		createFormField("firstDate", "", "日付(ソート、プレフィックス用)", "date", nil),
 	}
 
 	if r.Method == "POST" {
 		// log.Println("activity update: post request")
 		activity := r.PostFormValue("activity")
-		date := r.PostFormValue("date")
-		if activity == "" || date == "" {
-			info.Errors = append(info.Errors, "活動内容、日付は必須です")
+		showDate := r.PostFormValue("showDate")
+		firstDate := r.PostFormValue("firstDate")
+		if activity == "" || firstDate == "" {
+			info.Errors = append(info.Errors, "活動内容、ソート用日付は必須です")
 		}
 		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
 
-		err = ah.ActivityController.UpdateByID(id, activity, date)
+		err = ah.ActivityController.UpdateByID(id, activity, showDate, firstDate)
 		if err != nil {
 			log.Printf("[error] failed to update: %v", err)
 			response.InternalServerError(w, info)

@@ -21,7 +21,7 @@
                 <h2 class="h2 list-title">{{ .Year }}年のニュース</h2>
                 <ul>
                     {{ range .Activities }}
-                    <li>&lt;{{ .Date }}&gt; {{ .Activity }}</li>
+                    <li>&lt;{{ .ShowDate }}&gt; {{ .Activity }}</li>
                     {{ end }}
                 </ul>
             </div>

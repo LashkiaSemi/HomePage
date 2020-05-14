@@ -30,7 +30,6 @@ func saveFile(fileName, saveDir string, file multipart.File) error {
 		return err
 	}
 	defer saveImage.Close()
-	// defer file.Close() // TODO: 呼び出し側に移行しないとダメかも
 	_, err = io.Copy(saveImage, file)
 	if err != nil {
 		err = errors.Wrap(err, "failed to copy to reserve file")
