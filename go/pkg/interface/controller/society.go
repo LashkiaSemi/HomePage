@@ -1,8 +1,6 @@
 package controller
 
 import (
-	// TODO: domainに...
-
 	"homepage/pkg/entity"
 	"homepage/pkg/usecase/interactor"
 	"strconv"

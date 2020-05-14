@@ -39,8 +39,8 @@ const (
 	JWTStudentIDClaim = "student_id"
 
 	// JWTExpire jwtの有効期限
-	// TODO: 短すぎん？
-	JWTExpire = time.Hour * 1
+	// とりあえず1日
+	JWTExpire = time.Hour * 24
 
 	// CookieName cookieのキー
 	CookieName = "_l_semi_homepage_session"
@@ -54,5 +54,5 @@ const (
 	DefaultMode = "release"
 )
 
-// Mode
+// ModePtr 実行モード
 var ModePtr = "release"

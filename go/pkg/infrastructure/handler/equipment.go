@@ -147,7 +147,7 @@ func (eh *equipmentHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reque
 		createFormField("name", data.Name, "品名", "text", nil),
 		createFormField("stock", strconv.Itoa(data.Stock), "在庫", "number", nil),
 		createFormField("comment", data.Comment, "コメント", "textarea", nil),
-		createFormField("tagID", strconv.Itoa(data.Tag.ID), "タグ", "select", tagsMap), // TODO; 選択肢
+		createFormField("tagID", strconv.Itoa(data.Tag.ID), "タグ", "select", tagsMap),
 	}
 	if r.Method == "POST" {
 		// log.Println("equipment update: post request")

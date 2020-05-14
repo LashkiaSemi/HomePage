@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"homepage/pkg/infrastructure/handler"
 	"homepage/pkg/infrastructure/server/middleware"
 	"log"
@@ -37,7 +38,6 @@ func (s *server) Serve() {
 	//TODO: 環境変数とかのがいいかも。レクチャーの資料とかしまってある場所
 	r.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("public/"))))
 
-	// r.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
 	r.HandleFunc("/health", healthHandler)
 
 	// web site
@@ -60,8 +60,8 @@ func (s *server) Serve() {
 	r.HandleFunc("/lectures/{id}/delete", middleware.Authorized(s.Handler.LectureHandler.DeleteByID))
 
 	// admin site
-	// TODO: middleware
 	r.HandleFunc("/admin", middleware.AdminAuthorized(handler.AdminIndexHandler))
+	// TODO: ログイン限定にするほうがいいねこれ...
 	r.HandleFunc("/admin/login", s.Handler.UserHandler.AdminLogin)
 	r.HandleFunc("/admin/activities", middleware.AdminAuthorized(s.Handler.ActivityHandler.AdminGetAll))
 	r.HandleFunc("/admin/societies", middleware.AdminAuthorized(s.Handler.SocietyHandler.AdminGetAll))
@@ -113,9 +113,11 @@ func (s *server) Serve() {
 	r.HandleFunc("/admin/tags/{id}/edit", middleware.AdminAuthorized(s.Handler.TagHandler.AdminUpdateByID))
 	r.HandleFunc("/admin/tags/{id}/delete", middleware.AdminAuthorized(s.Handler.TagHandler.AdminDeleteByID))
 
-	// TODO: 固定値すぎる
-	log.Printf("[info] server running http://localhost:%v", s.Port)
-	http.ListenAndServe(s.Host+":"+s.Port, r)
+	log.Printf("[info] server running http://%v:%v", s.Host, s.Port)
+	http.ListenAndServe(
+		fmt.Sprintf("%s:%s", s.Host, s.Port),
+		r,
+	)
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {

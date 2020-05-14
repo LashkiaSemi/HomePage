@@ -101,7 +101,6 @@ func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 			log.Printf("[error] failed to parse grade: %v", err)
 			info.Errors = append(info.Errors, "学年の入力が不正です")
 		}
-		// TODO: バリデーション!
 		if name == "" || studentID == "" {
 			info.Errors = append(info.Errors, "名前、学籍番号は必須です")
 		}
@@ -205,7 +204,6 @@ func (uh *userHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie(configs.CookieName)
 	if err != nil {
 		log.Printf("[error] failed to get cookie: %v", err)
-		// TODO: ?こここれでいいのか？
 		response.InternalServerError(w, info)
 		return
 	}
@@ -267,7 +265,6 @@ func (uh *userHandler) AdminGetAll(w http.ResponseWriter, r *http.Request) {
 	res, err := uh.UserController.AdminGetAll()
 	if err != nil {
 		log.Printf("[error] failed to get data for response: %v", err)
-		// TODO: ?
 		response.InternalServerError(w, info)
 		return
 	}
@@ -334,7 +331,6 @@ func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 			log.Printf("[error] failed to parse grade: %v", err)
 			info.Errors = append(info.Errors, "学年の入力が不正です")
 		}
-		// TODO: バリデーション!
 		if name == "" || studentID == "" || password == "" || confPassword == "" || role == "" {
 			info.Errors = append(info.Errors, "名前、学籍番号、パスワード、権限は必須")
 		}
@@ -408,7 +404,6 @@ func (uh *userHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 			log.Printf("[error] failed to get parse grade: %v", err)
 			info.Errors = append(info.Errors, "学年の入力が不正です")
 		}
-		// TODO: バリデーション!
 		if name == "" || studentID == "" || role == "" {
 			info.Errors = append(info.Errors, "名前、学籍番号、権限は必須")
 		}

@@ -21,6 +21,7 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// TODO: nextでredirectできるといいよね
+		// クエリとかで取れるのかな...
 
 		ctx := r.Context()
 		if ctx == nil {

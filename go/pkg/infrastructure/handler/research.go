@@ -8,10 +8,8 @@ import (
 	"homepage/pkg/interface/controller"
 	"homepage/pkg/interface/repository"
 	"homepage/pkg/usecase/interactor"
-	"io"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -93,26 +91,14 @@ func (rh *researchHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 			log.Printf("request empty file: %v", err)
 			fileName = ""
 		} else {
-			// TODO: funcにしたい
 			fileName = fileHeader.Filename
-			var saveImage *os.File
-			saveImage, err = os.Create(fmt.Sprintf("%s/%s", configs.SaveResearchFileDir, fileName))
-			if err != nil {
-				log.Printf("[error] failed to reserve file: %v", err)
-				// TODO: 驚き最小じゃない気がする
-				response.InternalServerError(w, info)
-				return
-			}
-			defer saveImage.Close()
 			defer file.Close()
-			_, err = io.Copy(saveImage, file)
+			err = saveFile(fileName, configs.SaveResearchFileDir, file)
 			if err != nil {
-				log.Printf("[error] failed to copy to reserve file: %v", err)
-				// 驚き最小じゃない気がする
+				log.Printf("[error] failed to save file: %v", err)
 				response.InternalServerError(w, info)
 				return
 			}
-			// log.Println("complete to save file")
 		}
 		id, err := rh.ResearchController.Create(title, author, fileName, comment, activation)
 		if err != nil {
@@ -176,24 +162,12 @@ func (rh *researchHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 			log.Printf("request empty file: %v", err)
 			fileName = data.FileName
 		} else {
-			// TODO: funcにしたい
 			fileName = fileHeader.Filename
-			var saveImage *os.File
-			saveImage, err = os.Create(fmt.Sprintf("%s/%s", configs.SaveResearchFileDir, fileName))
-			if err != nil {
-				log.Printf("[error] failed to reserve file: %v", err)
-				// TODO: 驚き最小じゃない気がする
-				response.InternalServerError(w, info)
-				return
-			}
-			defer saveImage.Close()
 			defer file.Close()
-			_, err = io.Copy(saveImage, file)
+			err = saveFile(fileName, configs.SaveResearchFileDir, file)
 			if err != nil {
-				log.Printf("[error] failed to copy to reserve file: %v", err)
-				// 驚き最小じゃない気がする
+				log.Printf("[error] failed to save file: %v", err)
 				response.InternalServerError(w, info)
-				return
 			}
 		}
 		err = rh.ResearchController.UpdateByID(id, title, author, fileName, comment, activation)

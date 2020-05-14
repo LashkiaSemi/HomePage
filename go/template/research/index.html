@@ -26,7 +26,6 @@
                             <td>{{ .Author }}</td>
                             <td>{{ .Comment }}</td>
                             <td>{{ .CreatedAt }}</td>
-                            <!-- TODO: fileがなかった時にdisableにする -->
                             <td>
                                 {{ if eq .FileName "" }}
                                 <button class="btn btn-primary disable">download</button>
