@@ -196,9 +196,11 @@ ul li {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-image: url('/static/image/header.png');
+    background-size: cover;
     label {
         color: $logo-color;
-        font-size: 1.8rem;
+        font-size: 2rem;
     }
 }
 
