@@ -52,7 +52,7 @@ func Forbidden(w http.ResponseWriter) {
 }
 
 // NotFound 404の時のアレとか
-func NotFound(w http.ResponseWriter, info *Info) {
+func NotFound(w http.ResponseWriter) {
 	t, _ := template.ParseFiles(
 		"template/error.html",
 		"template/_footer.html",
@@ -66,7 +66,7 @@ func NotFound(w http.ResponseWriter, info *Info) {
 		Info  *Info
 		Error *ErrorData
 	}{
-		Info:  info,
+		Info:  &Info{},
 		Error: err,
 	})
 }
