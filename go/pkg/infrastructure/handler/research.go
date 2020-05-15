@@ -91,7 +91,7 @@ func (rh *researchHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 			log.Printf("request empty file: %v", err)
 			fileName = ""
 		} else {
-			fileName = fileHeader.Filename
+			fileName = createFileName(fileHeader.Filename)
 			defer file.Close()
 			err = saveFile(fileName, configs.SaveResearchFileDir, file)
 			if err != nil {
@@ -162,7 +162,7 @@ func (rh *researchHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 			log.Printf("request empty file: %v", err)
 			fileName = data.FileName
 		} else {
-			fileName = fileHeader.Filename
+			fileName = createFileName(fileHeader.Filename)
 			defer file.Close()
 			err = saveFile(fileName, configs.SaveResearchFileDir, file)
 			if err != nil {

@@ -96,8 +96,7 @@ func (lh *lectureHandler) Create(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// TODO: かぶった時用に、名前帰るとかした方が良さげ?
-		fileName := fileHeader.Filename
+		fileName := createFileName(fileHeader.Filename)
 		defer file.Close()
 		err = saveFile(fileName, configs.SaveLectureFileDir, file)
 		if err != nil {
@@ -280,7 +279,7 @@ func (lh *lectureHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 			log.Printf("request empty file: %v", err)
 			fileName = ""
 		} else {
-			fileName = fileHeader.Filename
+			fileName = createFileName(fileHeader.Filename)
 			defer file.Close()
 			err = saveFile(fileName, configs.SaveLectureFileDir, file)
 			if err != nil {
@@ -363,7 +362,7 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 			log.Printf("request empty file: %v", err)
 			fileName = data.FileName
 		} else {
-			fileName = fileHeader.Filename
+			fileName = createFileName(fileHeader.Filename)
 			defer file.Close()
 			err = saveFile(fileName, configs.SaveLectureFileDir, file)
 			if err != nil {

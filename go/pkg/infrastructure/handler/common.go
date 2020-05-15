@@ -2,12 +2,14 @@ package handler
 
 import (
 	"fmt"
+	"homepage/pkg/configs"
 	"homepage/pkg/infrastructure/server/response"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 )
@@ -18,6 +20,11 @@ func createInfo(r *http.Request, pageType, studentID string) *response.Info {
 		PageType:  pageType,
 		StudentID: studentID,
 	}
+}
+
+// createFileName ファイル名を出来るだけ一意にするためのもの
+func createFileName(fileName string) string {
+	return fmt.Sprintf("%s-%s", time.Now().Format(configs.DateForFileName), fileName)
 }
 
 // saveFile 指定したパスにファイルを保存します

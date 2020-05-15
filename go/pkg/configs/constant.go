@@ -54,7 +54,11 @@ const (
 // ほか
 const (
 	// DateTimeFormat 日付のフォーマット
-	DateTimeFormat = "2006-01-02 15:4:5"
+	DateTimeFormat = "2006/01/02 15:4:5"
+
+	// DateForFileName ファイルアップロード時にファイル名かぶりを抑えるためのサフィックス用日付フォーマット
+	DateForFileName = "2006-01-02-15-4-5"
+
 	// デフォルトのモード[release, admin]とかから？
 	DefaultMode = "release"
 )
