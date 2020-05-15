@@ -21,7 +21,7 @@ func NewLectureRepository(sh SQLHandler) interactor.LectureRepository {
 
 func (lr *lectureRepository) FindAll() ([]*entity.Lecture, error) {
 	rows, err := lr.SQLHandler.Query(`
-		SELECT l.id, l.title, l.file, l.comments, l.activation, l.created_at, users.name, users.student_id
+		SELECT l.id, l.title, l.file, l.comments, l.activation, DATE_FORMAT(l.created_at, '%Y/%m/%d'), users.name, users.student_id
 		FROM lectures as l
 		INNER JOIN users
 		ON user_id = users.id;
@@ -51,7 +51,7 @@ func (lr *lectureRepository) FindAll() ([]*entity.Lecture, error) {
 
 func (lr *lectureRepository) FindByID(id int) (*entity.Lecture, error) {
 	row := lr.SQLHandler.QueryRow(`
-		SELECT l.id, l.title, l.file, l.comments, l.activation, l.created_at, users.id, users.name, users.student_id
+		SELECT l.id, l.title, l.file, l.comments, l.activation, DATE_FORMAT(l.created_at, '%Y/%m/%d'), users.id, users.name, users.student_id
 		FROM lectures as l
 		INNER JOIN users
 		ON user_id = users.id

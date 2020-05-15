@@ -21,7 +21,7 @@ func NewResearchRepository(sh SQLHandler) interactor.ResearchRepository {
 
 func (rr *researchRepository) FindAll() ([]*entity.Research, error) {
 	rows, err := rr.SQLHandler.Query(`
-		SELECT id, title, author, file, comments,  activation, created_at
+		SELECT id, title, author, file, comments,  activation, DATE_FORMAT(created_at, '%Y/%m/%d')
 		FROM researches
 		ORDER BY created_at DESC
 	`)

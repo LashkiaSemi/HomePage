@@ -21,10 +21,10 @@ func NewEquipmentRepository(sh SQLHandler) interactor.EquipmentRepository {
 
 func (er *equipmentRepository) FindAll() ([]*entity.Equipment, error) {
 	rows, err := er.SQLHandler.Query(`
-		SELECT e.id, e.name, e.num, e.note, tags.name, e.created_at
+		SELECT e.id, e.name, e.num, e.note, tags.name, DATE_FORMAT(e.created_at, '%Y/%m/%d') as date
 		FROM equipments as e
 		JOIN tags ON tags.id = tag_id
-		ORDER BY created_at DESC
+		ORDER BY date DESC
 	`)
 	var res []*entity.Equipment
 	if err != nil {
