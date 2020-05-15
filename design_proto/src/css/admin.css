@@ -203,7 +203,7 @@ ul li {
 }
 
 .jumbotron {
-  background-color: blue;
+  background-color: #343a40;
   height: 240px;
   display: flex;
   justify-content: center;
