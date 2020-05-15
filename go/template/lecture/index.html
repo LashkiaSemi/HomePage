@@ -1,0 +1,60 @@
+{{ template "header" .Info }}
+<div class="container-wrapper">
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="content-title">
+                    <h1 class="h1">レクチャー資料</h1>
+                    <a href="/lectures/new"><button class="btn btn-success">新規作成</button></a>
+                </div>
+            </div>
+            <div class="content">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>タイトル</th>
+                            <th>著者</th>
+                            <th>コメント</th>
+                            <th>投稿日</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ $studentID := .Info.StudentID }}
+                        {{ range .Data.Lectures }}
+                        <tr>
+                            <td>{{ .Title }}</td>
+                            <td>{{ .Author.Name }}</td>
+                            <td>{{ .Comment }}</td>
+                            <td>{{ .CreatedAt }}</td>
+                            <td>
+                                {{ if eq .FileName "" }}
+                                <button class="btn btn-primary disable">download</button>
+                                {{ else }}
+                                <a href="{{ .FilePath }}" download="{{ .FileName }}"><button class="btn btn-primary">download</button></a>
+                                {{ end }}
+                                
+                            </td>
+                            {{ if eq $studentID .Author.StudentID }}
+                            <td style="min-width: 9rem;">
+                                <a href="/lectures/{{ .ID }}/edit"><button class="btn btn-success">編集</button></a>
+                                <a href="/lectures/{{ .ID }}/delete"><button class="btn btn-danger">削除</button></a>
+                            </td>
+                            {{ else }}
+                            <td></td>
+                            {{ end }}
+                        </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-wrapper -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END contaienr-wrapper -->
+
+{{ template "footer" }}

@@ -1,0 +1,39 @@
+{{ template "header" .Info }}
+<div class="container-wrapper">
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="content-title">
+                    <h1 class="h1">外部リンク</h1>
+                </div>
+            </div>
+            <div class="content underline" style="padding-bottom: 20px;">
+                <h1 class="list-title h1">他研究室へのリンク</h1>
+                <ul class="list">
+                    {{ range .Data.LabLinks }}
+                        <li class="list-item"><a target="_blank" href="{{ .URL }}" class="list-link">{{ .Label }}</a></li>
+                    {{ end }}
+                </ul>
+                <span>(研究室のページを持つ研究室のみ掲載)</span>
+            </div>
+            <!-- END content -->
+            <div class="content">
+                <h1 class="list-title h1">面白ソフト・最新技術紹介</h1>
+                <ul class="list">
+                    {{ range .Data.TechLinks }}
+                    <li class="list-item"><a href="{{ .URL }}" target="_blank" class="list-link">
+                        <div>{{ .Label }}</div>
+                        <span class="list-description">{{ .Description }}</span>
+                    </a></li>
+                    {{ end }}
+                </ul>
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-wrapper -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END contaienr-wrapper -->
+
+{{ template "footer" }}

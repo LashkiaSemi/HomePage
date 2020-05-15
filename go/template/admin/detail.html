@@ -1,0 +1,41 @@
+{{ template "admin_header" .Info }}
+<div class="container-wrapper">
+    <div class="container">
+        <div class="content-wrapper">
+
+            <div class="content">
+                <div class="content-title">
+                    <h2 class="h2">{{ convPageType .Info.PageType }}</h2>
+                    <div>
+                        <a href="/admin/{{ .Info.PageType }}"><button class="btn btn-secondary">一覧</button></a>
+                        <a href="/admin/{{ .Info.PageType }}/{{ .Data.ID }}/edit"><button class="btn btn-success">編集</button></a>
+                        <a href="/admin/{{ .Info.PageType }}/{{ .Data.ID }}/delete"><button class="btn btn-danger">削除</button></a>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .Data.Fields }}
+                        <tr>
+                            <td>{{ .Key }}</td>
+                            <td>{{ .Value }}</td>
+                        </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-wrapper -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END contaienr-wrapper -->
+{{ template "admin_footer" }}

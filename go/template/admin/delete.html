@@ -1,0 +1,44 @@
+{{ template "admin_header" .Info }}
+<div class="container-wrapper">
+    <div class="container">
+        <div class="content-wrapper">
+
+            <div class="content">
+                <div class="content-title">
+                    <h2 class="h2">{{ convPageType .Info.PageType }}</h2>
+                    <div>
+                        <a href="/admin/{{ .Info.PageType }}/{{ .Data.ID }}"><button class="btn btn-secondary">戻る</button></a>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="h2">削除確認</h2>
+                    </div>
+                    <div class="card-content">
+                        <span>以下のデータを削除します。よろしいですか？</span>
+                        <ul>
+                            {{ range .Data.Fields }}
+                            <li>{{ .Key }}: {{ .Value }}</li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <form class="form" method="POST" style="display: inline;">
+                            <div style="margin: 0; display: inline-block;">
+                                <button type="submit" class="btn btn-danger">削除する</button>
+                            </div>
+                        </form>
+                        <a href="/admin/{{ .Info.PageType }}/{{ .Data.ID }}"><button class="btn btn-secondary ml-10">戻る</button></a>
+                    </div>
+                </div>
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-wrapper -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END contaienr-wrapper -->
+{{ template "admin_footer" }}
