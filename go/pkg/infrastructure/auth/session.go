@@ -23,6 +23,22 @@ func CheckIsAdminSession(studentID, token string) error {
 	return nil
 }
 
+// SetNewCookie 新しいCookieを作ってセット
+func SetNewCookie(w http.ResponseWriter, value string) {
+	cookie := &http.Cookie{
+		Name:  configs.CookieName,
+		Value: value,
+		Path:  "/",
+	}
+	http.SetCookie(w, cookie)
+}
+
+// DeleteCookie Cookieを無効にする
+func DeleteCookie(w http.ResponseWriter, cookie *http.Cookie) {
+	cookie.MaxAge = -1
+	http.SetCookie(w, cookie)
+}
+
 // GetStudentIDFromCookie cookieから学籍番号の取得
 func GetStudentIDFromCookie(r *http.Request) string {
 	cookie, err := r.Cookie(configs.CookieName)

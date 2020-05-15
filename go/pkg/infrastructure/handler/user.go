@@ -186,11 +186,7 @@ func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		cookie := &http.Cookie{
-			Name:  configs.CookieName,
-			Value: token,
-		}
-		http.SetCookie(w, cookie)
+		auth.SetNewCookie(w, token)
 		// log.Println("redirect")
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
@@ -207,8 +203,7 @@ func (uh *userHandler) Logout(w http.ResponseWriter, r *http.Request) {
 		response.InternalServerError(w, info)
 		return
 	}
-	cookie.MaxAge = -1
-	http.SetCookie(w, cookie)
+	auth.DeleteCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -245,12 +240,13 @@ func (uh *userHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		cookie := &http.Cookie{
-			Name:  configs.CookieName,
-			Value: token,
-			Path:  "/",
-		}
-		http.SetCookie(w, cookie)
+		// cookie := &http.Cookie{
+		// 	Name:  configs.CookieName,
+		// 	Value: token,
+		// 	Path:  "/",
+		// }
+		// http.SetCookie(w, cookie)
+		auth.SetNewCookie(w, token)
 
 		// AdminSessionsに登録
 		auth.SetAdminSession(studentID, token)

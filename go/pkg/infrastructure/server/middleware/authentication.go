@@ -41,9 +41,7 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		token, err := auth.VerifyToken(tokenString)
 		if err != nil {
 			log.Printf("[warn] failed to verify token: %v", err)
-			// log.Println("delete cookie")
-			cookie.MaxAge = -1
-			http.SetCookie(w, cookie)
+			auth.DeleteCookie(w, cookie)
 			response.Forbidden(w)
 			return
 		}
@@ -86,9 +84,7 @@ func AdminAuthorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		token, err := auth.VerifyToken(tokenString)
 		if err != nil {
 			log.Printf("[warn] failed to verify token. redirect '/admin/login': %v", err)
-			// log.Println("delete cookie")
-			cookie.MaxAge = -1
-			http.SetCookie(w, cookie)
+			auth.DeleteCookie(w, cookie)
 			http.Redirect(w, r, "/admin/login", http.StatusSeeOther)
 			return
 		}
