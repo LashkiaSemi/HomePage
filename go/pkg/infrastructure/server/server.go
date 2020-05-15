@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"homepage/pkg/configs"
 	"homepage/pkg/infrastructure/handler"
 	"homepage/pkg/infrastructure/server/middleware"
 	"log"
@@ -33,10 +34,9 @@ func NewServer(host, port string, ah *handler.AppHandler) Server {
 
 func (s *server) Serve() {
 	r := mux.NewRouter()
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
-
-	//TODO: 環境変数とかのがいいかも。レクチャーの資料とかしまってある場所
-	r.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("public/"))))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(configs.StaticDir))))
+	//http.Dirの部分を絶対パスに変えればええねんな...
+	r.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir(configs.PublicDir))))
 
 	r.HandleFunc("/health", healthHandler)
 
@@ -60,9 +60,8 @@ func (s *server) Serve() {
 	r.HandleFunc("/lectures/{id}/delete", middleware.Authorized(s.Handler.LectureHandler.DeleteByID))
 
 	// admin site
+	r.HandleFunc("/admin/login", middleware.Authorized(s.Handler.UserHandler.AdminLogin))
 	r.HandleFunc("/admin", middleware.AdminAuthorized(s.Handler.StaticPageHandler.AdminIndexHandler))
-	// TODO: ログイン限定にするほうがいいねこれ...
-	r.HandleFunc("/admin/login", s.Handler.UserHandler.AdminLogin)
 	r.HandleFunc("/admin/activities", middleware.AdminAuthorized(s.Handler.ActivityHandler.AdminGetAll))
 	r.HandleFunc("/admin/societies", middleware.AdminAuthorized(s.Handler.SocietyHandler.AdminGetAll))
 	r.HandleFunc("/admin/researches", middleware.AdminAuthorized(s.Handler.ResearchHandler.AdminGetAll))

@@ -5,10 +5,9 @@ import (
 	"homepage/pkg/configs"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/dcontext"
+	"homepage/pkg/infrastructure/server/response"
 	"log"
 	"net/http"
-
-	"github.com/pkg/errors"
 )
 
 // Authorized ログイン済みを検証する
@@ -31,10 +30,9 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		// cookieからjwtを取得
 		cookie, err := r.Cookie(configs.CookieName)
 		if err != nil {
-			err = errors.New(err.Error())
-			log.Printf("[warn] failed to get cookie. redirect '/login': %v", err)
+			log.Printf("[warn] failed to get cookie: %v", err)
 			// cookieがない時
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			response.Forbidden(w)
 			return
 		}
 		tokenString := cookie.Value
@@ -42,11 +40,11 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		// jwtの検証
 		token, err := auth.VerifyToken(tokenString)
 		if err != nil {
-			log.Printf("[warn] failed to verify token. redirect '/login': %v", err)
+			log.Printf("[warn] failed to verify token: %v", err)
 			// log.Println("delete cookie")
 			cookie.MaxAge = -1
 			http.SetCookie(w, cookie)
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			response.Forbidden(w)
 			return
 		}
 

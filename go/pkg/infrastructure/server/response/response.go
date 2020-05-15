@@ -31,6 +31,26 @@ func Render(w http.ResponseWriter, templateFile string, info *Info, body interfa
 	}
 }
 
+// Forbidden 403の時のアレとか
+func Forbidden(w http.ResponseWriter) {
+	t, _ := template.ParseFiles(
+		"template/error.html",
+		"template/_footer.html",
+		"template/_header.html",
+	)
+	err := &ErrorData{
+		Title:   "Forbidden",
+		Message: `<a href="/login">ログイン</a>してください。`,
+	}
+	t.Execute(w, struct {
+		Info  *Info
+		Error *ErrorData
+	}{
+		Info:  &Info{},
+		Error: err,
+	})
+}
+
 // NotFound 404の時のアレとか
 func NotFound(w http.ResponseWriter, info *Info) {
 	t, _ := template.ParseFiles(

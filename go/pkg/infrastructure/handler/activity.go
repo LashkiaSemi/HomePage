@@ -59,7 +59,7 @@ func (ah *activityHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	body := []*FormField{
 		createFormField("activity", "", "活動内容", "text", nil),
 		createFormField("showDate", "", "日付(表示用)", "text", nil),
-		createFormField("lastDate", "", "日付(ソート、プレフィックス用)", "date", nil),
+		createFormField("lastDate", "", "日付(ソート、プレフィックス用。数日間の場合は、最終日の日付が良い)", "date", nil),
 	}
 
 	if r.Method == "POST" {
@@ -105,7 +105,7 @@ func (ah *activityHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 	body := []*FormField{
 		createFormField("activity", data.Activity, "活動内容", "text", nil),
 		createFormField("showDate", "", "日付(表示用)", "text", nil),
-		createFormField("lastDate", "", "日付(ソート、プレフィックス用)", "date", nil),
+		createFormField("lastDate", "", "日付(ソート、プレフィックス用。数日間の場合は、最終日の日付が良い)", "date", nil),
 	}
 
 	if r.Method == "POST" {

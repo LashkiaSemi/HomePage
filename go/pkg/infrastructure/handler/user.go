@@ -248,6 +248,7 @@ func (uh *userHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
 		cookie := &http.Cookie{
 			Name:  configs.CookieName,
 			Value: token,
+			Path:  "/",
 		}
 		http.SetCookie(w, cookie)
 

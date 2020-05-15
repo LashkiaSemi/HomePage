@@ -10,8 +10,6 @@ import (
 	"net/http"
 )
 
-// TODO: statictとはwww
-
 type staticPageHandler struct {
 	controller.ActivityController
 }

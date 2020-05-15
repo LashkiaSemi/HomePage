@@ -1,6 +1,8 @@
 package configs
 
-import "time"
+import (
+	"time"
+)
 
 // applicationのconfig
 const (
@@ -20,13 +22,16 @@ const (
 
 // file upload先
 const (
-	// TODO: 環境変数にした方がいい。絶対パスなら任意の場所に突っ込める
+	// 環境変数にした方がいい？
+	// 絶対パスなら任意の場所に突っ込める
+	PublicDir = "public/"
+	StaticDir = "static/"
 
 	// SaveLectureFileDir レクチャー資料のアップロード先
-	SaveLectureFileDir = "./public/lectures"
+	SaveLectureFileDir = PublicDir + "lectures"
 
 	// SaveResearchFileDir 卒業研究資料のアップロード先
-	SaveResearchFileDir = "./public/researches"
+	SaveResearchFileDir = PublicDir + "researches"
 )
 
 // Session系

@@ -63,8 +63,8 @@ func (ar *activityRepository) FindUpcoming() ([]*entity.Activity, error) {
 	rows, err := ar.SQLHandler.Query(`
 		SELECT id, activity, show_date, last_date
 		FROM activities
-		WHERE last_date > now()
-		ORDER BY last_date DESC
+		WHERE last_date > DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+		ORDER BY last_date ASC
 	`)
 	var acts []*entity.Activity
 	if err != nil {
