@@ -16,7 +16,7 @@ const (
 	DBUser     = "root"
 	DBPassword = "password"
 	DBProtocol = "tcp"
-	DBTarget   = "localhost:3307"
+	DBTarget   = "localhost:13306"
 	DBName     = "homepage"
 )
 

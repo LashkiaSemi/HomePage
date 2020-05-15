@@ -23,6 +23,7 @@ func (jr *jobRepository) FindAll() ([]*entity.Job, error) {
 	rows, err := jr.SQLHandler.Query(`
 		SELECT id, company, job
 		FROM jobs
+		ORDER BY id DESC
 	`)
 	var jobs []*entity.Job
 	if err != nil {
