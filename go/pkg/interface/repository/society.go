@@ -61,7 +61,7 @@ func (sr *societyRepository) FindByID(id int) (*entity.Society, error) {
 
 func (sr *societyRepository) Create(data *entity.Society) (int, error) {
 	result, err := sr.SQLHandler.Execute(`
-		INSERT INTO societies(title, author, soiety, award, date, created_at, updated_at)
+		INSERT INTO societies(title, author, society, award, date, created_at, updated_at)
 		VALUES (?,?,?,?,?,?,?)
 	`, data.Title, data.Author, data.Society, data.Award, data.Date, data.CreatedAt, data.UpdatedAt)
 	if err != nil {
