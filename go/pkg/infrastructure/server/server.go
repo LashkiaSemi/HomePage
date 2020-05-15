@@ -116,10 +116,13 @@ func (s *server) Serve() {
 	s.Router.HandleFunc("/admin/tags/{id}/delete", middleware.AdminAuthorized(s.Handler.TagHandler.AdminDeleteByID))
 
 	log.Printf("[info] server running http://%v:%v", s.Host, s.Port)
-	http.ListenAndServe(
+	if err := http.ListenAndServe(
 		fmt.Sprintf("%s:%s", s.Host, s.Port),
 		s.Router,
-	)
+	); err != nil {
+		log.Printf("[error] failed to running server: %v", err)
+		return
+	}
 }
 
 func (s *server) HandleFunc(endpoint string, appFunc http.HandlerFunc) *mux.Route {

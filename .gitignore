@@ -38,3 +38,4 @@ note.md
 node_modules/
 *.bak
 todo.md
+go/bin
