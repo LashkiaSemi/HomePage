@@ -7,6 +7,9 @@ type SQLHandler interface {
 	Execute(query string, args ...interface{}) (Result, error)
 	Query(query string, args ...interface{}) (Rows, error)
 	QueryRow(query string, args ...interface{}) Row
+
+	// Begin トランザクションの開始
+	Begin() (Tx, error)
 }
 
 // Result sql.Result
@@ -25,4 +28,11 @@ type Rows interface {
 // Row sql.Row
 type Row interface {
 	Scan(v ...interface{}) error
+}
+
+// Tx トランザクション用。sql.Tx
+type Tx interface {
+	Commit() error
+	Rollback() error
+	Execute(query string, args ...interface{}) (Result, error)
 }

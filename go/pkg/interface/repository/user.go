@@ -93,26 +93,39 @@ func (ur *userRepository) FindAuthInfoByStudentID(studentID string) (*entity.Use
 }
 
 func (ur *userRepository) UpdateByID(user *entity.User) error {
-	// TODO: tx
-	_, err := ur.SQLHandler.Execute(`
+	tx, err := ur.SQLHandler.Begin()
+	if err != nil {
+		err = errors.Wrap(err, "failed to begin transaction")
+		return err
+	}
+	_, err = tx.Execute(`
 		UPDATE users
-		SET name = ?, student_id=?, updated_at=?
+		SET name=?, student_id=?, updated_at=?
 		WHERE id=?
 	`, user.Name, user.StudentID, user.UpdatedAt, user.ID)
 	if err != nil {
-		err = errors.Wrap(err, "failed to execute update users query")
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			err = errors.Wrap(rollbackErr, "failed to rollback")
+		}
+		err = errors.Wrap(err, "failed to execute update users")
 		return err
 	}
-	_, err = ur.SQLHandler.Execute(`
+	_, err = tx.Execute(`
 		UPDATE introductions
 		SET department=?, comments=?, grade=?, updated_at=?
 		WHERE user_id=?
 	`, user.Department, user.Comment, user.Grade, user.UpdatedAt, user.ID)
 	if err != nil {
-		err = errors.Wrap(err, "failed to execute update introductions query")
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			err = errors.Wrap(rollbackErr, "failed to rollback")
+		}
+		err = errors.Wrap(err, "failed to execute update introductions")
 		return err
 	}
-	return nil
+	if err = tx.Commit(); err != nil {
+		err = errors.Wrap(err, "failed to commit")
+	}
+	return err
 }
 
 func (ur *userRepository) UpdatePasswordByStudentID(studentID, password string) error {
@@ -129,69 +142,115 @@ func (ur *userRepository) UpdatePasswordByStudentID(studentID, password string) 
 }
 
 func (ur *userRepository) AdminCreate(user *entity.User) (int, error) {
-	// TODO: tx
-	result, err := ur.SQLHandler.Execute(`
+	tx, err := ur.SQLHandler.Begin()
+	if err != nil {
+		err = errors.Wrap(err, "failed to begin transaction")
+		return 0, err
+	}
+	result, err := tx.Execute(`
 		INSERT INTO users(name, password_digest, role, created_at, updated_at, student_id)
 		VALUES (?,?,?,?,?,?)
 	`, user.Name, user.Password, user.Role, user.CreatedAt, user.UpdatedAt, user.StudentID)
 	if err != nil {
-		err = errors.Wrap(err, "failed to execute insert-users query")
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			err = errors.Wrap(rollbackErr, "failed to rollback")
+		}
+		err = errors.Wrap(err, "failed to execute insert users")
 		return 0, err
 	}
+
 	id, err := result.LastInsertId()
 	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			err = errors.Wrap(rollbackErr, "failed to rollback")
+		}
 		err = errors.Wrap(err, "failed to get id")
 		return 0, err
 	}
-	_, err = ur.SQLHandler.Execute(`
+	_, err = tx.Execute(`
 		INSERT INTO introductions(user_id, department, grade, comments, created_at, updated_at)
 		VALUES (?,?,?,?,?,?)
 	`, id, user.Department, user.Grade, user.Comment, user.CreatedAt, user.UpdatedAt)
 	if err != nil {
-		err = errors.Wrap(err, "failed to execute insert-introdutions query")
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			err = errors.Wrap(rollbackErr, "failed to rollback")
+		}
+		err = errors.Wrap(err, "failed to execute insert introductions")
+		return 0, err
+	}
+	if err = tx.Commit(); err != nil {
+		err = errors.Wrap(err, "failed to commit")
 		return 0, err
 	}
 	return int(id), nil
 }
 
 func (ur *userRepository) AdminUpdateByID(user *entity.User) error {
-	// TODO: tx
-	_, err := ur.SQLHandler.Execute(`
+	tx, err := ur.SQLHandler.Begin()
+	if err != nil {
+		err = errors.Wrap(err, "failed to begin transaction")
+		return err
+	}
+	_, err = tx.Execute(`
 		UPDATE users
 		SET name=?, role=?, updated_at=?, student_id=?
 		WHERE id=?
 	`, user.Name, user.Role, user.UpdatedAt, user.StudentID, user.ID)
 	if err != nil {
-		err = errors.Wrap(err, "failed to execute update-users query")
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			err = errors.Wrap(rollbackErr, "failed to rollback")
+		}
+		err = errors.Wrap(err, "failed to execute update users")
 		return err
 	}
-	_, err = ur.SQLHandler.Execute(`
+	_, err = tx.Execute(`
 		UPDATE introductions
 		SET department=?, grade=?, comments=?, updated_at=?
 		WHERE user_id=?
 	`, user.Department, user.Grade, user.Comment, user.UpdatedAt, user.ID)
 	if err != nil {
-		err = errors.Wrap(err, "failed to execute update-introductions query")
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			err = errors.Wrap(rollbackErr, "failed to rollback")
+		}
+		err = errors.Wrap(err, "failed to execute update introductions")
 		return err
 	}
-	return nil
+	if err = tx.Commit(); err != nil {
+		err = errors.Wrap(err, "failed to commit")
+	}
+	return err
 }
 
 func (ur *userRepository) DeleteByID(id int) error {
-	_, err := ur.SQLHandler.Execute(`
+	tx, err := ur.SQLHandler.Begin()
+	if err != nil {
+		err = errors.Wrap(err, "failed to begin transaction")
+		return err
+	}
+	_, err = tx.Execute(`
 		DELETE FROM users
 		WHERE id=?
 	`, id)
 	if err != nil {
-		err = errors.Wrap(err, "failed to execute delete-users query")
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			err = errors.Wrap(rollbackErr, "failed to rollback")
+		}
+		err = errors.Wrap(err, "failed to execute delete from users")
 		return err
 	}
-	_, err = ur.SQLHandler.Execute(`
+	_, err = tx.Execute(`
 		DELETE FROM introductions
 		WHERE user_id=?
 	`, id)
 	if err != nil {
-		err = errors.Wrap(err, "failed to execute delete-introductions qeury")
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			err = errors.Wrap(rollbackErr, "failed to rollback")
+		}
+		err = errors.Wrap(err, "failed to execute delete from introductions")
+		return err
+	}
+	if err = tx.Commit(); err != nil {
+		err = errors.Wrap(err, "failed to commit")
 	}
 	return err
 }

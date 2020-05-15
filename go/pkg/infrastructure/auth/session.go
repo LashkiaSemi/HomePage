@@ -18,7 +18,7 @@ func SetAdminSession(studentID, token string) {
 // CheckIsAdminSession 学籍番号からadminログインしたときのJWTを取得
 func CheckIsAdminSession(studentID, token string) error {
 	if adminSessions[studentID] != token {
-		return errors.New("unmatch current token and admin-session token")
+		return errors.New("current token and admin-session token do not match")
 	}
 	return nil
 }

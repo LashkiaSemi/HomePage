@@ -92,3 +92,32 @@ type sqlRow struct {
 func (r *sqlRow) Scan(dest ...interface{}) error {
 	return r.Row.Scan(dest...)
 }
+
+// transaction
+func (sh *sqlHandler) Begin() (repository.Tx, error) {
+	tx, err := sh.DB.Begin()
+	if err != nil {
+		return &sqlTx{}, err
+	}
+	return &sqlTx{Tx: tx}, nil
+}
+
+type sqlTx struct {
+	*sql.Tx
+}
+
+func (s *sqlTx) Commit() error {
+	return s.Tx.Commit()
+}
+
+func (s *sqlTx) Rollback() error {
+	return s.Tx.Rollback()
+}
+
+func (s *sqlTx) Execute(query string, args ...interface{}) (repository.Result, error) {
+	result, err := s.Tx.Exec(query, args...)
+	if err != nil {
+		return &sqlResult{}, err
+	}
+	return &sqlResult{Result: result}, nil
+}
