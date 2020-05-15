@@ -39,3 +39,4 @@ node_modules/
 *.bak
 todo.md
 go/bin
+db/init.d/initdb.*.sql
