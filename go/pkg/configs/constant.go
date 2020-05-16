@@ -12,12 +12,13 @@ const (
 
 // db config
 const (
-	DBDriver   = "mysql"
-	DBUser     = "root"
-	DBPassword = "password"
-	DBProtocol = "tcp"
-	DBTarget   = "localhost:13306"
-	DBName     = "homepage"
+	DBDriver = "mysql"
+
+	DefaultDBUser     = "root"
+	DefaultDBPassword = "password"
+	DefaultDBProtocol = "tcp"
+	DefaultDBTarget   = "localhost:13306"
+	DefaultDBName     = "homepage"
 )
 
 // file upload先
@@ -36,9 +37,8 @@ const (
 
 // Session系
 const (
-	// JWTSecret jwtのシークレットキー
-	// TODO: 環境変数とか...
-	JWTSecret = "secret"
+	// DefaultJWTSecret jwtのシークレットキー
+	DefaultJWTSecret = "secret"
 
 	// JWTStudentIDClaim 学籍番号のクレームのキー
 	JWTStudentIDClaim = "student_id"
