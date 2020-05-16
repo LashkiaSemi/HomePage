@@ -18,8 +18,8 @@ type ActivityController interface {
 	GetByID(id int) (*ActivityResponse, error)
 	GetUpcoming() (*ActivitiesResponse, error)
 
-	Create(activity, showDate, lastDate string) (int, error)
-	UpdateByID(id int, activity, showDate, lastDate string) error
+	Create(activity, showDate, lastDate, annotation string, isImportant int) (int, error)
+	UpdateByID(id int, activity, showDate, lastDate, annotation string, isImportant int) error
 
 	DeleteByID(id int) error
 
@@ -94,12 +94,12 @@ func (ac *activityController) GetByID(id int) (*ActivityResponse, error) {
 	return convertToActivityResponse(data), nil
 }
 
-func (ac *activityController) Create(activity, showDate, lastDate string) (int, error) {
-	return ac.ActivityInteractor.Create(activity, showDate, lastDate)
+func (ac *activityController) Create(activity, showDate, lastDate, annotation string, isImportant int) (int, error) {
+	return ac.ActivityInteractor.Create(activity, showDate, lastDate, annotation, isImportant)
 }
 
-func (ac *activityController) UpdateByID(id int, activity, showDate, lastDate string) error {
-	return ac.ActivityInteractor.UpdateByID(id, activity, showDate, lastDate)
+func (ac *activityController) UpdateByID(id int, activity, showDate, lastDate, annotation string, isImportant int) error {
+	return ac.ActivityInteractor.UpdateByID(id, activity, showDate, lastDate, annotation, isImportant)
 }
 
 func (ac *activityController) DeleteByID(id int) error {
@@ -133,8 +133,10 @@ func (ac *activityController) AdminGetByID(id int) (*FieldsResponse, error) {
 	res.Fields = append(res.Fields,
 		&Field{Key: "ID", Value: data.ID},
 		&Field{Key: "活動内容", Value: data.Activity},
+		&Field{Key: "注釈", Value: data.Annotation},
 		&Field{Key: "日付(表示用)", Value: data.ShowDate},
 		&Field{Key: "日付(内部処理用)", Value: data.LastDate},
+		&Field{Key: "重要", Value: data.IsImportant},
 	)
 	res.ID = id
 	return &res, nil
@@ -153,17 +155,21 @@ type ActivitiesResponse struct {
 
 // ActivityResponse 活動内容のレスポンス
 type ActivityResponse struct {
-	ID       int
-	Activity string
-	ShowDate string
-	LastDate string
+	ID          int
+	Activity    string
+	Annotation  string
+	ShowDate    string
+	LastDate    string
+	IsImportant bool
 }
 
 func convertToActivityResponse(data *entity.Activity) *ActivityResponse {
 	return &ActivityResponse{
-		ID:       data.ID,
-		Activity: data.Activity,
-		ShowDate: data.ShowDate,
-		LastDate: data.LastDate,
+		ID:          data.ID,
+		Activity:    data.Activity,
+		Annotation:  data.Annotation,
+		ShowDate:    data.ShowDate,
+		LastDate:    data.LastDate,
+		IsImportant: data.IsImportant == 1,
 	}
 }

@@ -89,6 +89,8 @@ CREATE TABLE IF NOT EXISTS `homepage`.`activities` (
   `show_date` varchar(255) DEFAULT NULL COMMENT '表示用',
   `last_date` datetime NOT NULL COMMENT '並び替え、年度の取得に使う',
   `activity` varchar(255) DEFAULT NULL,
+  `annotation` varchar(255) NOT NULL DEFAULT '',
+  `is_important` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -113,7 +115,3 @@ CREATE TABLE IF NOT EXISTS `homepage`.`tags` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='備品用などのタグ';
-
-
-
-

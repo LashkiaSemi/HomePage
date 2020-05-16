@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -58,8 +59,10 @@ func (ah *activityHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 
 	body := []*FormField{
 		createFormField("activity", "", "活動内容", "text", nil),
+		createFormField("annotation", "", "注釈", "text", nil),
 		createFormField("showDate", "", "日付(表示用)", "text", nil),
 		createFormField("lastDate", "", "日付(ソート、プレフィックス用。数日間の場合は、最終日の日付が良い)", "date", nil),
+		createFormField("isImportant", "1", "重要", "checkbox", nil),
 	}
 
 	if r.Method == "POST" {
@@ -67,15 +70,22 @@ func (ah *activityHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		activity := r.PostFormValue("activity")
 		showDate := r.PostFormValue("showDate")
 		lastDate := r.PostFormValue("lastDate")
+		annotation := r.PostFormValue("annotation")
+		var isImportant int
 		if activity == "" || lastDate == "" {
 			info.Errors = append(info.Errors, "活動内容、ソート用日付は必須です")
+		}
+		if r.PostFormValue("isImportant") == "1" {
+			isImportant = 1
+		} else {
+			isImportant = 0
 		}
 		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
 
-		id, err := ah.ActivityController.Create(activity, showDate, lastDate)
+		id, err := ah.ActivityController.Create(activity, showDate, lastDate, annotation, isImportant)
 		if err != nil {
 			log.Printf("[error] failed to create: %v", err)
 			response.InternalServerError(w, info)
@@ -102,10 +112,13 @@ func (ah *activityHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 		response.InternalServerError(w, info)
 		return
 	}
+	data.LastDate = strings.Replace(data.LastDate, " ", "T", 1)
 	body := []*FormField{
 		createFormField("activity", data.Activity, "活動内容", "text", nil),
-		createFormField("showDate", "", "日付(表示用)", "text", nil),
-		createFormField("lastDate", "", "日付(ソート、プレフィックス用。数日間の場合は、最終日の日付が良い)", "date", nil),
+		createFormField("annotation", data.Annotation, "注釈", "text", nil),
+		createFormField("showDate", data.ShowDate, "日付(表示用)", "text", nil),
+		createFormField("lastDate", data.LastDate, "日付(ソート、プレフィックス用。数日間の場合は、最終日の日付が良い)", "date", nil),
+		createFormField("isImportant", "1", "重要", "checkbox", nil),
 	}
 
 	if r.Method == "POST" {
@@ -113,15 +126,25 @@ func (ah *activityHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 		activity := r.PostFormValue("activity")
 		showDate := r.PostFormValue("showDate")
 		lastDate := r.PostFormValue("lastDate")
-		if activity == "" || lastDate == "" {
-			info.Errors = append(info.Errors, "活動内容、ソート用日付は必須です")
+		if activity == "" {
+			info.Errors = append(info.Errors, "活動内容は必須です")
+		}
+		if lastDate == "" {
+			lastDate = data.LastDate
+		}
+		annotation := r.PostFormValue("annotation")
+		var isImportant int
+		if r.PostFormValue("isImportant") == "1" {
+			isImportant = 1
+		} else {
+			isImportant = 0
 		}
 		if len(info.Errors) > 0 {
 			response.AdminRender(w, "edit.html", info, body)
 			return
 		}
 
-		err = ah.ActivityController.UpdateByID(id, activity, showDate, lastDate)
+		err = ah.ActivityController.UpdateByID(id, activity, showDate, lastDate, annotation, isImportant)
 		if err != nil {
 			log.Printf("[error] failed to update: %v", err)
 			response.InternalServerError(w, info)

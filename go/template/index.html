@@ -13,7 +13,18 @@
                     <div class="card-content">
                         <ul>
                             {{ range .Data.Activities }}
-                            <li><b>&lt; {{ .ShowDate }} &gt; {{ .Activity }}</b></li>
+                            <li>
+                                <b>&lt; {{ .ShowDate }} &gt;
+                                {{ if .Annotation }}
+                                <span style="color: orange;">{{ .Annotation }}</span>
+                                {{ end }}
+                                {{ if .IsImportant }}
+                                <span style="color: red;">{{ .Activity }}</span>
+                                {{ else }}
+                                <span>{{ .Activity }}</span>
+                                {{ end }}
+                                </b>
+                            </li>
                             {{ end }}
                         </ul>
                         <div class="mb-20"><span>上記は外部参加可の活動です。その他の内部活動については<a href="/activities"class="link">こちら</a>を参照ください。</span></div>

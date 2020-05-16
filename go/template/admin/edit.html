@@ -43,6 +43,7 @@
                         <input name="{{ .Name }}" type="{{ .Type }}" class="form-text">
 
                         {{ else if eq .Type "date" }}
+                        <div>現在登録されている値: {{ .Value }}</div>
                         <input name="{{ .Name }}" type="{{ .Type }}" value="{{ .Value }}" class="form-text">
 
                         {{ else if eq .Type "number" }}

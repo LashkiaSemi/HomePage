@@ -16,8 +16,8 @@ type ActivityInteractor interface {
 	GetByID(id int) (*entity.Activity, error)
 	GetUpcoming() ([]*entity.Activity, error)
 
-	Create(activity, showDate, lastDate string) (int, error)
-	UpdateByID(id int, activity, showDate, lastDate string) error
+	Create(activity, showDate, lastDate, annotation string, isImportant int) (int, error)
+	UpdateByID(id int, activity, showDate, lastDate, annotation string, isImportant int) error
 
 	DeleteByID(id int) error
 }
@@ -41,10 +41,10 @@ func (ai *activityInteractor) GetUpcoming() ([]*entity.Activity, error) {
 	return ai.ActivityRepository.FindUpcoming()
 }
 
-func (ai *activityInteractor) Create(activity, showDate, lastDate string) (int, error) {
+func (ai *activityInteractor) Create(activity, showDate, lastDate, annotation string, isImportant int) (int, error) {
 	// create obj
 	act := entity.Activity{}
-	act.Create(activity, showDate, lastDate)
+	act.Create(activity, showDate, lastDate, annotation, isImportant)
 
 	// insert db
 	id, err := ai.ActivityRepository.Create(&act)
@@ -55,13 +55,13 @@ func (ai *activityInteractor) Create(activity, showDate, lastDate string) (int, 
 	return id, nil
 }
 
-func (ai *activityInteractor) UpdateByID(id int, activity, showDate, lastDate string) error {
+func (ai *activityInteractor) UpdateByID(id int, activity, showDate, lastDate, annotation string, isImportant int) error {
 	data, err := ai.ActivityRepository.FindByID(id)
 	if err != nil {
 		err = errors.Wrap(err, "failed to get original data")
 		return err
 	}
-	newData := data.Update(activity, showDate, lastDate)
+	newData := data.Update(activity, showDate, lastDate, annotation, isImportant)
 
 	// update db
 	err = ai.ActivityRepository.UpdateByID(newData)
