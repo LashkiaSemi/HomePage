@@ -21,7 +21,7 @@ func NewActivityRepository(sh SQLHandler) interactor.ActivityRepository {
 
 func (ar *activityRepository) FindAll() ([]*entity.Activity, error) {
 	rows, err := ar.SQLHandler.Query(`
-		SELECT id, activity, show_date, last_date
+		SELECT id, activity, show_date, last_date, annotation, is_important
 		FROM activities
 		ORDER BY last_date DESC
 	`)
@@ -36,7 +36,7 @@ func (ar *activityRepository) FindAll() ([]*entity.Activity, error) {
 	}
 	for rows.Next() {
 		var act entity.Activity
-		if err = rows.Scan(&act.ID, &act.Activity, &act.ShowDate, &act.LastDate); err != nil {
+		if err = rows.Scan(&act.ID, &act.Activity, &act.ShowDate, &act.LastDate, &act.Annotation, &act.IsImportant); err != nil {
 			log.Printf("[warn] rows.Scan skip: %v", err)
 			continue
 		}
@@ -47,12 +47,12 @@ func (ar *activityRepository) FindAll() ([]*entity.Activity, error) {
 
 func (ar *activityRepository) FindByID(id int) (*entity.Activity, error) {
 	row := ar.SQLHandler.QueryRow(`
-		SELECT id, activity, show_date, last_date
+		SELECT id, activity, show_date, last_date, annotation, is_important
 		FROM activities
 		WHERE id=?
 	`, id)
 	var data entity.Activity
-	if err := row.Scan(&data.ID, &data.Activity, &data.ShowDate, &data.LastDate); err != nil {
+	if err := row.Scan(&data.ID, &data.Activity, &data.ShowDate, &data.LastDate, &data.Annotation, &data.IsImportant); err != nil {
 		err = errors.Wrap(err, "failed to bind data")
 		return &data, err
 	}
@@ -61,7 +61,7 @@ func (ar *activityRepository) FindByID(id int) (*entity.Activity, error) {
 
 func (ar *activityRepository) FindUpcoming() ([]*entity.Activity, error) {
 	rows, err := ar.SQLHandler.Query(`
-		SELECT id, activity, show_date, last_date
+		SELECT id, activity, show_date, last_date, annotation, is_important
 		FROM activities
 		WHERE last_date > DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
 		ORDER BY last_date ASC
@@ -77,7 +77,7 @@ func (ar *activityRepository) FindUpcoming() ([]*entity.Activity, error) {
 	}
 	for rows.Next() {
 		var act entity.Activity
-		if err = rows.Scan(&act.ID, &act.Activity, &act.ShowDate, &act.LastDate); err != nil {
+		if err = rows.Scan(&act.ID, &act.Activity, &act.ShowDate, &act.LastDate, &act.Annotation, &act.IsImportant); err != nil {
 			log.Printf("[warn] rows.Scan skip: %v", err)
 			continue
 		}
@@ -88,9 +88,9 @@ func (ar *activityRepository) FindUpcoming() ([]*entity.Activity, error) {
 
 func (ar *activityRepository) Create(data *entity.Activity) (int, error) {
 	result, err := ar.SQLHandler.Execute(`
-		INSERT INTO activities(show_date, last_date, activity, created_at, updated_at)
-		VALUES (?,?,?,?,?)
-	`, data.ShowDate, data.LastDate, data.Activity, data.CreatedAt, data.UpdatedAt)
+		INSERT INTO activities(show_date, last_date, activity, annotation, is_important, created_at, updated_at)
+		VALUES (?,?,?,?,?,?,?)
+	`, data.ShowDate, data.LastDate, data.Activity, data.Annotation, data.IsImportant, data.CreatedAt, data.UpdatedAt)
 	if err != nil {
 		err = errors.Wrap(err, "failed to execute query")
 		return 0, err
@@ -106,9 +106,9 @@ func (ar *activityRepository) Create(data *entity.Activity) (int, error) {
 func (ar *activityRepository) UpdateByID(data *entity.Activity) error {
 	_, err := ar.SQLHandler.Execute(`
 		UPDATE activities
-		SET show_date=?, last_date, activity=?, updated_at=?
+		SET show_date=?, last_date=?, activity=?, annotation=?, is_important=?, updated_at=?
 		WHERE id=?
-	`, data.ShowDate, data.LastDate, data.Activity, data.UpdatedAt, data.ID)
+	`, data.ShowDate, data.LastDate, data.Activity, data.Annotation, data.IsImportant, data.UpdatedAt, data.ID)
 	if err != nil {
 		err = errors.Wrap(err, "failed to execute query")
 		return err
