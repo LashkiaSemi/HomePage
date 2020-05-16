@@ -65,7 +65,3 @@ const (
 
 // ModePtr 実行モード
 var ModePtr = "release"
-
-func init() {
-
-}
