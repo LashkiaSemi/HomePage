@@ -31,6 +31,7 @@ func main() {
 
 	// connection db
 	sh := database.NewSQLHandler()
+	defer sh.Close()
 
 	// create handler
 	ah := handler.NewAppHandler(sh)

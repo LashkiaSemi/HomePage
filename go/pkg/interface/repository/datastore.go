@@ -8,6 +8,8 @@ type SQLHandler interface {
 	Query(query string, args ...interface{}) (Rows, error)
 	QueryRow(query string, args ...interface{}) Row
 
+	Close() error
+
 	// Begin トランザクションの開始
 	Begin() (Tx, error)
 }

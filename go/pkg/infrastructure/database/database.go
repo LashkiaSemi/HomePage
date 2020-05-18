@@ -121,3 +121,7 @@ func (s *sqlTx) Execute(query string, args ...interface{}) (repository.Result, e
 	}
 	return &sqlResult{Result: result}, nil
 }
+
+func (sh *sqlHandler) Close() error {
+	return sh.DB.Close()
+}
