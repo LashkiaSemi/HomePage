@@ -10,29 +10,32 @@ type Activity struct {
 	ID          int
 	Activity    string
 	ShowDate    string
-	LastDate    string
+	Date        string
 	Annotation  string
 	IsImportant int
+	IsNotify    int
 	CreatedAt   string
 	UpdatedAt   string
 }
 
-func (a *Activity) Create(activity, showDate, lastDate, annotation string, isImportant int) {
+func (a *Activity) Create(activity, showDate, date, annotation string, isImportant, isNotify int) {
 	a.Activity = activity
 	a.ShowDate = showDate
-	a.LastDate = lastDate
+	a.Date = date
 	a.Annotation = annotation
 	a.IsImportant = isImportant
+	a.IsNotify = isNotify
 	a.CreatedAt = time.Now().Format(configs.DateTimeFormat)
 	a.UpdatedAt = a.CreatedAt
 }
 
-func (a Activity) Update(activity, showDate, lastDate, annotation string, isImportant int) *Activity {
+func (a Activity) Update(activity, showDate, date, annotation string, isImportant, isNotify int) *Activity {
 	a.Activity = activity
 	a.ShowDate = showDate
-	a.LastDate = lastDate
+	a.Date = date
 	a.Annotation = annotation
 	a.IsImportant = isImportant
+	a.IsNotify = isNotify
 	a.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
 	return &a
 }

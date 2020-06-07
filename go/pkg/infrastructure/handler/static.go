@@ -34,7 +34,8 @@ func NewStaticPageHandler(sh repository.SQLHandler) StaticPageHandler {
 // IndexHandler home部分のhandler
 func (sh *staticPageHandler) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "", auth.GetStudentIDFromCookie(r))
-	body, err := sh.ActivityController.GetUpcoming()
+	// body, err := sh.ActivityController.GetUpcoming()
+	body, err := sh.ActivityController.GetForNotificaion()
 	if err != nil {
 		log.Printf("[error] failed to get data for response: %v", err)
 		response.InternalServerError(w, info)

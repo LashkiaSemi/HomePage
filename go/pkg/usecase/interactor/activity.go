@@ -15,9 +15,10 @@ type ActivityInteractor interface {
 	GetAll() ([]*entity.Activity, error)
 	GetByID(id int) (*entity.Activity, error)
 	GetUpcoming() ([]*entity.Activity, error)
+	GetForNotification() ([]*entity.Activity, error)
 
-	Create(activity, showDate, lastDate, annotation string, isImportant int) (int, error)
-	UpdateByID(id int, activity, showDate, lastDate, annotation string, isImportant int) error
+	Create(activity, showDate, date, annotation string, isImportant, isNotify int) (int, error)
+	UpdateByID(id int, activity, showDate, date, annotation string, isImportant, isNotify int) error
 
 	DeleteByID(id int) error
 }
@@ -41,10 +42,14 @@ func (ai *activityInteractor) GetUpcoming() ([]*entity.Activity, error) {
 	return ai.ActivityRepository.FindUpcoming()
 }
 
-func (ai *activityInteractor) Create(activity, showDate, lastDate, annotation string, isImportant int) (int, error) {
+func (ai *activityInteractor) GetForNotification() ([]*entity.Activity, error) {
+	return ai.ActivityRepository.FindByNotify()
+}
+
+func (ai *activityInteractor) Create(activity, showDate, date, annotation string, isImportant, isNotify int) (int, error) {
 	// create obj
 	act := entity.Activity{}
-	act.Create(activity, showDate, lastDate, annotation, isImportant)
+	act.Create(activity, showDate, date, annotation, isImportant, isNotify)
 
 	// insert db
 	id, err := ai.ActivityRepository.Create(&act)
@@ -55,13 +60,13 @@ func (ai *activityInteractor) Create(activity, showDate, lastDate, annotation st
 	return id, nil
 }
 
-func (ai *activityInteractor) UpdateByID(id int, activity, showDate, lastDate, annotation string, isImportant int) error {
+func (ai *activityInteractor) UpdateByID(id int, activity, showDate, date, annotation string, isImportant, isNotify int) error {
 	data, err := ai.ActivityRepository.FindByID(id)
 	if err != nil {
 		err = errors.Wrap(err, "failed to get original data")
 		return err
 	}
-	newData := data.Update(activity, showDate, lastDate, annotation, isImportant)
+	newData := data.Update(activity, showDate, date, annotation, isImportant, isNotify)
 
 	// update db
 	err = ai.ActivityRepository.UpdateByID(newData)
