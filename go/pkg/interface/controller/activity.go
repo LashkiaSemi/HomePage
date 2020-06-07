@@ -17,9 +17,10 @@ type ActivityController interface {
 	GetAllGroupByYear() ([]*ActivitiesGroupByYearResponse, error)
 	GetByID(id int) (*ActivityResponse, error)
 	GetUpcoming() (*ActivitiesResponse, error)
+	GetForNotificaion() (*ActivitiesResponse, error)
 
-	Create(activity, showDate, lastDate, annotation string, isImportant int) (int, error)
-	UpdateByID(id int, activity, showDate, lastDate, annotation string, isImportant int) error
+	Create(activity, showDate, date, annotation string, isImportant, isNotify int) (int, error)
+	UpdateByID(id int, activity, showDate, date, annotation string, isImportant, isNotify int) error
 
 	DeleteByID(id int) error
 
@@ -45,10 +46,10 @@ func (ac *activityController) GetAllGroupByYear() ([]*ActivitiesGroupByYearRespo
 	// responseづくり
 	// [{ 年, [活動...] }, ... ]みたいな構造で、日付の若い順に並べてます
 	var res = []*ActivitiesGroupByYearResponse{}
-	var key = acts[0].LastDate[:4]
+	var key = acts[0].Date[:4]
 	var tmp = []*ActivityResponse{}
 	for _, act := range acts {
-		if key == act.LastDate[:4] {
+		if key == act.Date[:4] {
 			tmp = append(tmp, convertToActivityResponse(act))
 			continue
 		} else {
@@ -58,7 +59,7 @@ func (ac *activityController) GetAllGroupByYear() ([]*ActivitiesGroupByYearRespo
 					Activities: tmp,
 				})
 			}
-			key = act.LastDate[:4]
+			key = act.Date[:4]
 			tmp = []*ActivityResponse{}
 			tmp = append(tmp, convertToActivityResponse(act))
 		}
@@ -85,6 +86,19 @@ func (ac *activityController) GetUpcoming() (*ActivitiesResponse, error) {
 	return &res, nil
 }
 
+func (ac *activityController) GetForNotificaion() (*ActivitiesResponse, error) {
+	var res ActivitiesResponse
+	datas, err := ac.ActivityInteractor.GetForNotification()
+	if err != nil {
+		err = errors.Wrap(err, "failed to get original data")
+		return &res, err
+	}
+	for _, data := range datas {
+		res.Activities = append(res.Activities, convertToActivityResponse(data))
+	}
+	return &res, nil
+}
+
 func (ac *activityController) GetByID(id int) (*ActivityResponse, error) {
 	data, err := ac.ActivityInteractor.GetByID(id)
 	if err != nil {
@@ -94,12 +108,12 @@ func (ac *activityController) GetByID(id int) (*ActivityResponse, error) {
 	return convertToActivityResponse(data), nil
 }
 
-func (ac *activityController) Create(activity, showDate, lastDate, annotation string, isImportant int) (int, error) {
-	return ac.ActivityInteractor.Create(activity, showDate, lastDate, annotation, isImportant)
+func (ac *activityController) Create(activity, showDate, date, annotation string, isImportant, isNotify int) (int, error) {
+	return ac.ActivityInteractor.Create(activity, showDate, date, annotation, isImportant, isNotify)
 }
 
-func (ac *activityController) UpdateByID(id int, activity, showDate, lastDate, annotation string, isImportant int) error {
-	return ac.ActivityInteractor.UpdateByID(id, activity, showDate, lastDate, annotation, isImportant)
+func (ac *activityController) UpdateByID(id int, activity, showDate, date, annotation string, isImportant, isNotify int) error {
+	return ac.ActivityInteractor.UpdateByID(id, activity, showDate, date, annotation, isImportant, isNotify)
 }
 
 func (ac *activityController) DeleteByID(id int) error {
@@ -135,8 +149,9 @@ func (ac *activityController) AdminGetByID(id int) (*FieldsResponse, error) {
 		&Field{Key: "活動内容", Value: data.Activity},
 		&Field{Key: "注釈", Value: data.Annotation},
 		&Field{Key: "日付(表示用)", Value: data.ShowDate},
-		&Field{Key: "日付(内部処理用)", Value: data.LastDate},
+		&Field{Key: "日付(内部処理用)", Value: data.Date},
 		&Field{Key: "重要", Value: data.IsImportant},
+		&Field{Key: "通知する", Value: data.IsNotify},
 	)
 	res.ID = id
 	return &res, nil
@@ -159,8 +174,9 @@ type ActivityResponse struct {
 	Activity    string
 	Annotation  string
 	ShowDate    string
-	LastDate    string
+	Date        string
 	IsImportant bool
+	IsNotify    bool
 }
 
 func convertToActivityResponse(data *entity.Activity) *ActivityResponse {
@@ -169,7 +185,8 @@ func convertToActivityResponse(data *entity.Activity) *ActivityResponse {
 		Activity:    data.Activity,
 		Annotation:  data.Annotation,
 		ShowDate:    data.ShowDate,
-		LastDate:    data.LastDate,
+		Date:        data.Date,
 		IsImportant: data.IsImportant == 1,
+		IsNotify:    data.IsNotify == 1,
 	}
 }
