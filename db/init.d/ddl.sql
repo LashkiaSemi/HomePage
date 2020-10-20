@@ -13,12 +13,12 @@ CREATE TABLE `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `password_digest` varchar(255) DEFAULT NULL,
-  `role` varchar(255) DEFAULT NULL,
+  `role` varchar(255) DEFAULT NULL COMMENT 'owner/admin/member',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
-  `student_id` varchar(255) DEFAULT NULL,
+  `student_id` varchar(255) DEFAULT NULL COMMENT '学籍番号',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='メンバー';
 
 DROP TABLE IF EXISTS `lectures`;
 CREATE TABLE `lectures` (
@@ -27,13 +27,13 @@ CREATE TABLE `lectures` (
   `title` varchar(255) DEFAULT NULL,
   `file` varchar(255) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
-  `activation` tinyint(1) DEFAULT NULL,
+  `activation` tinyint(1) DEFAULT NULL COMMENT '公開/非公開',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `index_lectures_on_user_id` (`user_id`),
   CONSTRAINT `fk_rails_5a439a4e07` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='レクチャー';
 
 DROP TABLE IF EXISTS `equipments`;
 CREATE TABLE `equipments` (
@@ -46,7 +46,7 @@ CREATE TABLE `equipments` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `index_equipments_on_tag_id` (`tag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='備品';
 
 DROP TABLE IF EXISTS `introductions`;
 CREATE TABLE `introductions` (
@@ -59,7 +59,7 @@ CREATE TABLE `introductions` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `index_introductions_on_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='メンバープロフィール';
 
 DROP TABLE IF EXISTS `pages`;
 CREATE TABLE `pages` (
@@ -78,11 +78,11 @@ CREATE TABLE `researches` (
   `author` varchar(255) DEFAULT NULL,
   `file` varchar(255) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
-  `activation` tinyint(1) DEFAULT NULL,
+  `activation` tinyint(1) DEFAULT NULL COMMENT '公開/非公開',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='卒業研究';
 
 DROP TABLE IF EXISTS `jobs`;
 CREATE TABLE `jobs` (
@@ -128,4 +128,4 @@ CREATE TABLE `tags` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='タグ';
