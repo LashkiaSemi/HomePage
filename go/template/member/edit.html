@@ -1,0 +1,60 @@
+{{ template "header" .Info }}
+<div class="container-wrapper">
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="content-title">
+                    <h1 class="h1">ユーザ情報編集</h1>
+                </div>
+            </div>
+            
+            <div class="content" style="display: flex; justify-content: center;">
+                <form class="form" method="POST" style="width: 100%; max-width: 500px;">
+                    {{ if .Info.Errors }}
+                    <div class="notify-bar notify-bar-danger mb-20">
+                        {{ range .Info.Errors }}
+                        <div>{{ . }}</div>
+                        {{ end }}
+                    </div>
+                    {{ end }}
+
+                    <div>
+                        <label>名前</label>
+                        <input type="text" name="name" class="form-text" value="{{ .Data.Name }}">
+                    </div>
+                    <div>
+                        <label>学籍番号</label>
+                        <input type="text" name="studentID" class="form-text" value="{{ .Data.StudentID }}">
+                    </div>
+                    <div>
+                        <label>学部</label>
+                        <input type="text" name="department" class="form-text" value="{{ .Data.Department }}">
+                    </div>
+                    <div>
+                        <label>コメント</label>
+                        <textarea name="comment" class="form-textarea">{{ .Data.Comment }}</textarea>
+                    </div>
+                    <div>
+                        <label>学年</label>
+                        <select class="form-select" name="grade">
+                            <option value="2">学部2年</option>
+                            <option value="3">学部3年</option>
+                            <option value="4">学部4年</option>
+                            <option value="5">大学院1年</option>
+                            <option value="6">大学院2年</option>
+                            <option value="0">卒業生</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">登録</button>
+                    </div>
+                </form>
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-wrapper -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END contaienr-wrapper -->
+{{ template "footer" }}

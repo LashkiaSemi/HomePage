@@ -1,0 +1,36 @@
+{{ template "header" .Info }}
+<div class="container-wrapper">
+    <div class="container">
+        <div class="content-wrapper">
+
+            <div class="content">
+                <div class="content-title">
+                    <h1 class="h1">活動記録</h1>
+                </div>
+            </div>
+            <div class="content">
+                <h2 class="h2 list-title">目次</h2>
+                <ul class="list">
+                    {{ range .Data }}
+                    <li class="list-item"><a href="#{{ .Year }}" class="list-link">{{ .Year }}年のニュース</a></li>
+                    {{ end }}
+                </ul>
+            </div>
+            {{ range .Data }}
+            <div class="content underline" id="{{ .Year }}">
+                <h2 class="h2 list-title">{{ .Year }}年のニュース</h2>
+                <ul>
+                    {{ range .Activities }}
+                    <li>&lt;{{ .ShowDate }}&gt; {{ .Activity }}</li>
+                    {{ end }}
+                </ul>
+            </div>
+            {{ end }}
+            <!-- END content -->
+        </div>
+        <!-- END content-wrapper -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END contaienr-wrapper -->
+{{ template "footer" }}

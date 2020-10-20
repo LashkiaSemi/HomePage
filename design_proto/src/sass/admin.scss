@@ -1,0 +1,328 @@
+$base-color: #fff;
+$nav-bg-color: #343a40;
+$jumbotron-bg-color: #343a40;
+
+$logo-color: #fff;
+
+$sub-color: #ccc;
+$primary-color: #007bff;
+$hover-bg-color: #eee;
+
+html {
+    background-color: $base-color;
+}
+
+body {
+    margin: 0;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-weight: 400;
+    margin: 0;
+    
+}
+.underline {
+    border-bottom: 1px solid $sub-color;
+}
+
+ul li {
+    line-height: 1.8rem;
+}
+
+.mb {
+    &-10 {
+        margin-bottom: 10px;
+    }
+    &-20 {
+        margin-bottom: 20px;
+    }
+    &-30 {
+        margin-bottom: 30px;
+    }
+    &-40 {
+        margin-bottom: 40px;
+    }
+}
+
+.ml {
+    &-10 {
+        margin-left: 10px;
+    }
+    &-20 {
+        margin-left: 20px;
+    }
+    &-30 {
+        margin-left: 30px;
+    }
+    &-40 {
+        margin-left: 40px;
+    }
+}
+
+.al-center {
+    text-align: center;
+}
+
+.notify-bar {
+    padding: 5px 20px;
+    &-danger {
+        color: #841f29;
+        background-color: #f4c2c7;
+        border: 1px solid #e6717c;
+    }
+}
+
+.btn {
+    padding: 0px 12px;
+    border: 0;
+    font-size: 1rem;
+    border-radius: 5px;
+    height: 2rem;
+    text-decoration: none;
+    &:hover {
+        opacity: .7;
+    }
+    &-primary {
+        background-color: $primary-color;
+        color: #fff;
+    }
+    &-danger {
+        background-color: #dc3545;
+        color: #fff;
+    }
+    &-success {
+        background-color: #28a745;
+        color: #fff;
+    }
+    &-secondary {
+        background-color: #888;
+        color: #fff;
+    }
+    &-info {
+        background-color: #17a2b8;
+        color: #fff;
+        
+    }
+}
+
+.disable {
+    opacity: .5;
+    &:hover {
+        opacity: .5;
+    }
+}
+
+.form {
+    max-width: 600px;
+    width: 100%;
+    > * {
+        margin-bottom: 20px;
+    }
+    &-text {
+        display: block;
+        border-radius: 5px;
+        border: 1px solid $sub-color;
+        font-size: 1rem;
+        padding: 5px 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    &-select {
+        display: block;
+        border: 1px solid $sub-color;
+        background-color: #fff;
+        padding: 10px;
+        width: 100%;
+        // line-height: 1rem;
+        font-size: 1rem;
+        height: 2rem;
+        box-sizing: border-box;
+    }
+    &-textarea {
+        display: block;
+        font-size: 1rem;
+        padding: 10px;
+        border: 1px solid $sub-color;
+        border-radius: 5px;
+        resize: vertical;
+        width: 100%;
+        height: 5rem;
+        box-sizing: border-box;
+    }
+}
+
+.link {
+    text-decoration: none;
+    color: $primary-color;
+    &:hover {
+        opacity: .7;
+        text-decoration: underline;
+    }
+}
+
+.nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $nav-bg-color;
+    padding: 10px 20px;
+    .logo {
+        text-decoration: none;
+        color: $logo-color;
+        font-size: 1.2rem;
+        margin: 0 10px;
+    }
+    .nav-list {
+        margin: 0;
+        padding: 0;
+    }
+    .nav-item {
+        display: inline-block;
+        margin-left: 10px;
+    }
+    .nav-link {
+        color: #fff;
+        opacity: .6;
+        text-decoration: none;
+        &.active {
+            opacity: 1;
+        }
+        &:hover {
+            opacity: 1;
+        }
+    }
+} // navigation
+
+.jumbotron {
+    background-color: $jumbotron-bg-color;
+    height: 240px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    label {
+        color: $logo-color;
+        font-size: 1.8rem;
+    }
+}
+
+.container-wrapper {
+    display: flex;
+    justify-content: center;
+    .container {
+        width: 80%;
+        // height: 100px;
+        // background-color: red;
+    }
+}
+
+.content-wrapper {
+    margin-top: 30px;
+    .content {
+        margin-bottom: 30px;
+        &-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+    }
+    .list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-radius: 5px;
+        border: 1px solid $sub-color;
+        box-sizing: border-box;
+        &-title {
+            margin-bottom: 20px;
+        }
+        .list-item {
+            border-bottom: 1px solid $sub-color;
+            // padding: 10px 25px;
+            &:last-child {
+                border: 0;
+            }
+        }
+        .list-link {
+            padding: 10px 25px;
+            box-sizing: border-box;
+            color: $primary-color;
+            text-decoration: none;
+            display: block;
+            &:hover {
+                background-color: $hover-bg-color;
+            }
+        }
+        .no-link {
+            padding: 10px 25px;
+        }
+        .list-description {
+            color: #000;
+            font-size: .9rem;
+        }
+    }
+    .card {
+        border: 1px solid $sub-color;
+        border-radius: 5px;
+        .card-header {
+            padding: 10px 20px;
+            border-bottom: 1px solid $sub-color;
+        }
+        .card-content {
+            padding: 10px 20px;
+        }
+        .card-footer {
+            padding: 10px 20px;
+            border-top: 1px solid $sub-color;
+        }
+    }
+    .table {
+        border: 1px solid $sub-color;
+        border-spacing: 0px;
+        border-collapse: collapse;
+        width: 100%;
+        thead {
+            background-color: $hover-bg-color;
+        }
+        tbody {
+            tr:nth-child(2n) {
+                background-color: $hover-bg-color;
+            }
+        }
+        tr {
+            border-bottom: 1px solid $sub-color;
+        }
+        th, td {
+            padding: 10px 20px;
+            // display: inline-block;
+            text-align: left;
+        }
+        a {
+            color: $primary-color;
+            text-decoration: none;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        .controls {
+            display: flex;
+            justify-content: flex-end;
+            min-width: 9rem;
+        }
+    }
+}
+
+.footer-wrapper {
+    .footer {
+        display: flex;
+        justify-content: space-between;
+        margin: 0 10px;
+        padding: 8px 30px;
+        border-top: 1px solid $sub-color;
+        font-size: .8rem;
+        color: $sub-color;
+    }
+    a {
+        text-decoration: none;
+        color: $sub-color;
+    }
+}

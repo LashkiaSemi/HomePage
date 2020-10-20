@@ -1,0 +1,77 @@
+{{ template "header" .Info }}
+<div class="container-wrapper">
+    <div class="container">
+        <div class="content-wrapper">
+
+            <div class="content">
+                <div class="content-title">
+                    <h1 class="h1">ゼミメンバー</h1>
+                </div>
+            </div>
+            <div class="content">
+                <div style="display: flex; justify-content: space-around;">
+                    <div style="width: 30%;">
+                        <h2 class="h2 list-title">学部2年</h2>
+                        <ul class="list">
+                            {{ range index .Data.GradeUsers 2 }}
+                            <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                    <div style="width: 30%;">
+                        <h2 class="h2 list-title">学部3年</h2>
+                        <ul class="list">
+                            {{ range index .Data.GradeUsers 3 }}
+                            <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                    <div style="width: 30%;">
+                        <h2 class="h2 list-title">学部4年</h2>
+                        <ul class="list">
+                            {{ range index .Data.GradeUsers 4 }}
+                            <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
+                            {{ end }}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <!-- END content 学部生 -->
+            <div class="content">
+                <div style="display: flex; justify-content: space-around;">
+                    <div style="width: 40%;">
+                        <h2 class="h2 list-title">大学院1年</h2>
+                        <ul class="list">
+                            {{ range index .Data.GradeUsers 5 }}
+                            <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                    <div style="width: 40%;">
+                        <h2 class="h2 list-title">大学院2年</h2>
+                        <ul class="list">
+                            {{ range index .Data.GradeUsers 6 }}
+                            <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- END content 院生 -->
+            <div class="content">
+                <h2 class="h2 list-title">卒業生</h2>
+                <ul class="list">
+                    {{ range index .Data.GradeUsers 0 }}
+                    <li class="list-item"><a href="/members/{{ .ID }}" class="list-link">{{ .Name }}</a></li>
+                    {{ end }}
+                </ul>
+            </div>
+            <!-- END content 卒業生 -->
+        </div>
+        <!-- END content-wrapper -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END contaienr-wrapper -->
+{{ template "footer" }}
