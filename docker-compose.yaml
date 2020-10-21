@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   app:
     build:
@@ -10,14 +10,14 @@ services:
     environment:
       MARIA_USER: root
       MARIA_PASSWORD: password
+      MARIA_PROTOCOL: tcp
+      MARIA_TARGET: "db:3306"
+      MARIA_DB: homepage
     ports:
       - "8080:8080"
-    tty: true
     volumes:
       - ./go:/go/src/app
     depends_on:
-      - db
-    links:
       - db
     command: realize start
   db:
@@ -30,6 +30,7 @@ services:
       MYSQL_DATABASE: homepage
       MYSQL_USER: worker
       MYSQL_PASSWORD: password
+      TZ: "Asia/Tokyo"
     volumes:
       - ./db/init.d:/docker-entrypoint-initdb.d
     ports:
