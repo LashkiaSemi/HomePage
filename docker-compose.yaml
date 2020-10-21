@@ -21,18 +21,16 @@ services:
       - db
     command: realize start
   db:
-    image: mysql:5.7
+    image: mariadb:10.0.32
     container_name: semi-homepage-db
     restart: always
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: homepage
       MYSQL_USER: worker
       MYSQL_PASSWORD: password
     volumes:
-      - ./db/init.d/dump.sql:/docker-entrypoint-initdb.d
+      - ./db/init.d:/docker-entrypoint-initdb.d
     ports:
-      - "3300:3306"
-    # expose:
-    #   - "3306"
+      - "13306:3306"

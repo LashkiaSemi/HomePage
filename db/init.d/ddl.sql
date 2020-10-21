@@ -1,11 +1,15 @@
 SET CHARSET UTF8;
+SET foreign_key_checks=0;
 
 -- define database
 -- DROP DATABASE `homepage`;
 CREATE DATABASE IF NOT EXISTS `homepage`;
+USE `homepage`;
 
 -- define table
-CREATE TABLE IF NOT EXISTS `homepage`.`users` (
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `password_digest` varchar(255) DEFAULT NULL,
@@ -14,89 +18,98 @@ CREATE TABLE IF NOT EXISTS `homepage`.`users` (
   `updated_at` datetime NOT NULL,
   `student_id` varchar(255) DEFAULT NULL COMMENT '学籍番号',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COMMENT='メンバー';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='メンバー';
 
-CREATE TABLE IF NOT EXISTS `homepage`.`lectures` (
+DROP TABLE IF EXISTS `lectures`;
+CREATE TABLE `lectures` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `file` varchar(255) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
-  `activation` tinyint(1) DEFAULT NULL COMMENT '公開するかしないか',
+  `activation` tinyint(1) DEFAULT NULL COMMENT '公開/非公開',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `index_lectures_on_user_id` (`user_id`),
   CONSTRAINT `fk_rails_5a439a4e07` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='レクチャーの資料';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='レクチャー';
 
-CREATE TABLE IF NOT EXISTS `homepage`.`equipments` (
+DROP TABLE IF EXISTS `equipments`;
+CREATE TABLE `equipments` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `num` int(11) DEFAULT NULL COMMENT '所持数',
-  `note` varchar(255) DEFAULT NULL COMMENT 'コメントみたいな',
+  `num` int(11) DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
   `tag_id` bigint(20) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `index_equipments_on_tag_id` (`tag_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 COMMENT='備品';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='備品';
 
-CREATE TABLE IF NOT EXISTS `homepage`.`introductions` (
+DROP TABLE IF EXISTS `introductions`;
+CREATE TABLE `introductions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) DEFAULT NULL,
-  `department` varchar(255) DEFAULT NULL COMMENT '所属学科',
-  `grade` int(11) DEFAULT NULL COMMENT '0が卒業生っぽい',
+  `department` varchar(255) DEFAULT NULL,
+  `grade` int(11) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `index_introductions_on_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='メンバー紹介';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='メンバープロフィール';
 
-CREATE TABLE IF NOT EXISTS `homepage`.`pages` (
+DROP TABLE IF EXISTS `pages`;
+CREATE TABLE `pages` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
   `contents` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='なにこれ謎';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `homepage`.`researches` (
+DROP TABLE IF EXISTS `researches`;
+CREATE TABLE `researches` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
   `author` varchar(255) DEFAULT NULL,
   `file` varchar(255) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
-  `activation` tinyint(1) DEFAULT NULL,
+  `activation` tinyint(1) DEFAULT NULL COMMENT '公開/非公開',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='研究';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='卒業研究';
 
-CREATE TABLE IF NOT EXISTS `homepage`.`jobs` (
+DROP TABLE IF EXISTS `jobs`;
+CREATE TABLE `jobs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `company` varchar(255) DEFAULT NULL,
   `job` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='就職先企業';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='就職先企業';
 
-CREATE TABLE IF NOT EXISTS `homepage`.`activities` (
+DROP TABLE IF EXISTS `activities`;
+CREATE TABLE `activities` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `show_date` varchar(255) DEFAULT NULL COMMENT '表示用',
-  `last_date` datetime NOT NULL COMMENT '並び替え、年度の取得に使う',
+  `date` datetime NOT NULL,
   `activity` varchar(255) DEFAULT NULL,
-  `annotation` varchar(255) NOT NULL DEFAULT '',
-  `is_important` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `annotation` varchar(255) NOT NULL DEFAULT '',
+  `is_important` tinyint(1) NOT NULL DEFAULT '0',
+  `is_notify` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='活動内容';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='活動内容';
 
-CREATE TABLE IF NOT EXISTS `homepage`.`societies` (
+DROP TABLE IF EXISTS `societies`;
+CREATE TABLE `societies` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
   `author` varchar(255) DEFAULT NULL,
@@ -106,12 +119,13 @@ CREATE TABLE IF NOT EXISTS `homepage`.`societies` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='学会';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='学会';
 
-CREATE TABLE IF NOT EXISTS `homepage`.`tags` (
+DROP TABLE IF EXISTS `tags`;
+CREATE TABLE `tags` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='備品用などのタグ';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='タグ';
