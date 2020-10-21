@@ -6,7 +6,7 @@ import (
 
 // applicationのconfig
 const (
-	AppHost = "localhost"
+	AppHost = "0.0.0.0"
 	AppPort = "8080"
 )
 

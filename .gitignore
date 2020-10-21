@@ -29,20 +29,16 @@ vendor/bundle
 # Ignore vscode Setting.
 /.vscode
 
-# add
-go/lectures
-go/researches
-go/logfile.log
+# go
 go/public/
-note.md
-node_modules/
-*.bak
-todo.md
 go/bin
-db/init.d/initdb.*.sql
-
-# Ignore go+react
-client/
-go/
 go.mod
 go.sum
+
+# node
+node_modules/
+
+# others
+note.md
+todo.md
+*.bak

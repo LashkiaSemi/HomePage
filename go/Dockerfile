@@ -1,9 +1,22 @@
-FROM golang:latest
-RUN mkdir /go/src/api
+FROM golang:1.13-alpine as build
 
-WORKDIR /go/src/api
-ADD . /go/src/api
+WORKDIR /go/src/app
+ADD . .
 
-EXPOSE 8080
+RUN apk update \
+    && apk add git \
+    && GO111MODULE=off go get github.com/oxequa/realize \
+    && go get -v ./... \
+    && go build -o ./bin/app ./cmd
 
-CMD ["go", "run", "cmd/main.go"]
+FROM alpine
+
+WORKDIR /app
+
+COPY --from=build /go/src/app .
+
+RUN addgroup go \
+  && adduser -D -G go go \
+  && chown -R go:go /app/app
+
+CMD ["./app"]
