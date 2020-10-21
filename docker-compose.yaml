@@ -1,31 +1,25 @@
-version: '3.7'
+version: "3.7"
 services:
-  web:
-    build: ./nginx
-    container_name: semi-homepage-web
-    ports:
-      - "8000:80"
-    volumes:
-      - ./client/build:/app:ro
+  app:
+    build:
+      context: ./go
+      dockerfile: ./Dockerfile
+      target: build
+    container_name: semi-homepage-app
     restart: always
-    links:
-      - api
-    depends_on:
-      - db
-      - api
-  api:
-    build: ./go
-    container_name: semi-homepage-api
-    restart: always
+    environment:
+      MARIA_USER: root
+      MARIA_PASSWORD: password
+      MARIA_PROTOCOL: tcp
+      MARIA_TARGET: "db:3306"
+      MARIA_DB: homepage
     ports:
       - "8080:8080"
-    tty: true
     volumes:
       - ./go:/go/src/app
     depends_on:
       - db
-    links:
-      - db
+    command: realize start
   db:
     image: mariadb:10.0.32
     container_name: semi-homepage-db
@@ -36,6 +30,7 @@ services:
       MYSQL_DATABASE: homepage
       MYSQL_USER: worker
       MYSQL_PASSWORD: password
+      TZ: "Asia/Tokyo"
     volumes:
       - ./db/init.d:/docker-entrypoint-initdb.d
     ports:
