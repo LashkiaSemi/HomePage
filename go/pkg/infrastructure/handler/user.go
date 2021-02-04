@@ -289,28 +289,28 @@ func (uh *userHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
 
-	gradeMap := map[string]string{
-		"2": "学部2年",
-		"3": "学部3年",
-		"4": "学部4年",
-		"5": "大学院1年",
-		"6": "大学院2年",
-		"0": "卒業生",
-	}
-	roleMap := map[string]string{
-		"member": "member",
-		"admin":  "admin",
-		"owner":  "owner",
-	}
+	// gradeMap := map[string]string{
+	// 	"2": "学部2年",
+	// 	"3": "学部3年",
+	// 	"4": "学部4年",
+	// 	"5": "大学院1年",
+	// 	"6": "大学院2年",
+	// 	"0": "卒業生",
+	// }
+	// roleMap := map[string]string{
+	// 	"member": "member",
+	// 	"admin":  "admin",
+	// 	"owner":  "owner",
+	// }
 	// create form
 	body := []*FormField{
 		createFormField("name", "", "名前", "text", nil),
 		createFormField("studentID", "", "学籍番号", "text", nil),
 		createFormField("department", "", "学部", "text", nil),
-		createFormField("grade", "", "学年", "select", gradeMap),
+		createFormField("grade", "", "学年", "select", createGradeOptions(-1)),
 		createFormField("password", "", "パスワード", "password", nil),
 		createFormField("confirmPassword", "", "パスワード(確認用)", "password", nil),
-		createFormField("role", "", "権限", "select", roleMap),
+		createFormField("role", "", "権限", "select", createRoleOptions("member")),
 		createFormField("comment", "", "コメント", "textarea", nil),
 	}
 
@@ -366,26 +366,19 @@ func (uh *userHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 		response.InternalServerError(w, info)
 		return
 	}
-	gradeMap := map[string]string{
-		"2": "学部2年",
-		"3": "学部3年",
-		"4": "学部4年",
-		"5": "大学院1年",
-		"6": "大学院2年",
-		"0": "卒業生",
-	}
-	roleMap := map[string]string{
-		"member": "member",
-		"admin":  "admin",
-		"owner":  "owner",
-	}
+	// roleMap := map[string]string{
+	// 	"member": "member",
+	// 	"admin":  "admin",
+	// 	"owner":  "owner",
+	// }
 	// create form
+	// TODO: デフォルトの値をば...
 	body := []*FormField{
 		createFormField("name", user.Name, "名前", "text", nil),
 		createFormField("studentID", user.StudentID, "学籍番号", "text", nil),
 		createFormField("department", user.Department, "学部", "text", nil),
-		createFormField("grade", user.Grade, "学年", "select", gradeMap),
-		createFormField("role", "", "権限", "select", roleMap),
+		createFormField("grade", "", "学年", "select", createGradeOptions(user.Grade)),
+		createFormField("role", "", "権限", "select", createRoleOptions(user.Role)),
 		createFormField("comment", user.Comment, "コメント", "textarea", nil),
 	}
 

@@ -34,8 +34,8 @@
                         
                         {{ else if eq .Type "select" }}
                         <select class="form-{{ .Type }}" name="{{ .Name }}">
-                            {{ range $key, $val := .Props }}
-                            <option value="{{ $key }}">{{ $val }}</option>
+                            {{ range .Options }}
+                            <option value="{{ .Value }}" selected="{{ .Select }}" >{{ .Label }}</option>
                             {{ end }}
                         </select>
 

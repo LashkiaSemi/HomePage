@@ -175,8 +175,9 @@ type UserResponse struct {
 	StudentID  string
 	Name       string
 	Department string
-	Grade      string
+	Grade      int
 	Comment    string
+	Role       string
 }
 
 func convertToUserResponse(user *entity.User) *UserResponse {
@@ -185,8 +186,9 @@ func convertToUserResponse(user *entity.User) *UserResponse {
 		StudentID:  user.StudentID,
 		Name:       user.Name,
 		Department: user.Department,
-		Grade:      convertGradeFromIntToString(user.Grade),
+		Grade:      user.Grade,
 		Comment:    user.Comment,
+		Role:       user.Role,
 	}
 }
 

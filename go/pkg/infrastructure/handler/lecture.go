@@ -241,14 +241,22 @@ func (lh *lectureHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		response.InternalServerError(w, info)
 		return
 	}
-	userMap := map[string]string{}
+	// userMap := map[string]string{}
+	// for _, user := range users.Users {
+	// 	userMap[user.StudentID] = user.Name
+	// }
+	userOptions := make([]*SelectFormOptions, 0, len(users.Users))
 	for _, user := range users.Users {
-		userMap[user.StudentID] = user.Name
+		userOptions = append(userOptions, &SelectFormOptions{
+			Value:  user.StudentID,
+			Label:  user.Name,
+			Select: false,
+		})
 	}
 
 	body := []*FormField{
 		createFormField("title", "", "タイトル", "text", nil),
-		createFormField("author", "", "投稿者", "select", userMap),
+		createFormField("author", "", "投稿者", "select", userOptions),
 		createFormField("file", "", "ファイル", "file", nil),
 		createFormField("comment", "", "コメント", "textarea", nil),
 		createFormField("activation", "public", "公開する", "checkbox", nil),
@@ -324,14 +332,22 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 		response.InternalServerError(w, info)
 		return
 	}
-	userMap := map[string]string{}
+	// userMap := map[string]string{}
+	// for _, user := range users.Users {
+	// 	userMap[user.StudentID] = user.Name
+	// }
+	userOptions := make([]*SelectFormOptions, 0, len(users.Users))
 	for _, user := range users.Users {
-		userMap[user.StudentID] = user.Name
+		userOptions = append(userOptions, &SelectFormOptions{
+			Value:  user.StudentID,
+			Label:  user.Name,
+			Select: data.Author.StudentID == user.StudentID,
+		})
 	}
 
 	body := []*FormField{
 		createFormField("title", data.Title, "タイトル", "text", nil),
-		createFormField("author", data.Author.Name, "投稿者", "select", userMap),
+		createFormField("author", data.Author.Name, "投稿者", "select", userOptions),
 		createFormField("file", data.FileName, "ファイル", "file", nil),
 		createFormField("comment", data.Comment, "コメント", "textarea", nil),
 		createFormField("activation", "public", "公開する", "checkbox", nil),

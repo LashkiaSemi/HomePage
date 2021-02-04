@@ -68,16 +68,20 @@ func (eh *equipmentHandler) AdminCreate(w http.ResponseWriter, r *http.Request) 
 		response.InternalServerError(w, info)
 		return
 	}
-	tagsMap := map[string]string{}
+	tagOptions := make([]*SelectFormOptions, 0, len(tags.Tags))
 	for _, tag := range tags.Tags {
-		tagsMap[strconv.Itoa(tag.ID)] = tag.Name
+		tagOptions = append(tagOptions, &SelectFormOptions{
+			Value:  strconv.Itoa(tag.ID),
+			Label:  tag.Name,
+			Select: false,
+		})
 	}
 
 	body := []*FormField{
 		createFormField("name", "", "品名", "text", nil),
 		createFormField("stock", "0", "在庫", "number", nil),
 		createFormField("comment", "", "コメント", "textarea", nil),
-		createFormField("tagID", "", "タグ", "select", tagsMap),
+		createFormField("tagID", "", "タグ", "select", tagOptions),
 	}
 	if r.Method == "POST" {
 		// log.Println("equipment create: post request")
@@ -137,9 +141,17 @@ func (eh *equipmentHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reque
 		response.InternalServerError(w, info)
 		return
 	}
-	tagsMap := map[string]string{}
+	// tagsMap := map[string]string{}
+	// for _, tag := range tags.Tags {
+	// 	tagsMap[strconv.Itoa(tag.ID)] = tag.Name
+	// }
+	tagOptions := make([]*SelectFormOptions, 0, len(tags.Tags))
 	for _, tag := range tags.Tags {
-		tagsMap[strconv.Itoa(tag.ID)] = tag.Name
+		tagOptions = append(tagOptions, &SelectFormOptions{
+			Value:  strconv.Itoa(tag.ID),
+			Label:  tag.Name,
+			Select: tag.ID == data.Tag.ID,
+		})
 	}
 
 	// create form
@@ -147,7 +159,7 @@ func (eh *equipmentHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reque
 		createFormField("name", data.Name, "品名", "text", nil),
 		createFormField("stock", strconv.Itoa(data.Stock), "在庫", "number", nil),
 		createFormField("comment", data.Comment, "コメント", "textarea", nil),
-		createFormField("tagID", strconv.Itoa(data.Tag.ID), "タグ", "select", tagsMap),
+		createFormField("tagID", strconv.Itoa(data.Tag.ID), "タグ", "select", tagOptions),
 	}
 	if r.Method == "POST" {
 		// log.Println("equipment update: post request")
