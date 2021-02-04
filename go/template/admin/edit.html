@@ -34,8 +34,8 @@
                         
                         {{ else if eq .Type "select" }}
                         <select class="form-{{ .Type }}" name="{{ .Name }}">
-                            {{ range $key, $val := .Props }}
-                            <option value="{{ $key }}">{{ $val }}</option>
+                            {{ range .Options }}
+                            <option value="{{ .Value }}" {{ if .Select }}selected{{ end }} >{{ .Label }}</option>
                             {{ end }}
                         </select>
 
@@ -54,7 +54,7 @@
                         <span>現在登録されているファイル: {{ .Value }}</span>
 
                         {{ else if eq .Type "checkbox" }}
-                        <input name="{{ .Name }}" type="{{ .Type }}" value="{{ .Value }}" checked>
+                        <input name="{{ .Name }}" type="{{ .Type }}" value="{{ .Value }}" {{ if eq .Value "1" }}checked{{ end }}>
 
                         {{ end }}
                         </div>

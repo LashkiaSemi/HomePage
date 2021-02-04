@@ -62,7 +62,7 @@ func (rh *researchHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		createFormField("author", "", "著者", "text", nil),
 		createFormField("file", "", "ファイル", "file", nil),
 		createFormField("comment", "", "コメント", "textarea", nil),
-		createFormField("activation", "public", "公開する", "checkbox", nil),
+		createFormField("activation", "1", "公開する", "checkbox", nil),
 	}
 
 	if r.Method == "POST" {
@@ -71,7 +71,7 @@ func (rh *researchHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		author := r.PostFormValue("author")
 		comment := r.PostFormValue("comment")
 		var activation int
-		if r.PostFormValue("activation") == "public" {
+		if r.PostFormValue("activation") == "1" {
 			activation = 1
 		} else {
 			activation = 0
@@ -133,7 +133,7 @@ func (rh *researchHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 		createFormField("author", data.Author, "著者", "text", nil),
 		createFormField("file", data.FileName, "ファイル", "file", nil),
 		createFormField("comment", data.Comment, "コメント", "textarea", nil),
-		createFormField("activation", "public", "公開する", "checkbox", nil),
+		createFormField("activation", strconv.Itoa(data.Activation), "公開する", "checkbox", nil),
 	}
 
 	if r.Method == "POST" {
@@ -142,7 +142,7 @@ func (rh *researchHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 		author := r.PostFormValue("author")
 		comment := r.PostFormValue("comment")
 		var activation int
-		if r.PostFormValue("activation") == "public" {
+		if r.PostFormValue("activation") == "1" {
 			activation = 1
 		} else {
 			activation = 0

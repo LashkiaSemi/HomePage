@@ -46,21 +46,85 @@ func saveFile(fileName, saveDir string, file multipart.File) error {
 }
 
 // createFormField フォームのフィールドを一個作る
-func createFormField(name, value, label, formType string, props map[string]string) *FormField {
+func createFormField(name, value, label, formType string, options []*SelectFormOptions) *FormField {
 	return &FormField{
-		Name:  name,
-		Value: value,
-		Label: label,
-		Type:  formType,
-		Props: props,
+		Name:    name,
+		Value:   value,
+		Label:   label,
+		Type:    formType,
+		Options: options,
 	}
 }
 
 // FormField adminサイトのフォーム
 type FormField struct {
-	Name  string            // htmlのname
-	Value string            // 初期値
-	Label string            // フォームの表示名
-	Type  string            // htmlのtype
-	Props map[string]string // select用
+	Name    string               // htmlのname
+	Value   string               // 初期値
+	Label   string               // フォームの表示名
+	Type    string               // htmlのtype
+	Options []*SelectFormOptions // select用
+}
+
+// SelectFormOptions formにselectを作成する
+type SelectFormOptions struct {
+	Value  string // value
+	Label  string // 選択肢として表示する値
+	Select bool
+}
+
+func createRoleOptions(role string) []*SelectFormOptions {
+	return []*SelectFormOptions{
+		&SelectFormOptions{
+			Value:  "member",
+			Label:  "member",
+			Select: role == "member",
+		},
+		&SelectFormOptions{
+			Value:  "admin",
+			Label:  "admin",
+			Select: role == "admin",
+		},
+		&SelectFormOptions{
+			Value:  "owner",
+			Label:  "owner",
+			Select: role == "owner",
+		},
+	}
+}
+
+// createGradeOptions 初期値を設定しない場合、-1を指定してください
+func createGradeOptions(grade int) []*SelectFormOptions {
+	return []*SelectFormOptions{
+		&SelectFormOptions{
+			Value:  "2",
+			Label:  "学部2年",
+			Select: grade == 2,
+		},
+		&SelectFormOptions{
+			Value:  "3",
+			Label:  "学部3年",
+			Select: grade == 3,
+		},
+		&SelectFormOptions{
+			Value:  "4",
+			Label:  "学部4年",
+			Select: grade == 4,
+		},
+		&SelectFormOptions{
+			Value:  "5",
+			Label:  "大学院1年",
+			Select: grade == 5,
+		},
+		&SelectFormOptions{
+			Value:  "6",
+			Label:  "大学院2年",
+			Select: grade == 6,
+		},
+		&SelectFormOptions{
+			Value:  "0",
+			Label:  "卒業生",
+			Select: grade == 0,
+		},
+	}
+
 }
