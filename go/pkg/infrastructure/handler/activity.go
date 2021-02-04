@@ -120,13 +120,21 @@ func (ah *activityHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	data.Date = strings.Replace(data.Date, " ", "T", 1)
+	isImportant := "0"
+	if data.IsImportant {
+		isImportant = "1"
+	}
+	isNotify := "0"
+	if data.IsNotify {
+		isNotify = "1"
+	}
 	body := []*FormField{
 		createFormField("activity", data.Activity, "活動内容", "text", nil),
 		createFormField("annotation", data.Annotation, "注釈", "text", nil),
 		createFormField("showDate", data.ShowDate, "日付(表示用)", "text", nil),
 		createFormField("date", data.Date, "日付(ソート、プレフィックス用。数日間の場合は、初日の日付が良い)", "date", nil),
-		createFormField("isImportant", "1", "重要", "checkbox", nil),
-		createFormField("isNotify", "1", "「お知らせ」に載せる", "checkbox", nil),
+		createFormField("isImportant", isImportant, "重要", "checkbox", nil),
+		createFormField("isNotify", isNotify, "「お知らせ」に載せる", "checkbox", nil),
 	}
 
 	if r.Method == "POST" {
