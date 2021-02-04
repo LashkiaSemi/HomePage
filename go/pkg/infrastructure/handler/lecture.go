@@ -241,10 +241,6 @@ func (lh *lectureHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 		response.InternalServerError(w, info)
 		return
 	}
-	// userMap := map[string]string{}
-	// for _, user := range users.Users {
-	// 	userMap[user.StudentID] = user.Name
-	// }
 	userOptions := make([]*SelectFormOptions, 0, len(users.Users))
 	for _, user := range users.Users {
 		userOptions = append(userOptions, &SelectFormOptions{
@@ -332,10 +328,6 @@ func (lh *lectureHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request
 		response.InternalServerError(w, info)
 		return
 	}
-	// userMap := map[string]string{}
-	// for _, user := range users.Users {
-	// 	userMap[user.StudentID] = user.Name
-	// }
 	userOptions := make([]*SelectFormOptions, 0, len(users.Users))
 	for _, user := range users.Users {
 		userOptions = append(userOptions, &SelectFormOptions{

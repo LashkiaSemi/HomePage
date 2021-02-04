@@ -91,7 +91,6 @@ func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method == "POST" {
-		// log.Println("user update: post")
 		name := r.PostFormValue("name")
 		studentID := r.PostFormValue("studentID")
 		department := r.PostFormValue("department")
@@ -115,7 +114,6 @@ func (uh *userHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 			response.InternalServerError(w, info)
 			return
 		}
-		// log.Println("user update: ", user)
 		http.Redirect(w, r, fmt.Sprintf("/members/%d", body.ID), http.StatusSeeOther)
 	}
 	response.Render(w, "member/edit.html", info, body)
@@ -125,7 +123,6 @@ func (uh *userHandler) UpdatePasswordByStudentID(w http.ResponseWriter, r *http.
 	info := createInfo(r, "", auth.GetStudentIDFromCookie(r))
 	var body interface{}
 	if r.Method == "POST" {
-		// log.Println("password update!")
 		oldPassword := r.PostFormValue("oldPassword")
 		newPassword := r.PostFormValue("newPassword")
 		confirmPassword := r.PostFormValue("confirmPassword")
@@ -148,7 +145,6 @@ func (uh *userHandler) UpdatePasswordByStudentID(w http.ResponseWriter, r *http.
 			response.Render(w, "member/password_edit.html", info, body)
 			return
 		}
-		// log.Println("success update password")
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 	response.Render(w, "member/password_edit.html", info, body)
@@ -187,7 +183,6 @@ func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
 		}
 
 		auth.SetNewCookie(w, token)
-		// log.Println("redirect")
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 	response.Render(w, "login.html", info, body)
@@ -289,19 +284,6 @@ func (uh *userHandler) AdminGetByID(w http.ResponseWriter, r *http.Request) {
 func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	info := createInfo(r, "members", auth.GetStudentIDFromCookie(r))
 
-	// gradeMap := map[string]string{
-	// 	"2": "学部2年",
-	// 	"3": "学部3年",
-	// 	"4": "学部4年",
-	// 	"5": "大学院1年",
-	// 	"6": "大学院2年",
-	// 	"0": "卒業生",
-	// }
-	// roleMap := map[string]string{
-	// 	"member": "member",
-	// 	"admin":  "admin",
-	// 	"owner":  "owner",
-	// }
 	// create form
 	body := []*FormField{
 		createFormField("name", "", "名前", "text", nil),
@@ -315,7 +297,6 @@ func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		// log.Println("user update: post")
 		name := r.PostFormValue("name")
 		studentID := r.PostFormValue("studentID")
 		department := r.PostFormValue("department")
@@ -345,7 +326,6 @@ func (uh *userHandler) AdminCreate(w http.ResponseWriter, r *http.Request) {
 			response.InternalServerError(w, info)
 			return
 		}
-		// log.Println("success create!")
 		http.Redirect(w, r, fmt.Sprintf("/admin/members/%d", id), http.StatusSeeOther)
 	}
 	response.AdminRender(w, "edit.html", info, body)
@@ -366,13 +346,7 @@ func (uh *userHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 		response.InternalServerError(w, info)
 		return
 	}
-	// roleMap := map[string]string{
-	// 	"member": "member",
-	// 	"admin":  "admin",
-	// 	"owner":  "owner",
-	// }
 	// create form
-	// TODO: デフォルトの値をば...
 	body := []*FormField{
 		createFormField("name", user.Name, "名前", "text", nil),
 		createFormField("studentID", user.StudentID, "学籍番号", "text", nil),
@@ -408,7 +382,6 @@ func (uh *userHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Request) {
 			response.InternalServerError(w, info)
 			return
 		}
-		// log.Println("success update!")
 		http.Redirect(w, r, fmt.Sprintf("/admin/members/%d", userID), http.StatusSeeOther)
 	}
 	response.AdminRender(w, "edit.html", info, body)
@@ -430,7 +403,6 @@ func (uh *userHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		// log.Println("post request: delete user")
 		err = uh.UserController.DeleteByID(id)
 		if err != nil {
 			log.Printf("[error] failed to delete: %v", err)
@@ -438,7 +410,6 @@ func (uh *userHandler) AdminDeleteByID(w http.ResponseWriter, r *http.Request) {
 			response.AdminRender(w, "delete.html", info, body)
 			return
 		}
-		// log.Println("success to delete user")
 		http.Redirect(w, r, "/admin/members", http.StatusSeeOther)
 	}
 	response.AdminRender(w, "delete.html", info, body)

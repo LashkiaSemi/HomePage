@@ -141,10 +141,6 @@ func (eh *equipmentHandler) AdminUpdateByID(w http.ResponseWriter, r *http.Reque
 		response.InternalServerError(w, info)
 		return
 	}
-	// tagsMap := map[string]string{}
-	// for _, tag := range tags.Tags {
-	// 	tagsMap[strconv.Itoa(tag.ID)] = tag.Name
-	// }
 	tagOptions := make([]*SelectFormOptions, 0, len(tags.Tags))
 	for _, tag := range tags.Tags {
 		tagOptions = append(tagOptions, &SelectFormOptions{
