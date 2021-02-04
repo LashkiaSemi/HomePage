@@ -54,7 +54,6 @@
                         <span>現在登録されているファイル: {{ .Value }}</span>
 
                         {{ else if eq .Type "checkbox" }}
-                        {{ .Value }}
                         <input name="{{ .Name }}" type="{{ .Type }}" value="{{ .Value }}" {{ if eq .Value "1" }}checked{{ end }}>
 
                         {{ end }}
