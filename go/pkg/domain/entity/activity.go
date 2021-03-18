@@ -18,6 +18,21 @@ type Activity struct {
 	UpdatedAt   string
 }
 
+// TODO: int -> bool
+func NewActivity(activity, showDate, date, annotation string, isImportant, isNotify int) *Activity {
+	now := time.Now().Format(configs.DateTimeFormat)
+	return &Activity{
+		Activity:    activity,
+		ShowDate:    showDate,
+		Date:        date,
+		Annotation:  annotation,
+		IsImportant: isImportant,
+		IsNotify:    isNotify,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+}
+
 func (a *Activity) Create(activity, showDate, date, annotation string, isImportant, isNotify int) {
 	a.Activity = activity
 	a.ShowDate = showDate

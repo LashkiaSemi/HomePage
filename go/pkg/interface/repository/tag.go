@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"homepage/pkg/entity"
+	"homepage/pkg/domain/entity"
 	"homepage/pkg/usecase/interactor"
 	"log"
 

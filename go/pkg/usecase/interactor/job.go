@@ -1,7 +1,7 @@
 package interactor
 
 import (
-	"homepage/pkg/entity"
+	"homepage/pkg/domain/entity"
 
 	"github.com/pkg/errors"
 )

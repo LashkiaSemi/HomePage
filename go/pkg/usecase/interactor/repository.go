@@ -1,8 +1,10 @@
 package interactor
 
 import (
-	"homepage/pkg/entity"
+	"homepage/pkg/domain/entity"
 )
+
+// TODO: ここのリポジトリ定義は使わない
 
 // UserRepository ユーザのDBアクセスを実現
 type UserRepository interface {
@@ -21,20 +23,20 @@ type UserRepository interface {
 }
 
 // ActivityRepository 活動内容のDBアクセスを実現
-type ActivityRepository interface {
-	FindAll() ([]*entity.Activity, error)
-	FindByID(id int) (*entity.Activity, error)
+// type ActivityRepository interface {
+// 	FindAll() ([]*entity.Activity, error)
+// 	FindByID(id int) (*entity.Activity, error)
 
-	// FindUpcoming お知らせ欄に乗る。
-	FindUpcoming() ([]*entity.Activity, error)
-	// FindByNotify is_notifyカラムがonのデータを取得
-	FindByNotify() ([]*entity.Activity, error)
+// 	// FindUpcoming お知らせ欄に乗る。
+// 	FindUpcoming() ([]*entity.Activity, error)
+// 	// FindByNotify is_notifyカラムがonのデータを取得
+// 	FindByNotify() ([]*entity.Activity, error)
 
-	Create(*entity.Activity) (int, error)
-	UpdateByID(*entity.Activity) error
+// 	Create(*entity.Activity) (int, error)
+// 	UpdateByID(*entity.Activity) error
 
-	DeleteByID(id int) error
-}
+// 	DeleteByID(id int) error
+// }
 
 // SocietyRepository 学会発表のDBアクセスを実現
 type SocietyRepository interface {

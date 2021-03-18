@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -36,7 +37,9 @@ func NewActivityHandler(sh repository.SQLHandler) ActivityHandler {
 	return &activityHandler{
 		ActivityController: controller.NewActivityController(
 			interactor.NewActivityInteractor(
-				repository.NewActivityRepository(sh),
+				service.NewActivity(
+					repository.NewActivityRepository(sh),
+				),
 			),
 		),
 	}

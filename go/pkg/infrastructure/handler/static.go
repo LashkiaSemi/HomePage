@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -25,7 +26,9 @@ func NewStaticPageHandler(sh repository.SQLHandler) StaticPageHandler {
 	return &staticPageHandler{
 		ActivityController: controller.NewActivityController(
 			interactor.NewActivityInteractor(
-				repository.NewActivityRepository(sh),
+				service.NewActivity(
+					repository.NewActivityRepository(sh),
+				),
 			),
 		),
 	}
