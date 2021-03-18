@@ -42,3 +42,5 @@ node_modules/
 note.md
 todo.md
 *.bak
+
+.env
