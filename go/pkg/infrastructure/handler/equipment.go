@@ -1,7 +1,9 @@
+//go:generate mockgen -source=$GOFILE -destination=../../../mock/$GOPACKAGE/$GOFILE -package=mock_$GOPACKAGE -build_flags=-mod=mod
 package handler
 
 import (
 	"fmt"
+	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -36,12 +38,16 @@ func NewEquipmentHandler(sh repository.SQLHandler) EquipmentHandler {
 	return &equipmentHandler{
 		EquipmentController: controller.NewEquipmentController(
 			interactor.NewEquipmentInteractor(
-				repository.NewEquipmentRepository(sh),
+				service.NewEquipment(
+					repository.NewEquipmentRepository(sh),
+				),
 			),
 		),
 		TagController: controller.NewTagController(
 			interactor.NewTagInteractor(
-				repository.NewTagRepository(sh),
+				service.NewTag(
+					repository.NewTagRepository(sh),
+				),
 			),
 		),
 	}

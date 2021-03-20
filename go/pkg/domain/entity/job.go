@@ -2,6 +2,7 @@ package entity
 
 import (
 	"homepage/pkg/configs"
+	"homepage/pkg/helper"
 	"time"
 )
 
@@ -14,11 +15,14 @@ type Job struct {
 	UpdatedAt string
 }
 
-func (j *Job) Create(company, job string) {
-	j.Company = company
-	j.Job = job
-	j.CreatedAt = time.Now().Format(configs.DateTimeFormat)
-	j.UpdatedAt = j.CreatedAt
+func NewJob(company, job string) *Job {
+	now := helper.FormattedDateTimeNow()
+	return &Job{
+		Company:   company,
+		Job:       job,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
 }
 
 func (j Job) Update(company, job string) *Job {

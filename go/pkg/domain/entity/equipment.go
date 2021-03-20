@@ -2,6 +2,7 @@ package entity
 
 import (
 	"homepage/pkg/configs"
+	"homepage/pkg/helper"
 	"time"
 )
 
@@ -16,15 +17,18 @@ type Equipment struct {
 	UpdatedAt string
 }
 
-func (e *Equipment) Create(name, comment string, stock, tagID int) {
-	tag := Tag{}
-	tag.ID = tagID
-	e.Name = name
-	e.Stock = stock
-	e.Comment = comment
-	e.CreatedAt = time.Now().Format(configs.DateTimeFormat)
-	e.UpdatedAt = e.CreatedAt
-	e.Tag = &tag
+func NewEquipment(name, comment string, stock, tagID int) *Equipment {
+	now := helper.FormattedDateTimeNow()
+	return &Equipment{
+		Name:      name,
+		Stock:     stock,
+		Comment:   comment,
+		CreatedAt: now,
+		UpdatedAt: now,
+		Tag: &Tag{
+			ID: tagID,
+		},
+	}
 }
 
 func (e Equipment) Update(name, comment string, stock, tagID int) *Equipment {

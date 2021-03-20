@@ -2,6 +2,7 @@ package entity
 
 import (
 	"homepage/pkg/configs"
+	"homepage/pkg/helper"
 	"time"
 )
 
@@ -18,15 +19,19 @@ type Activity struct {
 	UpdatedAt   string
 }
 
-func (a *Activity) Create(activity, showDate, date, annotation string, isImportant, isNotify int) {
-	a.Activity = activity
-	a.ShowDate = showDate
-	a.Date = date
-	a.Annotation = annotation
-	a.IsImportant = isImportant
-	a.IsNotify = isNotify
-	a.CreatedAt = time.Now().Format(configs.DateTimeFormat)
-	a.UpdatedAt = a.CreatedAt
+// TODO: int -> bool
+func NewActivity(activity, showDate, date, annotation string, isImportant, isNotify int) *Activity {
+	now := helper.FormattedDateTimeNow()
+	return &Activity{
+		Activity:    activity,
+		ShowDate:    showDate,
+		Date:        date,
+		Annotation:  annotation,
+		IsImportant: isImportant,
+		IsNotify:    isNotify,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
 }
 
 func (a Activity) Update(activity, showDate, date, annotation string, isImportant, isNotify int) *Activity {

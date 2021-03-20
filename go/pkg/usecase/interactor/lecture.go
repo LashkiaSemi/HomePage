@@ -1,13 +1,16 @@
+//go:generate mockgen -source=$GOFILE -destination=../../../mock/$GOPACKAGE/$GOFILE -package=mock_$GOPACKAGE -build_flags=-mod=mod
 package interactor
 
 import (
-	"homepage/pkg/entity"
+	"homepage/pkg/domain/entity"
+	"homepage/pkg/domain/service"
 
 	"github.com/pkg/errors"
 )
 
 type lectureInteractor struct {
-	LectureRepository
+	srv  service.Lecture
+	user service.User
 }
 
 // LectureInteractor レクチャーのユースケースを実装
@@ -20,62 +23,43 @@ type LectureInteractor interface {
 }
 
 // NewLectureInteractor インタラクタの作成
-func NewLectureInteractor(lr LectureRepository) LectureInteractor {
+func NewLectureInteractor(srv service.Lecture, user service.User) LectureInteractor {
 	return &lectureInteractor{
-		LectureRepository: lr,
+		srv:  srv,
+		user: user,
 	}
 }
 
 func (li *lectureInteractor) GetAll() ([]*entity.Lecture, error) {
-	return li.LectureRepository.FindAll()
+	return li.srv.GetAll()
 }
 
 func (li *lectureInteractor) GetByID(id int) (*entity.Lecture, error) {
-	return li.LectureRepository.FindByID(id)
+	return li.GetByID(id)
 }
 
 func (li *lectureInteractor) Create(studentID, title, file, comment string, activation int) (int, error) {
-	author, err := li.LectureRepository.FindAuthorByStudentID(studentID)
+	author, err := li.user.GetByStudentID(studentID)
 	if err != nil {
-		err = errors.Wrap(err, "failed to get author")
-		return 0, err
+		return 0, errors.Wrap(err, "failed to get author")
 	}
 
-	lecture := entity.Lecture{}
-	lecture.Create(title, file, comment, activation, author)
-
-	id, err := li.LectureRepository.Create(&lecture)
+	id, err := li.srv.Create(title, file, comment, activation, author)
 	if err != nil {
-		err = errors.Wrap(err, "failed to insert db")
-		return 0, err
+		return 0, errors.Wrap(err, "failed to insert db")
 	}
 	return id, nil
 }
 
 func (li *lectureInteractor) UpdateByID(id int, studentID, title, file, comment string, activation int) error {
-	author, err := li.LectureRepository.FindAuthorByStudentID(studentID)
+	author, err := li.user.GetByStudentID(studentID)
 	if err != nil {
 		err = errors.Wrap(err, "failed to get autho")
 		return err
 	}
-	lecture, err := li.LectureRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "failed to original data")
-		return err
-	}
-
-	newLecture := lecture.Update(title, file, comment, activation, author)
-
-	// 永続化
-	err = li.LectureRepository.UpdateByID(newLecture)
-	if err != nil {
-		err = errors.Wrap(err, "failed to update db")
-		return err
-	}
-	return nil
-
+	return li.srv.UpdateByID(id, title, file, comment, activation, author)
 }
 
 func (li *lectureInteractor) DeleteByID(id int) error {
-	return li.LectureRepository.DeleteByID(id)
+	return li.srv.DeleteByID(id)
 }

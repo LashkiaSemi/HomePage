@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"homepage/pkg/entity"
-	"homepage/pkg/usecase/interactor"
+	"homepage/pkg/domain/entity"
+	"homepage/pkg/domain/repository"
 	"log"
 
 	"github.com/pkg/errors"
@@ -13,7 +13,7 @@ type jobRepository struct {
 }
 
 // NewJobRepository リポジトリの作成
-func NewJobRepository(sh SQLHandler) interactor.JobRepository {
+func NewJobRepository(sh SQLHandler) repository.JobRepository {
 	return &jobRepository{
 		SQLHandler: sh,
 	}

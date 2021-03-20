@@ -1,72 +1,47 @@
+//go:generate mockgen -source=$GOFILE -destination=../../../mock/$GOPACKAGE/$GOFILE -package=mock_$GOPACKAGE -build_flags=-mod=mod
 package interactor
 
 import (
-	"homepage/pkg/entity"
-
-	"github.com/pkg/errors"
+	"homepage/pkg/domain/entity"
+	"homepage/pkg/domain/service"
 )
 
 type societyInteractor struct {
-	SocietyRepository
+	srv service.Society
 }
 
 // SocietyInteractor 学会発表のユースケースを実装
 type SocietyInteractor interface {
 	GetAll() ([]*entity.Society, error)
 	GetByID(id int) (*entity.Society, error)
-
 	Create(title, author, society, award, date string) (int, error)
 	UpdateByID(id int, title, author, society, award, date string) error
-
 	DeleteByID(id int) error
 }
 
 // NewSocietyInteractor インタラクタの作成
-func NewSocietyInteractor(sr SocietyRepository) SocietyInteractor {
+func NewSocietyInteractor(srv service.Society) SocietyInteractor {
 	return &societyInteractor{
-		SocietyRepository: sr,
+		srv: srv,
 	}
 }
 
 func (si *societyInteractor) GetAll() ([]*entity.Society, error) {
-	return si.SocietyRepository.FindAll()
+	return si.srv.GetAll()
 }
 
 func (si *societyInteractor) GetByID(id int) (*entity.Society, error) {
-	return si.SocietyRepository.FindByID(id)
+	return si.srv.GetByID(id)
 }
 
 func (si *societyInteractor) Create(title, author, society, award, date string) (int, error) {
-	// create obj
-	data := entity.Society{}
-	data.Create(title, author, society, award, date)
-
-	// insert db
-	id, err := si.SocietyRepository.Create(&data)
-	if err != nil {
-		err = errors.Wrap(err, "failed to insert db")
-		return 0, err
-	}
-	return id, nil
+	return si.srv.Create(title, author, society, award, date)
 }
 
 func (si *societyInteractor) UpdateByID(id int, title, author, society, award, date string) error {
-	data, err := si.SocietyRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "failed to get original data")
-		return err
-	}
-	newData := data.Update(title, author, society, award, date)
-
-	// update db
-	err = si.SocietyRepository.UpdateByID(newData)
-	if err != nil {
-		err = errors.Wrap(err, "failed to update db")
-		return err
-	}
-	return nil
+	return si.srv.UpdateByID(id, title, author, society, award, date)
 }
 
 func (si *societyInteractor) DeleteByID(id int) error {
-	return si.SocietyRepository.DeleteByID(id)
+	return si.srv.DeleteByID(id)
 }

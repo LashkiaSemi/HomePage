@@ -1,13 +1,13 @@
+//go:generate mockgen -source=$GOFILE -destination=../../../mock/$GOPACKAGE/$GOFILE -package=mock_$GOPACKAGE -build_flags=-mod=mod
 package interactor
 
 import (
-	"homepage/pkg/entity"
-
-	"github.com/pkg/errors"
+	"homepage/pkg/domain/entity"
+	"homepage/pkg/domain/service"
 )
 
 type tagInteractor struct {
-	TagRepository
+	srv service.Tag
 }
 
 // TagInteractor タグ関連のユースケースを実現
@@ -22,46 +22,28 @@ type TagInteractor interface {
 }
 
 // NewTagInteractor インタラクタの作成
-func NewTagInteractor(tr TagRepository) TagInteractor {
+func NewTagInteractor(srv service.Tag) TagInteractor {
 	return &tagInteractor{
-		TagRepository: tr,
+		srv: srv,
 	}
 }
 
 func (ti *tagInteractor) GetAll() ([]*entity.Tag, error) {
-	return ti.TagRepository.FindAll()
+	return ti.srv.GetAll()
 }
 
 func (ti *tagInteractor) GetByID(id int) (*entity.Tag, error) {
-	return ti.TagRepository.FindByID(id)
+	return ti.srv.GetByID(id)
 }
 
 func (ti *tagInteractor) Create(name string) (int, error) {
-	tag := entity.Tag{}
-	tag.Create(name)
-
-	id, err := ti.TagRepository.Create(&tag)
-	if err != nil {
-		err = errors.Wrap(err, "failed to insert db")
-	}
-	return id, err
+	return ti.srv.Create(name)
 }
 
 func (ti *tagInteractor) UpdateByID(id int, name string) error {
-	tag, err := ti.TagRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "failed to get original data")
-		return err
-	}
-	newTag := tag.Update(name)
-
-	err = ti.TagRepository.UpdateByID(newTag)
-	if err != nil {
-		err = errors.Wrap(err, "failed to update db")
-	}
-	return err
+	return ti.srv.UpdateByID(id, name)
 }
 
 func (ti *tagInteractor) DeleteByID(id int) error {
-	return ti.TagRepository.DeleteByID(id)
+	return ti.srv.DeleteByID(id)
 }

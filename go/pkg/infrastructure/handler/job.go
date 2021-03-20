@@ -1,7 +1,9 @@
+//go:generate mockgen -source=$GOFILE -destination=../../../mock/$GOPACKAGE/$GOFILE -package=mock_$GOPACKAGE -build_flags=-mod=mod
 package handler
 
 import (
 	"fmt"
+	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -36,7 +38,9 @@ func NewJobHandler(sh repository.SQLHandler) JobHandler {
 	return &jobHandler{
 		JobController: controller.NewJobController(
 			interactor.NewJobInteractor(
-				repository.NewJobRepository(sh),
+				service.NewJob(
+					repository.NewJobRepository(sh),
+				),
 			),
 		),
 	}

@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"homepage/pkg/entity"
-	"homepage/pkg/usecase/interactor"
+	"homepage/pkg/domain/entity"
+	"homepage/pkg/domain/repository"
 	"log"
 
 	"github.com/pkg/errors"
@@ -13,7 +13,7 @@ type equipmentRepository struct {
 }
 
 // NewEquipmentRepository リポジトリの作成
-func NewEquipmentRepository(sh SQLHandler) interactor.EquipmentRepository {
+func NewEquipmentRepository(sh SQLHandler) repository.EquipmentRepository {
 	return &equipmentRepository{
 		SQLHandler: sh,
 	}

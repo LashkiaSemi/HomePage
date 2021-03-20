@@ -1,9 +1,10 @@
+//go:generate mockgen -source=$GOFILE -destination=../../../mock/$GOPACKAGE/$GOFILE -package=mock_$GOPACKAGE -build_flags=-mod=mod
 package controller
 
 import (
 	"fmt"
 	"homepage/pkg/configs"
-	"homepage/pkg/entity"
+	"homepage/pkg/domain/entity"
 	"homepage/pkg/usecase/interactor"
 	"strconv"
 

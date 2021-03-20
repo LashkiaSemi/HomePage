@@ -4,3 +4,7 @@ build:
 
 test:
 	go test ./...
+
+generate:
+	rm -rf mock/
+	go generate ./...

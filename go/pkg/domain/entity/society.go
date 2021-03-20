@@ -2,6 +2,7 @@ package entity
 
 import (
 	"homepage/pkg/configs"
+	"homepage/pkg/helper"
 	"time"
 )
 
@@ -17,14 +18,17 @@ type Society struct {
 	UpdatedAt string
 }
 
-func (s *Society) Create(title, author, society, award, date string) {
-	s.Title = title
-	s.Author = author
-	s.Society = society
-	s.Award = award
-	s.Date = date
-	s.CreatedAt = time.Now().Format(configs.DateTimeFormat)
-	s.UpdatedAt = s.CreatedAt
+func NewSociety(title, author, society, award, date string) *Society {
+	now := helper.FormattedDateTimeNow()
+	return &Society{
+		Title:     title,
+		Author:    author,
+		Society:   society,
+		Award:     award,
+		Date:      date,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
 }
 
 func (s Society) Update(title, author, society, award, date string) *Society {

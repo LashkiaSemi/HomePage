@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"homepage/pkg/entity"
-	"homepage/pkg/usecase/interactor"
+	"homepage/pkg/domain/entity"
+	"homepage/pkg/domain/repository"
 	"log"
 
 	"github.com/pkg/errors"
@@ -13,7 +13,7 @@ type userRepository struct {
 }
 
 // NewUserRepository リポジトリの作成
-func NewUserRepository(sh SQLHandler) interactor.UserRepository {
+func NewUserRepository(sh SQLHandler) repository.UserRepository {
 	return &userRepository{
 		SQLHandler: sh,
 	}

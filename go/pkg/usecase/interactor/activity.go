@@ -1,13 +1,15 @@
+//go:generate mockgen -source=$GOFILE -destination=../../../mock/$GOPACKAGE/$GOFILE -package=mock_$GOPACKAGE -build_flags=-mod=mod
 package interactor
 
 import (
-	"homepage/pkg/entity"
+	"homepage/pkg/domain/entity"
+	"homepage/pkg/domain/service"
 
 	"github.com/pkg/errors"
 )
 
 type activityInteractor struct {
-	ActivityRepository
+	srv service.Activity
 }
 
 // ActivityInteractor 活動内容のユースケースを実現
@@ -24,52 +26,39 @@ type ActivityInteractor interface {
 }
 
 // NewActivityInteractor インタラクタの作成
-func NewActivityInteractor(ar ActivityRepository) ActivityInteractor {
+func NewActivityInteractor(as service.Activity) ActivityInteractor {
 	return &activityInteractor{
-		ActivityRepository: ar,
+		srv: as,
 	}
 }
 
 func (ai *activityInteractor) GetAll() ([]*entity.Activity, error) {
-	return ai.ActivityRepository.FindAll()
+	return ai.srv.GetAll()
 }
 
 func (ai *activityInteractor) GetByID(id int) (*entity.Activity, error) {
-	return ai.ActivityRepository.FindByID(id)
+	return ai.srv.GetByID(id)
 }
 
 func (ai *activityInteractor) GetUpcoming() ([]*entity.Activity, error) {
-	return ai.ActivityRepository.FindUpcoming()
+	return ai.srv.GetUpcoming()
 }
 
 func (ai *activityInteractor) GetForNotification() ([]*entity.Activity, error) {
-	return ai.ActivityRepository.FindByNotify()
+	return ai.srv.GetForNotification()
 }
 
 func (ai *activityInteractor) Create(activity, showDate, date, annotation string, isImportant, isNotify int) (int, error) {
-	// create obj
-	act := entity.Activity{}
-	act.Create(activity, showDate, date, annotation, isImportant, isNotify)
-
-	// insert db
-	id, err := ai.ActivityRepository.Create(&act)
+	id, err := ai.srv.Create(activity, showDate, date, annotation, isImportant, isNotify)
 	if err != nil {
-		err = errors.Wrap(err, "failed to insert db")
+		err = errors.Wrap(err, "failed to create activity")
 		return 0, err
 	}
 	return id, nil
 }
 
 func (ai *activityInteractor) UpdateByID(id int, activity, showDate, date, annotation string, isImportant, isNotify int) error {
-	data, err := ai.ActivityRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "failed to get original data")
-		return err
-	}
-	newData := data.Update(activity, showDate, date, annotation, isImportant, isNotify)
-
-	// update db
-	err = ai.ActivityRepository.UpdateByID(newData)
+	err := ai.srv.UpdateByID(id, activity, showDate, date, annotation, isImportant, isNotify)
 	if err != nil {
 		err = errors.Wrap(err, "failed to update db")
 	}
@@ -77,5 +66,5 @@ func (ai *activityInteractor) UpdateByID(id int, activity, showDate, date, annot
 }
 
 func (ai *activityInteractor) DeleteByID(id int) error {
-	return ai.ActivityRepository.DeleteByID(id)
+	return ai.srv.DeleteByID(id)
 }

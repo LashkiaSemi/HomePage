@@ -1,13 +1,13 @@
+//go:generate mockgen -source=$GOFILE -destination=../../../mock/$GOPACKAGE/$GOFILE -package=mock_$GOPACKAGE -build_flags=-mod=mod
 package interactor
 
 import (
-	"homepage/pkg/entity"
-
-	"github.com/pkg/errors"
+	"homepage/pkg/domain/entity"
+	"homepage/pkg/domain/service"
 )
 
 type equipmentInteractor struct {
-	EquipmentRepository
+	srv service.Equipment
 }
 
 // EquipmentInteractor 備品のユースケースを実現
@@ -21,52 +21,29 @@ type EquipmentInteractor interface {
 }
 
 // NewEquipmentInteractor インタラクタの作成
-func NewEquipmentInteractor(er EquipmentRepository) EquipmentInteractor {
+func NewEquipmentInteractor(srv service.Equipment) EquipmentInteractor {
 	return &equipmentInteractor{
-		EquipmentRepository: er,
+		srv: srv,
 	}
 }
 
 func (ei *equipmentInteractor) GetAll() ([]*entity.Equipment, error) {
-	return ei.EquipmentRepository.FindAll()
+	return ei.srv.GetAll()
 }
 
 func (ei *equipmentInteractor) GetByID(id int) (*entity.Equipment, error) {
-	return ei.EquipmentRepository.FindByID(id)
+	return ei.srv.GetByID(id)
 
 }
 
 func (ei *equipmentInteractor) Create(name, comment string, stock, tagID int) (int, error) {
-	// create obj
-	equ := entity.Equipment{}
-	equ.Create(name, comment, stock, tagID)
-
-	// insert db
-	id, err := ei.EquipmentRepository.Create(&equ)
-	if err != nil {
-		err = errors.Wrap(err, "failed to insert db")
-		return 0, err
-	}
-	return id, nil
+	return ei.srv.Create(name, comment, stock, tagID)
 }
 
 func (ei *equipmentInteractor) UpdateByID(id int, name, comment string, stock, tagID int) error {
-	data, err := ei.EquipmentRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "failed to get original data")
-		return err
-	}
-	newData := data.Update(name, comment, stock, tagID)
-
-	// update db
-	err = ei.EquipmentRepository.UpdateByID(newData)
-	if err != nil {
-		err = errors.Wrap(err, "failed to update db")
-		return err
-	}
-	return nil
+	return ei.srv.UpdateByID(id, name, comment, stock, tagID)
 }
 
 func (ei *equipmentInteractor) DeleteByID(id int) error {
-	return ei.EquipmentRepository.DeleteByID(id)
+	return ei.srv.DeleteByID(id)
 }
