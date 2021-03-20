@@ -34,7 +34,6 @@ go/public/
 go/bin
 go.mod
 go.sum
-go/mock
 
 # node
 node_modules/
