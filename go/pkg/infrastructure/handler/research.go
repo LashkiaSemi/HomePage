@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"homepage/pkg/configs"
+	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -37,7 +38,9 @@ func NewResearchHandler(sh repository.SQLHandler) ResearchHandler {
 	return &researchHandler{
 		ResearchController: controller.NewResearchController(
 			interactor.NewResearchInteractor(
-				repository.NewResearchRepository(sh),
+				service.NewResearch(
+					repository.NewResearchRepository(sh),
+				),
 			),
 		),
 	}

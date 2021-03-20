@@ -1,8 +1,7 @@
 package entity
 
 import (
-	"homepage/pkg/configs"
-	"time"
+	"homepage/pkg/helper"
 )
 
 // Lecture レクチャーのモデル
@@ -17,14 +16,17 @@ type Lecture struct {
 	UpdatedAt  string
 }
 
-func (l *Lecture) Create(title, file, comment string, activation int, author *User) {
-	l.Title = title
-	l.File = file
-	l.Comment = comment
-	l.Activation = activation
-	l.CreatedAt = time.Now().Format(configs.DateTimeFormat)
-	l.UpdatedAt = l.CreatedAt
-	l.Author = author
+func NewLecture(title, file, comment string, activation int, author *User) *Lecture {
+	now := helper.FormattedDateTimeNow()
+	return &Lecture{
+		Title:      title,
+		Author:     author,
+		File:       file,
+		Comment:    comment,
+		Activation: activation,
+		CreatedAt:  now,
+		UpdatedAt:  now,
+	}
 }
 
 func (l Lecture) Update(title, file, comment string, activation int, author *User) *Lecture {

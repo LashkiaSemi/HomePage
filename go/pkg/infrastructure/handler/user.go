@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"homepage/pkg/configs"
+	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -43,8 +44,10 @@ func NewUserHandler(sh repository.SQLHandler) UserHandler {
 	return &userHandler{
 		UserController: controller.NewUserController(
 			interactor.NewUserInteractor(
-				repository.NewUserRepository(sh),
-				auth.NewVerifyHandler(),
+				service.NewUser(
+					repository.NewUserRepository(sh),
+					auth.NewVerifyHandler(),
+				),
 			),
 		),
 	}

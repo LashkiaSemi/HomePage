@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"homepage/pkg/configs"
+	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -40,13 +41,21 @@ func NewLectureHandler(sh repository.SQLHandler) LectureHandler {
 	return &lectureHandler{
 		LectureController: controller.NewLectureController(
 			interactor.NewLectureInteractor(
-				repository.NewLectureRepository(sh),
+				service.NewLecture(
+					repository.NewLectureRepository(sh),
+				),
+				service.NewUser(
+					repository.NewUserRepository(sh),
+					auth.NewVerifyHandler(),
+				),
 			),
 		),
 		UserController: controller.NewUserController(
 			interactor.NewUserInteractor(
-				repository.NewUserRepository(sh),
-				auth.NewVerifyHandler(),
+				service.NewUser(
+					repository.NewUserRepository(sh),
+					auth.NewVerifyHandler(),
+				),
 			),
 		),
 	}

@@ -2,6 +2,7 @@ package entity
 
 import (
 	"homepage/pkg/configs"
+	"homepage/pkg/helper"
 	"time"
 )
 
@@ -13,10 +14,13 @@ type Tag struct {
 	UpdatedAt string
 }
 
-func (t *Tag) Create(name string) {
-	t.Name = name
-	t.CreatedAt = time.Now().Format(configs.DateTimeFormat)
-	t.UpdatedAt = t.CreatedAt
+func NewTag(name string) *Tag {
+	now := helper.FormattedDateTimeNow()
+	return &Tag{
+		Name:      name,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
 }
 
 func (t Tag) Update(name string) *Tag {

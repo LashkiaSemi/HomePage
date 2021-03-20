@@ -2,7 +2,7 @@ package repository
 
 import (
 	"homepage/pkg/domain/entity"
-	"homepage/pkg/usecase/interactor"
+	"homepage/pkg/domain/repository"
 	"log"
 
 	"github.com/pkg/errors"
@@ -13,7 +13,7 @@ type societyRepository struct {
 }
 
 // NewSocietyRepository リポジトリの作成
-func NewSocietyRepository(sh SQLHandler) interactor.SocietyRepository {
+func NewSocietyRepository(sh SQLHandler) repository.SocietyRepository {
 	return &societyRepository{
 		SQLHandler: sh,
 	}

@@ -1,4 +1,4 @@
-package interactor
+package service
 
 // VerifyHandler パスワード検証を行うハンドラ
 type VerifyHandler interface {

@@ -2,6 +2,7 @@ package entity
 
 import (
 	"homepage/pkg/configs"
+	"homepage/pkg/helper"
 	"time"
 )
 
@@ -17,14 +18,17 @@ type Research struct {
 	UpdatedAt  string
 }
 
-func (r *Research) Create(title, author, file, comment string, activation int) {
-	r.Title = title
-	r.Author = author
-	r.File = file
-	r.Comment = comment
-	r.Activation = activation
-	r.CreatedAt = time.Now().Format(configs.DateTimeFormat)
-	r.UpdatedAt = r.CreatedAt
+func NewResearch(title, author, file, comment string, activation int) *Research {
+	now := helper.FormattedDateTimeNow()
+	return &Research{
+		Title:      title,
+		Author:     author,
+		File:       file,
+		Comment:    comment,
+		Activation: activation,
+		CreatedAt:  now,
+		UpdatedAt:  now,
+	}
 }
 
 func (r Research) Update(title, author, file, comment string, activation int) *Research {

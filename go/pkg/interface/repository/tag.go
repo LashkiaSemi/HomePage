@@ -2,7 +2,7 @@ package repository
 
 import (
 	"homepage/pkg/domain/entity"
-	"homepage/pkg/usecase/interactor"
+	"homepage/pkg/domain/repository"
 	"log"
 
 	"github.com/pkg/errors"
@@ -13,7 +13,7 @@ type tagRepository struct {
 }
 
 // NewTagRepository リポジトリの作成
-func NewTagRepository(sh SQLHandler) interactor.TagRepository {
+func NewTagRepository(sh SQLHandler) repository.TagRepository {
 	return &tagRepository{
 		SQLHandler: sh,
 	}

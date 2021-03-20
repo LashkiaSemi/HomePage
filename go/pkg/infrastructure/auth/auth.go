@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"homepage/pkg/usecase/interactor"
+	"homepage/pkg/domain/service"
 
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
@@ -10,7 +10,7 @@ import (
 type verifyHandler struct{}
 
 // NewVerifyHandler パスワード周りを担当するハンドラを作成
-func NewVerifyHandler() interactor.VerifyHandler {
+func NewVerifyHandler() service.VerifyHandler {
 	return &verifyHandler{}
 }
 

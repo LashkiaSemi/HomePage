@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"homepage/pkg/domain/service"
 	"homepage/pkg/infrastructure/auth"
 	"homepage/pkg/infrastructure/server/response"
 	"homepage/pkg/interface/controller"
@@ -36,7 +37,9 @@ func NewTagHandler(sh repository.SQLHandler) TagHandler {
 	return &tagHandler{
 		TagController: controller.NewTagController(
 			interactor.NewTagInteractor(
-				repository.NewTagRepository(sh),
+				service.NewTag(
+					repository.NewTagRepository(sh),
+				),
 			),
 		),
 	}

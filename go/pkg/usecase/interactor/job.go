@@ -2,71 +2,45 @@ package interactor
 
 import (
 	"homepage/pkg/domain/entity"
-
-	"github.com/pkg/errors"
+	"homepage/pkg/domain/service"
 )
 
 type jobInteractor struct {
-	JobRepository
+	srv service.Job
 }
 
 // JobInteractor 就職先のユースケースを実装
 type JobInteractor interface {
 	GetAll() ([]*entity.Job, error)
 	GetByID(id int) (*entity.Job, error)
-
 	Create(company, job string) (int, error)
 	UpdateByID(id int, company, job string) error
-
 	DeleteByID(id int) error
 }
 
 // NewJobInteractor インタラクタの作成
-func NewJobInteractor(jr JobRepository) JobInteractor {
+func NewJobInteractor(srv service.Job) JobInteractor {
 	return &jobInteractor{
-		JobRepository: jr,
+		srv: srv,
 	}
 }
 
 func (ji *jobInteractor) GetAll() ([]*entity.Job, error) {
-	return ji.JobRepository.FindAll()
+	return ji.srv.GetAll()
 }
 
 func (ji *jobInteractor) GetByID(id int) (*entity.Job, error) {
-	return ji.JobRepository.FindByID(id)
+	return ji.srv.GetByID(id)
 }
 
 func (ji *jobInteractor) Create(company, job string) (int, error) {
-	// create obj
-	data := entity.Job{}
-	data.Create(company, job)
-
-	// insert db
-	id, err := ji.JobRepository.Create(&data)
-	if err != nil {
-		err = errors.Wrap(err, "failed to insert db")
-		return 0, err
-	}
-	return id, nil
+	return ji.srv.Create(company, job)
 }
 
 func (ji *jobInteractor) UpdateByID(id int, company, job string) error {
-	data, err := ji.JobRepository.FindByID(id)
-	if err != nil {
-		err = errors.Wrap(err, "failed to get original data")
-		return err
-	}
-	newData := data.Update(company, job)
-
-	// update db
-	err = ji.JobRepository.UpdateByID(newData)
-	if err != nil {
-		err = errors.Wrap(err, "failed to update db")
-		return err
-	}
-	return nil
+	return ji.srv.UpdateByID(id, company, job)
 }
 
 func (ji *jobInteractor) DeleteByID(id int) error {
-	return ji.JobRepository.DeleteByID(id)
+	return ji.srv.DeleteByID(id)
 }
