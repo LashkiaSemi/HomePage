@@ -1,3 +1,4 @@
+//go:generate mockgen -source=$GOFILE -destination=../../../mock/$GOPACKAGE/$GOFILE -package=mock_$GOPACKAGE -build_flags=-mod=mod
 package service
 
 // VerifyHandler パスワード検証を行うハンドラ
