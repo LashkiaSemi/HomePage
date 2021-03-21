@@ -1,27 +1,28 @@
 package configs
 
 import (
-	"os"
 	"log"
+	"os"
+
 	"github.com/joho/godotenv"
 )
 
 // 環境変数から設定する変数たち
 var (
-	DBUser string
+	DBUser     string
 	DBPassword string
 	DBProtocol string
-	DBTarget string
-	DBName string
+	DBTarget   string
+	DBName     string
 
 	JWTSecret string
 )
 
 // init 環境変数から読み込みが必要なものを初期化
 func init() {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("[error] failed to get dotenv file")
+		log.Fatal("[error] failed to find dotenv file")
 	}
 
 	// db関連

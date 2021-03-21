@@ -7,7 +7,7 @@ import (
 )
 
 func TestUser_IsAdmin(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 
 	tests := []struct {
 		name string
