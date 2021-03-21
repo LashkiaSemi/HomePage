@@ -1,9 +1,7 @@
 package entity
 
 import (
-	"homepage/pkg/configs"
 	"homepage/pkg/helper"
-	"time"
 )
 
 // Job 就職先
@@ -28,6 +26,6 @@ func NewJob(company, job string) *Job {
 func (j Job) Update(company, job string) *Job {
 	j.Company = company
 	j.Job = job
-	j.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
+	j.UpdatedAt = helper.FormattedDateTimeNow()
 	return &j
 }

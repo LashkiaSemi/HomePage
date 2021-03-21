@@ -1,9 +1,7 @@
 package entity
 
 import (
-	"homepage/pkg/configs"
 	"homepage/pkg/helper"
-	"time"
 )
 
 // Tag タグ
@@ -25,6 +23,6 @@ func NewTag(name string) *Tag {
 
 func (t Tag) Update(name string) *Tag {
 	t.Name = name
-	t.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
+	t.UpdatedAt = helper.FormattedDateTimeNow()
 	return &t
 }

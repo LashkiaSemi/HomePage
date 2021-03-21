@@ -1,9 +1,7 @@
 package entity
 
 import (
-	"homepage/pkg/configs"
 	"homepage/pkg/helper"
-	"time"
 )
 
 // Equipment 備品
@@ -36,6 +34,6 @@ func (e Equipment) Update(name, comment string, stock, tagID int) *Equipment {
 	e.Comment = comment
 	e.Stock = stock
 	e.Tag.ID = tagID
-	e.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
+	e.UpdatedAt = helper.FormattedDateTimeNow()
 	return &e
 }

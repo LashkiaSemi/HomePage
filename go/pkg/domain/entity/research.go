@@ -1,9 +1,7 @@
 package entity
 
 import (
-	"homepage/pkg/configs"
 	"homepage/pkg/helper"
-	"time"
 )
 
 // Research 卒業研究
@@ -37,6 +35,6 @@ func (r Research) Update(title, author, file, comment string, activation int) *R
 	r.File = file
 	r.Comment = comment
 	r.Activation = activation
-	r.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
+	r.UpdatedAt = helper.FormattedDateTimeNow()
 	return &r
 }
