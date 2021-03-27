@@ -35,7 +35,7 @@ func (li *lectureInteractor) GetAll() ([]*entity.Lecture, error) {
 }
 
 func (li *lectureInteractor) GetByID(id int) (*entity.Lecture, error) {
-	return li.GetByID(id)
+	return li.srv.GetByID(id)
 }
 
 func (li *lectureInteractor) Create(studentID, title, file, comment string, activation int) (int, error) {
