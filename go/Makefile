@@ -3,7 +3,7 @@ build:
 	go build -o bin/main cmd/main.go
 
 test:
-	go test --cover ./...
+	ENV=test go test --cover ./...
 
 generate:
 	rm -rf mock/

@@ -21,7 +21,7 @@ var (
 // init 環境変数から読み込みが必要なものを初期化
 func init() {
 	err := godotenv.Load(".env")
-	if err != nil {
+	if err != nil && os.Getenv("ENV") != "test" {
 		log.Fatal("[error] failed to find dotenv file")
 	}
 
