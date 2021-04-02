@@ -2,6 +2,7 @@
 package service
 
 import (
+	"errors"
 	"homepage/pkg/domain/entity"
 	"homepage/pkg/domain/repository"
 )
@@ -106,7 +107,7 @@ func (u *user) AdminAuthorizationByStudentID(studentID, password string) error {
 		return err
 	}
 	if !us.IsAdmin() {
-		return err
+		return errors.New("request user is not admin")
 	}
 	if err = u.vh.PasswordVerify(us.Password, password); err != nil {
 		return err

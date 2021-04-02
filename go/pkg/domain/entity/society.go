@@ -1,9 +1,7 @@
 package entity
 
 import (
-	"homepage/pkg/configs"
 	"homepage/pkg/helper"
-	"time"
 )
 
 // Society 学会発表
@@ -37,6 +35,6 @@ func (s Society) Update(title, author, society, award, date string) *Society {
 	s.Society = society
 	s.Award = award
 	s.Date = date
-	s.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
+	s.UpdatedAt = helper.FormattedDateTimeNow()
 	return &s
 }

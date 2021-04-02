@@ -35,5 +35,6 @@ func (l Lecture) Update(title, file, comment string, activation int, author *Use
 	l.Comment = comment
 	l.Activation = activation
 	l.Author = author
+	l.UpdatedAt = helper.FormattedDateTimeNow()
 	return &l
 }

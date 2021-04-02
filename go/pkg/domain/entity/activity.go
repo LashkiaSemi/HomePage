@@ -1,9 +1,7 @@
 package entity
 
 import (
-	"homepage/pkg/configs"
 	"homepage/pkg/helper"
-	"time"
 )
 
 // Activity 活動内容
@@ -41,6 +39,6 @@ func (a Activity) Update(activity, showDate, date, annotation string, isImportan
 	a.Annotation = annotation
 	a.IsImportant = isImportant
 	a.IsNotify = isNotify
-	a.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
+	a.UpdatedAt = helper.FormattedDateTimeNow()
 	return &a
 }

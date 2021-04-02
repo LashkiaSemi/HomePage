@@ -1,9 +1,7 @@
 package entity
 
 import (
-	"homepage/pkg/configs"
 	"homepage/pkg/helper"
-	"time"
 )
 
 // User ユーザ
@@ -42,7 +40,7 @@ func (u User) AdminUpdate(name, studentID, department, comment, role string, gra
 	u.Department = department
 	u.Comment = comment
 	u.Grade = grade
-	u.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
+	u.UpdatedAt = helper.FormattedDateTimeNow()
 	return &u
 }
 
@@ -53,7 +51,7 @@ func (u User) Update(name, studentID, department, comment string, grade int) *Us
 	res.Department = department
 	res.Comment = comment
 	res.Grade = grade
-	res.UpdatedAt = time.Now().Format(configs.DateTimeFormat)
+	res.UpdatedAt = helper.FormattedDateTimeNow()
 	return &res
 }
 

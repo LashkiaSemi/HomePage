@@ -11,7 +11,6 @@ import (
 type Equipment interface {
 	GetAll() ([]*entity.Equipment, error)
 	GetByID(id int) (*entity.Equipment, error)
-
 	Create(name, comment string, stock, tagID int) (int, error)
 	UpdateByID(id int, name, comment string, stock, tagID int) error
 	DeleteByID(id int) error
