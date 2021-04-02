@@ -1,9 +1,7 @@
 package controller
 
 import (
-	"fmt"
 	mock_interactor "homepage/mock/interactor"
-	"homepage/pkg/configs"
 	"homepage/pkg/domain/entity"
 	"testing"
 
@@ -12,39 +10,34 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	researchFilePrefix = fmt.Sprintf("%s/", configs.SaveResearchFileDir)
-)
-
-func TestResearch_GetAll(t *testing.T) {
+func TestTag_GetAll(t *testing.T) {
 	tests := []struct {
 		name     string
-		injector func(m *mock_interactor.MockResearchInteractor)
-		out      *ResearchesResponse
+		injector func(m *mock_interactor.MockTagInteractor)
+		out      *TagsResponse
 		checkErr func(t assert.TestingT, object interface{}, msgAndArgs ...interface{}) bool
 	}{
 		{
 			name: "failed to get",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
+			injector: func(m *mock_interactor.MockTagInteractor) {
 				m.EXPECT().GetAll().Return(nil, errors.New("some error"))
 			},
-			out:      &ResearchesResponse{},
+			out:      &TagsResponse{},
 			checkErr: assert.NotNil,
 		},
 		{
 			name: "success",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
-				m.EXPECT().GetAll().Return([]*entity.Research{
+			injector: func(m *mock_interactor.MockTagInteractor) {
+				m.EXPECT().GetAll().Return([]*entity.Tag{
 					{
 						ID: 1,
 					},
 				}, nil)
 			},
-			out: &ResearchesResponse{
-				Researches: []*ResearchResponse{
+			out: &TagsResponse{
+				Tags: []*TagResponse{
 					{
-						ID:       1,
-						FilePath: researchFilePrefix,
+						ID: 1,
 					},
 				},
 			},
@@ -57,9 +50,9 @@ func TestResearch_GetAll(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := mock_interactor.NewMockResearchInteractor(ctrl)
+			m := mock_interactor.NewMockTagInteractor(ctrl)
 			tt.injector(m)
-			c := NewResearchController(m)
+			c := NewTagController(m)
 			out, err := c.GetAll()
 			assert.Equal(t, tt.out, out)
 			tt.checkErr(t, err)
@@ -67,34 +60,33 @@ func TestResearch_GetAll(t *testing.T) {
 	}
 }
 
-func TestResearch_GetByID(t *testing.T) {
+func TestTag_GetByID(t *testing.T) {
 	tests := []struct {
 		name     string
-		injector func(m *mock_interactor.MockResearchInteractor)
+		injector func(m *mock_interactor.MockTagInteractor)
 		in       int
-		out      *ResearchResponse
+		out      *TagResponse
 		checkErr func(t assert.TestingT, object interface{}, msgAndArgs ...interface{}) bool
 	}{
 		{
 			name: "failed to get",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
+			injector: func(m *mock_interactor.MockTagInteractor) {
 				m.EXPECT().GetByID(1).Return(nil, errors.New("some error"))
 			},
 			in:       1,
-			out:      &ResearchResponse{},
+			out:      &TagResponse{},
 			checkErr: assert.NotNil,
 		},
 		{
 			name: "success",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
-				m.EXPECT().GetByID(1).Return(&entity.Research{
+			injector: func(m *mock_interactor.MockTagInteractor) {
+				m.EXPECT().GetByID(1).Return(&entity.Tag{
 					ID: 1,
 				}, nil)
 			},
 			in: 1,
-			out: &ResearchResponse{
-				ID:       1,
-				FilePath: researchFilePrefix,
+			out: &TagResponse{
+				ID: 1,
 			},
 			checkErr: assert.Nil,
 		},
@@ -105,9 +97,9 @@ func TestResearch_GetByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := mock_interactor.NewMockResearchInteractor(ctrl)
+			m := mock_interactor.NewMockTagInteractor(ctrl)
 			tt.injector(m)
-			c := NewResearchController(m)
+			c := NewTagController(m)
 			out, err := c.GetByID(tt.in)
 			assert.Equal(t, tt.out, out)
 			tt.checkErr(t, err)
@@ -115,42 +107,29 @@ func TestResearch_GetByID(t *testing.T) {
 	}
 }
 
-func TestResearch_Create(t *testing.T) {
-	type in struct {
-		title      string
-		author     string
-		file       string
-		comment    string
-		activation int
-	}
+func TestTag_Create(t *testing.T) {
 	tests := []struct {
 		name     string
-		injector func(m *mock_interactor.MockResearchInteractor)
-		in       in
+		injector func(m *mock_interactor.MockTagInteractor)
+		in       string
 		out      int
 		checkErr func(t assert.TestingT, object interface{}, msgAndArgs ...interface{}) bool
 	}{
 		{
 			name: "failed to create",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
-				m.EXPECT().Create("", "", "", "", 0).Return(0, errors.New("some error"))
+			injector: func(m *mock_interactor.MockTagInteractor) {
+				m.EXPECT().Create("").Return(0, errors.New("some error"))
 			},
-			in:       in{},
+			in:       "",
 			out:      0,
 			checkErr: assert.NotNil,
 		},
 		{
 			name: "success",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
-				m.EXPECT().Create("title001", "author001", "file001", "comment001", 1).Return(1, nil)
+			injector: func(m *mock_interactor.MockTagInteractor) {
+				m.EXPECT().Create("tag001").Return(1, nil)
 			},
-			in: in{
-				title:      "title001",
-				author:     "author001",
-				file:       "file001",
-				comment:    "comment001",
-				activation: 1,
-			},
+			in:       "tag001",
 			out:      1,
 			checkErr: assert.Nil,
 		},
@@ -161,35 +140,31 @@ func TestResearch_Create(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := mock_interactor.NewMockResearchInteractor(ctrl)
+			m := mock_interactor.NewMockTagInteractor(ctrl)
 			tt.injector(m)
-			c := NewResearchController(m)
-			out, err := c.Create(tt.in.title, tt.in.author, tt.in.file, tt.in.comment, tt.in.activation)
+			c := NewTagController(m)
+			out, err := c.Create(tt.in)
 			assert.Equal(t, tt.out, out)
 			tt.checkErr(t, err)
 		})
 	}
 }
 
-func TestResearch_UpdateByID(t *testing.T) {
+func TestTag_UpdateByID(t *testing.T) {
 	type in struct {
-		id         int
-		title      string
-		author     string
-		file       string
-		comment    string
-		activation int
+		id   int
+		name string
 	}
 	tests := []struct {
 		name     string
-		injector func(m *mock_interactor.MockResearchInteractor)
+		injector func(m *mock_interactor.MockTagInteractor)
 		in       in
 		checkErr func(t assert.TestingT, object interface{}, msgAndArgs ...interface{}) bool
 	}{
 		{
 			name: "failed to update",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
-				m.EXPECT().UpdateByID(1, "", "", "", "", 0).Return(errors.New("some error"))
+			injector: func(m *mock_interactor.MockTagInteractor) {
+				m.EXPECT().UpdateByID(1, "").Return(errors.New("some error"))
 			},
 			in: in{
 				id: 1,
@@ -198,16 +173,12 @@ func TestResearch_UpdateByID(t *testing.T) {
 		},
 		{
 			name: "success",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
-				m.EXPECT().UpdateByID(1, "title001", "author001", "file001", "comment001", 0).Return(nil)
+			injector: func(m *mock_interactor.MockTagInteractor) {
+				m.EXPECT().UpdateByID(1, "tag001").Return(nil)
 			},
 			in: in{
-				id:         1,
-				title:      "title001",
-				author:     "author001",
-				file:       "file001",
-				comment:    "comment001",
-				activation: 0,
+				id:   1,
+				name: "tag001",
 			},
 			checkErr: assert.Nil,
 		},
@@ -218,25 +189,25 @@ func TestResearch_UpdateByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := mock_interactor.NewMockResearchInteractor(ctrl)
+			m := mock_interactor.NewMockTagInteractor(ctrl)
 			tt.injector(m)
-			c := NewResearchController(m)
-			err := c.UpdateByID(tt.in.id, tt.in.title, tt.in.author, tt.in.file, tt.in.comment, tt.in.activation)
+			c := NewTagController(m)
+			err := c.UpdateByID(tt.in.id, tt.in.name)
 			tt.checkErr(t, err)
 		})
 	}
 }
 
-func TestResearch_DeleteByID(t *testing.T) {
+func TestTag_DeleteByID(t *testing.T) {
 	tests := []struct {
 		name     string
-		injector func(m *mock_interactor.MockResearchInteractor)
+		injector func(m *mock_interactor.MockTagInteractor)
 		in       int
 		checkErr func(t assert.TestingT, object interface{}, msgAndArgs ...interface{}) bool
 	}{
 		{
 			name: "failed to delete",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
+			injector: func(m *mock_interactor.MockTagInteractor) {
 				m.EXPECT().DeleteByID(1).Return(errors.New("some error"))
 			},
 			in:       1,
@@ -244,7 +215,7 @@ func TestResearch_DeleteByID(t *testing.T) {
 		},
 		{
 			name: "success",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
+			injector: func(m *mock_interactor.MockTagInteractor) {
 				m.EXPECT().DeleteByID(1).Return(nil)
 			},
 			in:       1,
@@ -257,25 +228,25 @@ func TestResearch_DeleteByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := mock_interactor.NewMockResearchInteractor(ctrl)
+			m := mock_interactor.NewMockTagInteractor(ctrl)
 			tt.injector(m)
-			c := NewResearchController(m)
+			c := NewTagController(m)
 			err := c.DeleteByID(tt.in)
 			tt.checkErr(t, err)
 		})
 	}
 }
 
-func TestResearch_AdminGetAll(t *testing.T) {
+func TestTag_AdminGetAll(t *testing.T) {
 	tests := []struct {
 		name     string
-		injector func(m *mock_interactor.MockResearchInteractor)
+		injector func(m *mock_interactor.MockTagInteractor)
 		out      []map[string]string
 		checkErr func(t assert.TestingT, object interface{}, msgAndArgs ...interface{}) bool
 	}{
 		{
 			name: "failed to get",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
+			injector: func(m *mock_interactor.MockTagInteractor) {
 				m.EXPECT().GetAll().Return(nil, errors.New("some error"))
 			},
 			out:      []map[string]string(nil),
@@ -283,18 +254,18 @@ func TestResearch_AdminGetAll(t *testing.T) {
 		},
 		{
 			name: "success",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
-				m.EXPECT().GetAll().Return([]*entity.Research{
+			injector: func(m *mock_interactor.MockTagInteractor) {
+				m.EXPECT().GetAll().Return([]*entity.Tag{
 					{
-						ID:    1,
-						Title: "title001",
+						ID:   1,
+						Name: "tag001",
 					},
 				}, nil)
 			},
 			out: []map[string]string{
 				{
 					"id":    "1",
-					"title": "title001",
+					"title": "tag001",
 				},
 			},
 			checkErr: assert.Nil,
@@ -306,9 +277,9 @@ func TestResearch_AdminGetAll(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := mock_interactor.NewMockResearchInteractor(ctrl)
+			m := mock_interactor.NewMockTagInteractor(ctrl)
 			tt.injector(m)
-			c := NewResearchController(m)
+			c := NewTagController(m)
 			out, err := c.AdminGetAll()
 			assert.Equal(t, tt.out, out)
 			tt.checkErr(t, err)
@@ -316,17 +287,17 @@ func TestResearch_AdminGetAll(t *testing.T) {
 	}
 }
 
-func TestResearch_AdminGetByID(t *testing.T) {
+func TestTag_AdminGetByID(t *testing.T) {
 	tests := []struct {
 		name     string
-		injector func(m *mock_interactor.MockResearchInteractor)
+		injector func(m *mock_interactor.MockTagInteractor)
 		in       int
 		out      *FieldsResponse
 		checkErr func(t assert.TestingT, object interface{}, msgAndArgs ...interface{}) bool
 	}{
 		{
 			name: "failed to get",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
+			injector: func(m *mock_interactor.MockTagInteractor) {
 				m.EXPECT().GetByID(1).Return(nil, errors.New("some error"))
 			},
 			in:       1,
@@ -335,14 +306,10 @@ func TestResearch_AdminGetByID(t *testing.T) {
 		},
 		{
 			name: "success",
-			injector: func(m *mock_interactor.MockResearchInteractor) {
-				m.EXPECT().GetByID(1).Return(&entity.Research{
-					ID:         1,
-					Title:      "title001",
-					Author:     "author001",
-					File:       "file001",
-					Comment:    "comment001",
-					Activation: 1,
+			injector: func(m *mock_interactor.MockTagInteractor) {
+				m.EXPECT().GetByID(1).Return(&entity.Tag{
+					ID:   1,
+					Name: "tag001",
 				}, nil)
 			},
 			in: 1,
@@ -350,11 +317,7 @@ func TestResearch_AdminGetByID(t *testing.T) {
 				ID: 1,
 				Fields: []*Field{
 					{Key: "ID", Value: 1},
-					{Key: "タイトル", Value: "title001"},
-					{Key: "著者", Value: "author001"},
-					{Key: "ファイル", Value: "file001"},
-					{Key: "コメント", Value: "comment001"},
-					{Key: "公開", Value: 1},
+					{Key: "名前", Value: "tag001"},
 				},
 			},
 			checkErr: assert.Nil,
@@ -366,9 +329,9 @@ func TestResearch_AdminGetByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := mock_interactor.NewMockResearchInteractor(ctrl)
+			m := mock_interactor.NewMockTagInteractor(ctrl)
 			tt.injector(m)
-			c := NewResearchController(m)
+			c := NewTagController(m)
 			out, err := c.AdminGetByID(tt.in)
 			assert.Equal(t, tt.out, out)
 			tt.checkErr(t, err)

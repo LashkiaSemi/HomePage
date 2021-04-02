@@ -103,6 +103,7 @@ func (rc *researchController) AdminGetByID(id int) (*FieldsResponse, error) {
 		&Field{Key: "コメント", Value: data.Comment},
 		&Field{Key: "公開", Value: data.Activation},
 	)
+	res.ID = data.ID
 	return &res, nil
 }
 
