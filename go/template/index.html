@@ -15,19 +15,20 @@
                             {{ range .Data.Activities }}
                             <li>
                                 <b>&lt; {{ .ShowDate }} &gt;
-                                {{ if .Annotation }}
-                                <span style="color: orange;">{{ .Annotation }}</span>
-                                {{ end }}
-                                {{ if .IsImportant }}
-                                <span style="color: red;">{{ .Activity }}</span>
-                                {{ else }}
-                                <span>{{ .Activity }}</span>
-                                {{ end }}
+                                    {{ if .Annotation }}
+                                    <span style="color: orange;">{{ .Annotation }}</span>
+                                    {{ end }}
+                                    {{ if .IsImportant }}
+                                    <span style="color: red;">{{ .Activity }}</span>
+                                    {{ else }}
+                                    <span>{{ .Activity }}</span>
+                                    {{ end }}
                                 </b>
                             </li>
                             {{ end }}
                         </ul>
-                        <div class="mb-20"><span>その他の内部活動については<a href="/activities"class="link">こちら</a>を参照ください。</span></div>
+                        <div class="mb-20"><span>その他の内部活動については<a href="/activities" class="link">こちら</a>を参照ください。</span>
+                        </div>
                     </div>
                 </div>
                 <!-- END お知らせ -->
@@ -141,6 +142,10 @@
                             <li>ゼミ長に理由と、どのくらい遅れるかを<b>必ず</b>連絡</li>
                         </ul>
                     </ul>
+                </div>
+                <div class="mb-30">
+                    <h2 class="h2 underline">問い合わせ先</h2>
+                    <p>lashkia atmark sist.chukyo-u.ac.jp</p>
                 </div>
                 <!-- END about -->
             </div>
